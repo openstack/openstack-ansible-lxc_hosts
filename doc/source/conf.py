@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# openstack-ansible-apt_package_pinning documentation build configuration file, created by
+# openstack-ansible-lxc_hosts documentation build configuration file, created by
 # sphinx-quickstart on Mon Apr 13 20:42:26 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -32,7 +32,7 @@ extensions = [
 ]
 
 # The link to the browsable source code (for the left hand menu)
-oslosphinx_cgit_link = 'http://git.openstack.org/cgit/openstack/openstack-ansible-apt_package_pinning'
+oslosphinx_cgit_link = 'http://git.openstack.org/cgit/openstack/openstack-ansible-lxc_hosts'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -49,9 +49,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'openstack-ansible-apt_package_pinning'
-copyright = '2015, openstack-ansible-apt_package_pinning contributors'
-author = 'openstack-ansible-apt_package_pinning contributors'
+project = 'openstack-ansible-lxc_hosts'
+copyright = '2015, openstack-ansible-lxc_hosts contributors'
+author = 'openstack-ansible-lxc_hosts contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -203,7 +203,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'openstack-ansible-apt_package_pinningdoc'
+htmlhelp_basename = 'openstack-ansible-lxc_hostsdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -225,9 +225,9 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'openstack-ansible-apt_package_pinning.tex',
-     'openstack-ansible-apt_package_pinning Documentation',
-     'openstack-ansible-apt_package_pinning contributors', 'manual'),
+    (master_doc, 'openstack-ansible-lxc_hosts.tex',
+     'openstack-ansible-lxc_hosts Documentation',
+     'openstack-ansible-lxc_hosts contributors', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -256,8 +256,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'openstack-ansible-apt_package_pinning',
-     'openstack-ansible-apt_package_pinning Documentation',
+    (master_doc, 'openstack-ansible-lxc_hosts',
+     'openstack-ansible-lxc_hosts Documentation',
      [author], 1)
 ]
 
@@ -271,9 +271,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'openstack-ansible-apt_package_pinning',
-     'openstack-ansible-apt_package_pinning Documentation',
-     author, 'openstack-ansible-apt_package_pinning', 'One line description of project.',
+    (master_doc, 'openstack-ansible-lxc_hosts',
+     'openstack-ansible-lxc_hosts Documentation',
+     author, 'openstack-ansible-lxc_hosts', 'One line description of project.',
      'Miscellaneous'),
 ]
 
