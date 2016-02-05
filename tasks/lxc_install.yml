@@ -36,6 +36,19 @@
   tags:
     - lxc-apt-packages
 
+- name: Install pip packages
+  pip:
+    name: "{{ item }}"
+    state: present
+    extra_args: "{{ pip_install_options|default('') }}"
+  register: install_packages
+  until: install_packages|success
+  retries: 5
+  delay: 2
+  with_items: lxc_pip_packages
+  tags:
+    - lxc-pip-packages
+
 # The functionality with changing the container cache has been added into the
 # upstream LXC templates with patch [ https://github.com/lxc/lxc/pull/558 ]
 # TODO: remove the below patch and pass lxc_container_cache_path to lxc

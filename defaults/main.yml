@@ -73,6 +73,9 @@ lxc_apt_packages:
   - python-dev
   - python3-lxc
 
+lxc_pip_packages:
+  - lxc-python2
+
 # Commands to run against cached LXC image
 lxc_cache_commands:
   - apt-get update
