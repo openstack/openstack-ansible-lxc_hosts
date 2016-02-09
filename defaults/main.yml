@@ -55,7 +55,9 @@ lxc_container_template_options: >
 
 lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
 lxc_container_template_security_apt_repo: "https://mirror.rackspace.com/ubuntu"
-
+lxc_container_template_apt_components:
+  - main
+  - universe
 
 # Required apt packages.
 lxc_apt_packages:
