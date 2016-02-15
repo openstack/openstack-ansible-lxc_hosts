@@ -17,6 +17,9 @@
   hosts: localhost
   connection: local
   pre_tasks:
+    - name: First ensure apt cache is always refreshed
+      apt:
+        update_cache: yes
     - name: Ensure root ssh key
       user:
         name: "{{ ansible_env.USER | default('root') }}"
