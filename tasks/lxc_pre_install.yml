@@ -60,13 +60,11 @@
 
 - name: Drop irqbalance config
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode|default('0644') }}"
-  with_items:
-    - { src: irqbalance.j2, dest: "/etc/default/irqbalance" }
+    src: "irqbalance.j2"
+    dest: "/etc/default/irqbalance"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   notify:
     - Restart irqbalance
   tags:
@@ -75,13 +73,11 @@
 
 - name: Drop lxc-openstack app armor profile
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode|default('0644') }}"
-  with_items:
-    - { src: lxc-openstack.apparmor.j2, dest: "/etc/apparmor.d/lxc/lxc-openstack" }
+    src: "lxc-openstack.apparmor.j2"
+    dest: "/etc/apparmor.d/lxc/lxc-openstack"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   notify:
     - Load lxc-openstack apparmor profile
     - Restart apparmor
