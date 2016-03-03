@@ -64,6 +64,7 @@ lxc_container_template_apt_components:
 
 # Required apt packages.
 lxc_apt_packages:
+  - apparmor
   - apparmor-utils
   - bridge-utils
   - cgmanager
@@ -71,6 +72,11 @@ lxc_apt_packages:
   - debootstrap
   - dnsmasq
   - git
+  - irqbalance
+  # Note (odyssey4me): This package is needed for the Ansible
+  # unarchive module to ensure that it can properly unarchive
+  # files/folders with unicode names
+  - language-pack-en
   - liblxc1
   - lxc
   - lxc-dev
