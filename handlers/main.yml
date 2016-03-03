@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Load lxc-openstack apparmor profile
-  command: apparmor_parser -Kr /etc/apparmor.d/lxc-containers
+  command: apparmor_parser -Kr /etc/apparmor.d/lxc-openstack
 
 - name: Restart apparmor
   service:
