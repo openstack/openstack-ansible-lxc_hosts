@@ -37,13 +37,11 @@
 
 - name: Drop lxc net bridge
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode|default('0644') }}"
-  with_items:
-    - { src: lxc-net-bridge.cfg.j2, dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg" }
+    src: "lxc-net-bridge.cfg.j2"
+    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
+    owner: "root"
+    group: "root"
+    mode: "0644"
   tags:
     - lxc-files
     - lxc-net
