@@ -63,6 +63,14 @@
       register: lxc_bridge_file
     - name: Check dnsmasq is running
       shell: ps auxfww | grep -w 'dnsmasq -u lxc-dnsmasq'
+    - name: Get deployed interface file contents, without Ansible managed line
+      shell: |
+        cat /etc/network/interfaces.d/lxc-net-bridge.cfg | tail -n +3
+      register: interface_file
+    - name: Get expected interface file contents
+      shell: |
+        cat files/expected-lxc-net-bridge.cfg
+      register: expected_interface_file
     - name: Check role functions
       assert:
         that:
@@ -70,3 +78,4 @@
           - "lxc_bridge_file.stat.exists"
           - "container_cache_dir.stat.isdir"
           - "container_tar_file.stat.exists"
+          - "interface_file.stdout | match(expected_interface_file.stdout)"

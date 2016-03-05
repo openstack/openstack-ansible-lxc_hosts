@@ -4,19 +4,19 @@ auto {{ lxc_net_bridge }}
 iface {{ lxc_net_bridge }} inet static
     address {{ lxc_net_address }}
     netmask {{ lxc_net_netmask }}
-{%- if lxc_net_gateway is not none %}
+{% if lxc_net_gateway is not none %}
     gateway {{ lxc_net_gateway }}
-{% endif -%}
-{%- if lxc_net_mtu is defined %}
+{% endif %}
+{% if lxc_net_mtu is defined %}
     mtu {{ lxc_net_mtu }}
-{% endif -%}
-{%- if lxc_net_nat | bool %}
+{% endif %}
+{% if lxc_net_nat | bool %}
     # dnsmasq start and stop
-    post-up /usr/local/bin/lxc-system-manage dnsmasq-start || true
     post-up /usr/local/bin/lxc-system-manage iptables-create
-    post-down /usr/local/bin/lxc-system-manage dnsmasq-stop
+    post-up /usr/local/bin/lxc-system-manage dnsmasq-start || true
     post-down /usr/local/bin/lxc-system-manage iptables-remove
-{% endif -%}
+    post-down /usr/local/bin/lxc-system-manage dnsmasq-stop
+{% endif %}
     bridge_fd 0
     bridge_maxwait 0
     bridge_ports {{ lxc_net_bridge_port }}
