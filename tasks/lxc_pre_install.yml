@@ -27,6 +27,7 @@
     - /usr/share/lxc/templates
     - /openstack
     - /openstack/backup
+    - /openstack/log
     - "{{ lxc_container_directory }}"
     - "{{ lxc_container_cache_path }}"
   tags:
