@@ -22,6 +22,18 @@
     - lxc-net
     - lxc-interfaces
 
+- name: Drop lxc net bridge
+  template:
+    src: "lxc-net-bridge.cfg.j2"
+    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  tags:
+    - lxc-files
+    - lxc-net
+    - lxc-bridge
+
 - name: Check Container Bridge exists
   file:
     state: "file"
@@ -32,17 +44,5 @@
   notify:
     - Bring bridge up
   tags:
-    - lxc-net
-    - lxc-bridge
-
-- name: Drop lxc net bridge
-  template:
-    src: "lxc-net-bridge.cfg.j2"
-    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  tags:
-    - lxc-files
     - lxc-net
     - lxc-bridge

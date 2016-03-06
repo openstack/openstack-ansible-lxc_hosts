@@ -33,6 +33,7 @@
         lxc_container_ssh_key: key_get.stdout
   roles:
     - role: "{{ rolename | basename }}"
+      lxc_net_address: 10.100.100.1
       lxc_net_bridge: lxcbr0
       lxc_kernel_options:
         - { key: 'fs.inotify.max_user_instances', value: 1024 }
@@ -71,6 +72,10 @@
       shell: |
         cat files/expected-lxc-net-bridge.cfg
       register: expected_interface_file
+    - name: Get bridge interface facts
+      setup:
+        filter: ansible_lxcbr0
+      register: lxcbr0_facts
     - name: Check role functions
       assert:
         that:
@@ -79,3 +84,4 @@
           - "container_cache_dir.stat.isdir"
           - "container_tar_file.stat.exists"
           - "interface_file.stdout | match(expected_interface_file.stdout)"
+          - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"

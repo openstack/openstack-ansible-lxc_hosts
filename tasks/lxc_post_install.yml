@@ -34,7 +34,6 @@
     - { src: lxc-openstack.conf.j2, dest: "/etc/lxc/lxc-openstack.conf" }
     - { src: lxc.default.j2, dest: "/etc/default/lxc-net", mode: "0644" }
     - { src: lxc-system-manage.j2, dest: "/usr/local/bin/lxc-system-manage", mode: "0755" }
-    - { src: manual-init.override.j2, dest: "/etc/init/lxc-net.override" }
   tags:
     - lxc-files
     - lxc-config
