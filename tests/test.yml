@@ -42,6 +42,9 @@
           name: "trusty.tgz"
           sha256sum: "56c6a6e132ea7d10be2f3e8104f47136ccf408b30e362133f0dc4a0a9adb4d0c"
           chroot_path: trusty/rootfs-amd64
+      lxc_container_cache_files:
+        - src: files/container-file-copy-test.txt
+          dest: /tmp/file-copied-from-deployment-host.txt
   post_tasks:
     - name: Open sysctl file
       slurp:
@@ -72,6 +75,14 @@
       shell: |
         cat files/expected-lxc-net-bridge.cfg
       register: expected_interface_file
+    - name: Get the deployed test file from the container cache
+      slurp:
+        src: /var/cache/lxc/trusty/rootfs-amd64/tmp/file-copied-from-deployment-host.txt
+      register: copied_file
+    - name: Get the expected test file which should have been copied
+      slurp:
+        src: files/container-file-copy-test.txt
+      register: expected_copied_file
     - name: Get bridge interface facts
       setup:
         filter: ansible_lxcbr0
@@ -84,4 +95,5 @@
           - "container_cache_dir.stat.isdir"
           - "container_tar_file.stat.exists"
           - "interface_file.stdout | match(expected_interface_file.stdout)"
+          - "copied_file.content | match(expected_copied_file.content)"
           - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"
