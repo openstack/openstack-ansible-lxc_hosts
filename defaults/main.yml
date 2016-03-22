@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-## APT Cache Options
-cache_timeout: 600
-
 # lxc container rootfs directory and cache path
 lxc_container_directory: "/var/lib/lxc"
 lxc_container_cache_path: "/var/cache/lxc"
@@ -48,8 +45,6 @@ lxc_kernel_options:
   - { key: 'fs.inotify.max_user_instances', value: 1024 }
 
 # Default image to build from
-lxc_container_release: trusty
-lxc_container_user_name: ubuntu
 lxc_container_user_password: "{{ lookup('pipe', 'date --rfc-3339=ns | sha512sum | base64 | head -c 32') }}"
 lxc_container_template_options: >
   --release {{ lxc_container_release }}
@@ -59,44 +54,8 @@ lxc_container_template_options: >
 # Set this boolean value to remove any previously prepared base image
 lxc_container_base_delete: no
 
-lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
-lxc_container_template_security_apt_repo: "https://mirror.rackspace.com/ubuntu"
-lxc_container_template_apt_components:
-  - main
-  - universe
-
-# Required apt packages.
-lxc_apt_packages:
-  - apparmor
-  - apparmor-utils
-  - bridge-utils
-  - cgmanager
-  - cgroup-lite
-  - debootstrap
-  - dnsmasq
-  - git
-  - irqbalance
-  # Note (odyssey4me): This package is needed for the Ansible
-  # unarchive module to ensure that it can properly unarchive
-  # files/folders with unicode names
-  - language-pack-en
-  - liblxc1
-  - lxc
-  - lxc-dev
-  - lxc-templates
-  - python-dev
-  - python3-lxc
-
 lxc_pip_packages:
   - lxc-python2
-
-# Commands to run against cached LXC image
-lxc_cache_commands:
-  - apt-get update
-  - apt-get -y upgrade
-  - apt-get -y install python2.7
-  - rm -f /usr/bin/python
-  - ln -s /usr/bin/python2.7 /usr/bin/python
 
 lxc_cache_resolvers:
   - 'nameserver 8.8.8.8'

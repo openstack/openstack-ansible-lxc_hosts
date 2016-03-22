@@ -1,0 +1,55 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+## APT Cache Options
+cache_timeout: 600
+
+# Container repos
+lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
+lxc_container_template_security_apt_repo: "https://mirror.rackspace.com/ubuntu"
+lxc_container_template_apt_components:
+  - main
+  - universe
+
+# Default image to build from
+lxc_container_release: trusty
+lxc_container_user_name: ubuntu
+
+# Required apt packages.
+lxc_apt_packages:
+  - apparmor
+  - apparmor-utils
+  - bridge-utils
+  - cgmanager
+  - cgroup-lite
+  - debootstrap
+  - dnsmasq
+  - git
+  - irqbalance
+  - language-pack-en
+  - liblxc1
+  - lxc
+  - lxc-dev
+  - lxc-templates
+  - python-dev
+  - python3-lxc
+
+# Commands to run against cached LXC image
+lxc_cache_commands:
+  - apt-get update
+  - apt-get -y upgrade
+  - apt-get -y install python2.7
+  - rm -f /usr/bin/python
+  - ln -s /usr/bin/python2.7 /usr/bin/python
