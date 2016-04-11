@@ -72,7 +72,7 @@ function remove_rules {
                                   --dport 68 \
                                   -j CHECKSUM \
                                   --checksum-fill
-    success "IPtables rules removed."
+    success "LXC IPtables rules removed."
 }
 
 function add_rules {
@@ -81,24 +81,24 @@ function add_rules {
     # Set ip_prwarding
     sysctl -w net.ipv4.ip_forward=1 > /dev/null 2>&1
 
-    # Add rules from the INPUT chain
+    # Add rules to the INPUT chain
     iptables ${USE_IPTABLES_LOCK} -I INPUT -i "${LXC_BRIDGE}" -p udp --dport 67 -j ACCEPT
     iptables ${USE_IPTABLES_LOCK} -I INPUT -i "${LXC_BRIDGE}" -p tcp --dport 67 -j ACCEPT
     iptables ${USE_IPTABLES_LOCK} -I INPUT -i "${LXC_BRIDGE}" -p udp --dport 53 -j ACCEPT
     iptables ${USE_IPTABLES_LOCK} -I INPUT -i "${LXC_BRIDGE}" -p tcp --dport 53 -j ACCEPT
 
-    # Add rules from the FORWARDING chain
+    # Add rules to the FORWARDING chain
     iptables ${USE_IPTABLES_LOCK} -I FORWARD -i "${LXC_BRIDGE}" -j ACCEPT
     iptables ${USE_IPTABLES_LOCK} -I FORWARD -o "${LXC_BRIDGE}" -j ACCEPT
 
-    # Add rules from the nat POSTROUTING chain
+    # Add rules to the nat POSTROUTING chain
     iptables ${USE_IPTABLES_LOCK} -t nat \
                                   -A POSTROUTING \
                                   -s "${LXC_NETWORK}" ! \
                                   -d "${LXC_NETWORK}" \
                                   -j MASQUERADE
 
-    # Add rules from the mangle POSTROUTING chain
+    # Add rules to the mangle POSTROUTING chain
     iptables ${USE_IPTABLES_LOCK} -t mangle \
                                   -A POSTROUTING \
                                   -s "${LXC_NETWORK}" \
@@ -108,7 +108,7 @@ function add_rules {
                                   --dport 68 \
                                   -j CHECKSUM \
                                   --checksum-fill
-    success "IPtables rules created."
+    success "LXC IPtables rules created."
 }
 
 function cleanup {
@@ -159,7 +159,7 @@ function start_dnsmasq {
 
 function start_containers_nicely {
     set -e
-    # Stop all containers on a host
+    # Start all containers on a host
     success "Starting all containers."
     for container in $(lxc-ls); do
       lxc-start -d -n "${container}"
@@ -341,21 +341,21 @@ case "$1" in
                                   operate, including the containers, dnsmasq,
                                   LXC bridge, and IPtables.
         system-tear-down          Tear down everything LXC on this system.
-                                  This will remove all all IPtables rules, kill
-                                  dnsmasq, remove the LXC bridge, stops all
-                                  containers, removes DOWN veth interfaces,
-                                  and flushes the net cache.
+                                  This will remove all LXC IPtables rules, kill
+                                  dnsmasq, remove the LXC bridge, stop all
+                                  containers, remove DOWN veth interfaces,
+                                  and flush the net cache.
         system-force-tear-down    Force tear down everything LXC on this system.
-                                  This will remove all all IPtables rules, kill
-                                  dnsmasq, remove the LXC bridge, stops all
-                                  containers, removes DOWN veth interfaces,
-                                  and flushes the net cache.
+                                  This will remove all LXC IPtables rules, kill
+                                  dnsmasq, remove the LXC bridge, stop all
+                                  containers, remove DOWN veth interfaces,
+                                  and flush the net cache.
         system-rebuild            Rebuild the LXC network, IPtables, dnsmasq,
-                                  removes DOWN veth interfaces, flushes the
-                                  net cache, and restarts all conatiners.
+                                  remove DOWN veth interfaces, flush the
+                                  net cache, and restart all containers.
         system-force-rebuild      Force rebuild the LXC network, IPtables, dnsmasq,
-                                  removes DOWN veth interfaces, flushes the
-                                  net cache, and restarts all conatiners.
+                                  remove DOWN veth interfaces, flush the
+                                  net cache, and restart all containers.
         dnsmasq-start             Start the LXC dnsmasq process.
         dnsmasq-stop              Stop the LXC dnsmasq process.
         dnsmasq-restart           Restart the LXC dnsmasq process.
@@ -363,7 +363,7 @@ case "$1" in
         iptables-remove           Remove the LXC IPtables rules for NAT.
         iptables-recreate         Recreate the LXC IPtables rules for NAT.
         veth-cleanup              Remove all DOWN veth interfaces from a system.
-        flush-net-cache           Flush the hosts network cache. This is useful if
+        flush-net-cache           Flush the host network cache. This is useful if
                                   IP addresses are being recycled on to containers
                                   from other hosts.
         '
