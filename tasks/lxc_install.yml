@@ -19,6 +19,12 @@
   tags:
     - install-apt
 
+- include: lxc_install_yum.yml
+  when:
+    - ansible_pkg_mgr == 'yum'
+  tags:
+    - install-yum
+
 - name: Install pip packages
   pip:
     name: "{{ item }}"

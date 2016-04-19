@@ -18,11 +18,15 @@ galaxy_info:
   description: Deployment of LXC hosts for use in Rackspace Private Cloud
   company: Rackspace
   license: Apache2
-  min_ansible_version: 1.6.6
+  min_ansible_version: 1.9.4
   platforms:
     - name: Ubuntu
       versions:
         - trusty
+        - xenial
+    - name: EL
+      versions:
+        - 7
   categories:
     - cloud
     - lxc

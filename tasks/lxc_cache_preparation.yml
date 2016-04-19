@@ -15,89 +15,93 @@
 
 - name: Copy files from deployment host to the container cache
   copy:
-    src: "{{ item[1].src }}"
-    dest: "{{ lxc_container_cache_path }}/{{ item[0].chroot_path }}/{{ item[1].dest }}"
-    owner: "{{ item[1].owner | default('root') }}"
-    group: "{{ item[1].group | default('root') }}"
-    mode: "{{ item[1].mode | default('644') }}"
-  with_nested:
-    - lxc_container_caches
-    - lxc_container_cache_files
+    src: "{{ item.src }}"
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs{{ item.dest }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('644') }}"
+  with_items: lxc_container_cache_files
   tags:
     - lxc-cache
     - lxc-cache-copy-files
 
-- name: Create apt repos in the cached container
-  template:
-    src: sources.list.j2
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/etc/apt/sources.list"
-  with_items: lxc_container_caches
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Update container resolvers
-  template:
-    src: lxc-resolve-base.j2
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/run/resolvconf/resolv.conf"
-  with_items: lxc_container_caches
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Update container resolvconf base
-  template:
-    src: lxc-resolve-base.j2
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/etc/resolvconf/resolv.conf.d/base"
-  with_items: lxc_container_caches
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Update container resolvconf tail
+- name: Cached image preparation script
   copy:
-    content: "# Null Tail"
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/etc/resolvconf/resolv.conf.d/tail"
-  with_items: lxc_container_caches
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Update container resolvconf original
-  copy:
-    content: "# Null original"
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/etc/resolvconf/resolv.conf.d/original"
-  with_items: lxc_container_caches
+    content: |
+      #!/usr/bin/env bash
+      set -x
+      {{ lxc_cache_map.cache_base_commands }}
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-prep-commands.sh"
+    mode: "0755"
   tags:
     - lxc-cache
     - lxc-cache-update
 
 # This task runs several commands against the cached image to speed up the
 # lxc_container_create playbook.
-- name: Prepare cached image
-  command: "chroot {{ lxc_container_cache_path }}/{{ item[0].chroot_path }} {{ item[1] }}"
-  with_nested:
-    - lxc_container_caches
-    - lxc_cache_commands
-  when: cache_download|changed
+- name: Prepare cached image setup commands
+  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-prep-commands.sh"
+  tags:
+    - lxc-cache
+    - lxc-cache-update
+
+- name: Create repos in the cached container
+  copy:
+    content: "{{ item.value }}"
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs{{ item.key }}"
+  with_dict: lxc_cache_map.repos
+  tags:
+    - lxc-cache
+    - lxc-cache-update
+
+- name: Copy cached image preparation package script into the target
+  copy:
+    content: |
+      #!/usr/bin/env bash
+      set -x
+      {{ lxc_cache_install_command }} {{ lxc_cache_map.cache_packages | join(' ') }}
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-package-prep-commands.sh"
+    mode: "0755"
+  tags:
+    - lxc-cache
+    - lxc-cache-update
+
+- name: Prepare cached image with packages
+  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-package-prep-commands.sh"
+  tags:
+    - lxc-cache
+    - lxc-cache-update
+
+- name: Cached image post-preparation package script
+  copy:
+    content: |
+      #!/usr/bin/env bash
+      set -x
+      {{ lxc_cache_map.cache_post_commands }}
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-post-prep-commands.sh"
+    mode: "0755"
+  tags:
+    - lxc-cache
+    - lxc-cache-update
+
+- name: Post-prepare cached image setup commands
+  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-post-prep-commands.sh"
   tags:
     - lxc-cache
     - lxc-cache-update
 
 - name: Adjust sshd configuration in container
   lineinfile:
-    dest: "{{ lxc_container_cache_path }}/{{ item[0].chroot_path }}/etc/ssh/sshd_config"
-    regexp: "{{ item[1].regexp }}"
-    line: "{{ item[1].line }}"
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
     state: present
-  with_nested:
-    - lxc_container_caches
-    - lxc_cache_sshd_configuration
+  with_items: lxc_cache_sshd_configuration
   tags:
     - lxc-cache
     - lxc-cache-update
 
-- name: Obtain the system's ssh public key
+- name: Obtain the deploy system's ssh public key
   set_fact:
     lxc_container_ssh_key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
   when: lxc_container_ssh_key is not defined
@@ -107,9 +111,9 @@
 
 - name: Deploy ssh public key into the cached image
   lineinfile:
-    dest: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}/root/.ssh/authorized_keys"
+    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/root/.ssh/authorized_keys"
     line: "{{ lxc_container_ssh_key }}"
-  with_items: lxc_container_caches
+    create: true
   tags:
     - lxc-cache
     - lxc-cache-update

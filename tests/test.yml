@@ -17,9 +17,14 @@
   hosts: localhost
   connection: local
   pre_tasks:
+    - name: Show host facts
+      debug:
+        var: hostvars
     - name: First ensure apt cache is always refreshed
       apt:
         update_cache: yes
+      when:
+        - ansible_pkg_mgr == 'apt'
     - name: Ensure root ssh key
       user:
         name: "{{ ansible_env.USER | default('root') }}"
@@ -46,43 +51,34 @@
         - src: files/container-file-copy-test.txt
           dest: /tmp/file-copied-from-deployment-host.txt
   post_tasks:
-    - name: Open sysctl file
-      slurp:
-        src: /etc/sysctl.conf
-      register: sysctl_file
-    - name: Read files
-      set_fact:
-        sysctl_content: "{{ sysctl_file.content | b64decode }}"
-    - name: Check for container tar
-      stat:
-        path: /var/cache/lxc_trusty.tgz
-      register: container_tar_file
-    - name: Check for container cache dir
-      stat:
-        path: /var/cache/lxc/trusty/rootfs-amd64/
-      register: container_cache_dir
+    - name: Get sysctl content
+      shell: |
+        cat /etc/sysctl.conf
+      register: sysctl_content
     - name: Check for lxc bridge
       stat:
         path: /sys/class/net/lxcbr0/bridge/bridge_id
       register: lxc_bridge_file
     - name: Check dnsmasq is running
       shell: ps auxfww | grep -w 'dnsmasq -u lxc-dnsmasq'
-    - name: Get deployed interface file contents, without Ansible managed line
+    - name: DEBIAN - Get deployed interface file contents, without Ansible managed line
       shell: |
         cat /etc/network/interfaces.d/lxc-net-bridge.cfg | tail -n +3
-      register: interface_file
-    - name: Get expected interface file contents
+      register: _debian_interface_file
+      when: ansible_os_family | lower == "debian"
+    - name: DEBIAN - interface file fact
+      set_fact:
+        interface_file: "{{ _debian_interface_file.stdout }}"
+      when: ansible_os_family | lower == "debian"
+    - name: RHEL - Get deployed interface file contents, without Ansible managed line
       shell: |
-        cat files/expected-lxc-net-bridge.cfg
-      register: expected_interface_file
-    - name: Get the deployed test file from the container cache
-      slurp:
-        src: /var/cache/lxc/trusty/rootfs-amd64/tmp/file-copied-from-deployment-host.txt
-      register: copied_file
-    - name: Get the expected test file which should have been copied
-      slurp:
-        src: files/container-file-copy-test.txt
-      register: expected_copied_file
+        cat /etc/sysconfig/network-scripts/ifcfg-lxcbr0 | tail -n +3
+      register: _rhel_interface_file
+      when: ansible_os_family | lower == "redhat"
+    - name: RHEL - interface file fact
+      set_fact:
+        interface_file: "{{ _rhel_interface_file.stdout }}"
+      when: ansible_os_family | lower == "redhat"
     - name: Get bridge interface facts
       setup:
         filter: ansible_lxcbr0
@@ -90,10 +86,9 @@
     - name: Check role functions
       assert:
         that:
-          - "'fs.inotify.max_user_instances' in sysctl_content"
+          - interface_file | search('.*lxcbr0.*')
+          - interface_file | search('.*10.100.100.1.*')
+          - interface_file | search('.*255.255.255.0.*')
+          - sysctl_content.stdout | search('fs.inotify.max_user_instances.*')
           - "lxc_bridge_file.stat.exists"
-          - "container_cache_dir.stat.isdir"
-          - "container_tar_file.stat.exists"
-          - "interface_file.stdout | match(expected_interface_file.stdout)"
-          - "copied_file.content | match(expected_copied_file.content)"
           - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"

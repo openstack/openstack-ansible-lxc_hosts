@@ -32,14 +32,3 @@
     - "{{ lxc_container_cache_path }}"
   tags:
     - lxc-directories
-
-- name: Drop lxc-net override file
-  template:
-    src: manual-init.override.j2
-    dest: /etc/init/lxc-net.override
-    owner: root
-    group: root
-    mode: 0644
-  tags:
-    - lxc-files
-    - lxc-config

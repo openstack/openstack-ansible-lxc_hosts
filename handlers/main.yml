@@ -31,5 +31,23 @@
     pattern: "irqbalance"
     enabled: "yes"
 
+- name: Restart bridge
+  shell: "ifdown {{ lxc_net_bridge }} || true"
+  notify:
+    - Bring bridge up
+    - Veth check
+
 - name: Bring bridge up
   command: "ifup {{ lxc_net_bridge }}"
+
+- name: Veth check
+  command: "/usr/local/bin/lxc-veth-check"
+
+- name: Destroy base container
+  lxc_container:
+    name: "cache-{{ lxc_cache_map.distro }}"
+    state: absent
+  register: cache_destroy
+  retries: 3
+  delay: 10
+  until: cache_destroy|success

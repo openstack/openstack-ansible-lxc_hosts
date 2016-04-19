@@ -38,19 +38,33 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: lxc_apt_packages
+  with_items: lxc_packages
   tags:
     - lxc-apt-packages
 
-# The functionality with changing the container cache has been added into the
-# upstream LXC templates with patch [ https://github.com/lxc/lxc/pull/558 ]
-# TODO: remove the below patch and pass lxc_container_cache_path to lxc
-# templates as appropriate once the lxc update goes mainstream
-- name: Patch lxc-ubuntu cache path
-  replace:
-    dest: /usr/share/lxc/templates/lxc-ubuntu
-    regexp: '\$LOCALSTATEDIR/cache/lxc'
-    replace: "{{ lxc_container_cache_path }}"
-    backup: yes
+- name: Drop irqbalance config
+  template:
+    src: "irqbalance.j2"
+    dest: "/etc/default/irqbalance"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - Restart irqbalance
   tags:
-    - lxc-cache-path
+    - lxc-files
+    - lxc-irqbalance
+
+- name: Drop lxc-openstack app armor profile
+  template:
+    src: "lxc-openstack.apparmor.j2"
+    dest: "/etc/apparmor.d/lxc/lxc-openstack"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - Load lxc-openstack apparmor profile
+    - Restart apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor

@@ -13,57 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO(odyssey4me)
-#  Ansible 1.9x only actually checks whether there's a local file - it never
-#  checks whether the local file matches the given sha256sum. Ansible 2.x
-#  fixes this, so once we move to Ansible 2.x we can pass this a sha256sum
-#  which will:
-#       a) allow us to remove force: yes
-#       b) allow the module to calculate the checksum of dest file which would
-#          result in file being downloaded only if provided and dest sha256sum
-#          checksums differ
-# Currently 'force:yes' will always download the file, then do a sha256sum
-# comparison between the downloaded file and the existing file, then replace
-# the existing file if it doesn't match.
-
-- name: Download lxc cache(s)
-  get_url:
-    url: "{{ item.url }}"
-    dest: "/var/cache/lxc_{{ item.name }}"
-    mode: "0644"
-    force: yes
-    sha256sum: "{{ item.sha256sum }}"
-    validate_certs: "{{ lxc_cache_validate_certs }}"
+- name: Create container
+  lxc_container:
+    name: "cache-{{ lxc_cache_map.distro }}"
+    template: "download"
+    state: stopped
+    backing_store: "dir"
+    template_options: "{{ lxc_cache_download_template_options }}"
   register: cache_download
   retries: 3
   delay: 10
-  until: cache_download | success
-  with_items: lxc_container_caches
+  until: cache_download|success
   tags:
     - lxc-cache
     - lxc-cache-download
 
-- name: Remove existing lxc cached images
-  file:
-    path: "{{ lxc_container_cache_path }}/{{ item.chroot_path }}"
-    state: absent
-  with_items: lxc_container_caches
-  when: >
-    cache_download | changed or
-    lxc_container_base_delete | bool
-  tags:
-    - lxc-cache
-    - lxc-cache-existing-remove
-
-- name: Move lxc cached image into place
-  unarchive:
-    src: "/var/cache/lxc_{{ item.name }}"
-    dest: "{{ lxc_container_cache_path }}/"
-    copy: "no"
-  with_items: lxc_container_caches
-  when: >
-    cache_download | changed or
-    lxc_container_base_delete | bool
-  tags:
-    - lxc-cache
-    - lxc-cache-unarchive
+- include: lxc_cache_preparation.yml
+- include: lxc_cache_create.yml

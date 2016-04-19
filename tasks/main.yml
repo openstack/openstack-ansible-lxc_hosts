@@ -35,7 +35,20 @@
   with_first_found:
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
     - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
     - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always
+
+- name: Check init system
+  command: cat /proc/1/comm
+  register: _pid1_name
+  tags:
+    - always
+
+- name: Set the name of pid1
+  set_fact:
+    pid1_name: "{{ _pid1_name.stdout }}"
   tags:
     - always
 
@@ -46,7 +59,6 @@
 - include: lxc_net.yml
 - include: lxc_dnsmasq_cleanup.yml
 - include: lxc_cache.yml
-- include: lxc_cache_preparation.yml
-  when: lxc_container_caches is defined
+
 - name: Flush handlers
   meta: flush_handlers

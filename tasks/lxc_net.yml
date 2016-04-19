@@ -13,27 +13,79 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Drop lxc net bridge
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  with_items: "{{ lxc_cached_network_interfaces }}"
+  notify:
+    - Bring bridge up
+  tags:
+    - lxc-files
+    - lxc-net
+    - lxc-bridge
+    - lxc-interfaces
+
+# All Debian installations of LXC use the lxc-net service. This service breaks our network
+#  model and needs to be disabled
+- name: Disable and stop lxc-net
+  service:
+    name: lxc-net
+    enabled: no
+    state: stopped
+  when:
+    - ansible_os_family == "Debian"
+  tags:
+    - lxc-net
+
+# All installations of LXC on init based systems (upstart primarily) will need to have the
+#  the lxc-net service override in place to ensure its not restarted on system boot
+- name: Drop lxc-net override file for upstart
+  template:
+    src: manual-init.override.j2
+    dest: /etc/init/lxc-net.override
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - pid1_name == "init"
+  tags:
+    - lxc-files
+    - lxc-net
+
+# All Debian based systems use the interfaces.d directory for extra network configs
+#  this check ensures the needed source line is in the base config file
 - name: Ensure networking includes interfaces.d
   lineinfile:
     dest: "/etc/network/interfaces"
     line: "source /etc/network/interfaces.d/*.cfg"
     backup: "yes"
+  when:
+    - ansible_os_family == "Debian"
   tags:
     - lxc-net
     - lxc-interfaces
 
-- name: Drop lxc net bridge
+- name: Drop lxc net bridge - Debian
   template:
     src: "lxc-net-bridge.cfg.j2"
     dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
     owner: "root"
     group: "root"
     mode: "0644"
+  when:
+    - ansible_os_family == "Debian"
+  notify:
+    - Restart bridge
   tags:
     - lxc-files
     - lxc-net
     - lxc-bridge
 
+# Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists
   file:
     state: "file"
@@ -44,5 +96,7 @@
   notify:
     - Bring bridge up
   tags:
-    - lxc-net
     - lxc-bridge
+
+# Ensure lxc networks are running as they're supposed to
+- meta: flush_handlers

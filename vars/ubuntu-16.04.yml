@@ -19,6 +19,7 @@ cache_timeout: 600
 # Container repos
 lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
 lxc_container_template_security_apt_repo: "{{ lxc_container_template_main_apt_repo }}"
+
 lxc_container_template_apt_components:
   - main
   - universe
@@ -46,63 +47,15 @@ lxc_packages:
 lxc_cache_map:
   distro: ubuntu
   arch: amd64
-  release: trusty
+  release: xenial
   cache_packages:
-    - bridge-utils
-    - bsdmainutils
-    - build-essential
-    - cgmanager
-    - cgmanager-utils
-    - cgroup-lite
-    - comerr-dev
-    - curl
-    - debconf-utils
-    - debhelper
-    - dh-apparmor
-    - gettext
-    - gir1.2-glib-2.0
-    - git
-    - groff-base
-    - intltool-debian
-    - iptables
-    - iso-codes
-    - krb5-multidev
-    - libcgmanager-dev
-    - libdbus-1-dev
-    - libdbus-glib-1-2
-    - libdevmapper-event1.02.1
-    - libexpat1-dev
-    - libffi-dev
-    - libpq-dev
-    - libpq5
-    - libpython-dev
-    - libxml2-dev
-    - libxslt1-dev
-    - libxslt1.1
-    - lvm2
     - openssh-server
-    - python-apt
-    - python-apt-common
-    - python-dev
-    - python-pycurl
-    - python-software-properties
-    - python3-apt
-    - python3-dbus
-    - python3-gi
-    - python3-minimal
-    - python3-pycurl
-    - python3-software-properties
-    - software-properties-common
-    - sqlite3
-    - ssh
-    - sshpass
-    - time
   repos:
     "/etc/apt/sources.list": |
-      deb {{ lxc_container_template_main_apt_repo }} trusty {{ lxc_container_template_apt_components | join(' ') }}
-      deb {{ lxc_container_template_main_apt_repo }} trusty-updates {{ lxc_container_template_apt_components | join(' ') }}
-      deb {{ lxc_container_template_main_apt_repo }} trusty-backports {{ lxc_container_template_apt_components | join(' ') }}
-      deb {{ lxc_container_template_security_apt_repo }} trusty-security {{ lxc_container_template_apt_components | join(' ') }}
+      deb {{ lxc_container_template_main_apt_repo }} xenial {{ lxc_container_template_apt_components | join(' ') }}
+      deb {{ lxc_container_template_main_apt_repo }} xenial-updates {{ lxc_container_template_apt_components | join(' ') }}
+      deb {{ lxc_container_template_main_apt_repo }} xenial-backports {{ lxc_container_template_apt_components | join(' ') }}
+      deb {{ lxc_container_template_security_apt_repo }} xenial-security {{ lxc_container_template_apt_components | join(' ') }}
   cache_base_commands: |
     rm /run/resolvconf/resolv.conf
     # This enforces the resolvers from within the image
