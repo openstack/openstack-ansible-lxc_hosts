@@ -65,6 +65,7 @@ lxc_cache_map:
     cp /run/resolvconf/resolv.conf /etc/resolvconf/resolv.conf.d/base
     echo "# NONE" > /etc/resolvconf/resolv.conf.d/tail
     echo "# NONE" > /etc/resolvconf/resolv.conf.d/original
+    rm -rf /var/lib/apt/lists/*
     # This is done because its possible the base repos being installed will use https
     #  and ansible needs access to python2.7 which the system may not have by default
     {{ lxc_cache_install_command }} apt-transport-https python2.7
