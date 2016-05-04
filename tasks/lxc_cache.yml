@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Create container
+- name: Create base container
   lxc_container:
-    name: "cache-{{ lxc_cache_map.distro }}"
+    name: "LXC_NAME"
     template: "download"
     state: stopped
     backing_store: "dir"

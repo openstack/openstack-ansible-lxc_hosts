@@ -16,7 +16,7 @@
 - name: Copy files from deployment host to the container cache
   copy:
     src: "{{ item.src }}"
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs{{ item.dest }}"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item.dest }}"
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
     mode: "{{ item.mode | default('644') }}"
@@ -31,7 +31,7 @@
       #!/usr/bin/env bash
       set -x
       {{ lxc_cache_map.cache_base_commands }}
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-prep-commands.sh"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-prep-commands.sh"
     mode: "0755"
   tags:
     - lxc-cache
@@ -40,7 +40,7 @@
 # This task runs several commands against the cached image to speed up the
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
-  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-prep-commands.sh"
+  command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-prep-commands.sh"
   tags:
     - lxc-cache
     - lxc-cache-update
@@ -48,7 +48,7 @@
 - name: Create repos in the cached container
   copy:
     content: "{{ item.value }}"
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs{{ item.key }}"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item.key }}"
   with_dict: lxc_cache_map.repos
   tags:
     - lxc-cache
@@ -60,14 +60,14 @@
       #!/usr/bin/env bash
       set -x
       {{ lxc_cache_install_command }} {{ lxc_cache_map.cache_packages | join(' ') }}
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-package-prep-commands.sh"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-package-prep-commands.sh"
     mode: "0755"
   tags:
     - lxc-cache
     - lxc-cache-update
 
 - name: Prepare cached image with packages
-  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-package-prep-commands.sh"
+  command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-package-prep-commands.sh"
   tags:
     - lxc-cache
     - lxc-cache-update
@@ -78,21 +78,21 @@
       #!/usr/bin/env bash
       set -x
       {{ lxc_cache_map.cache_post_commands }}
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/usr/local/bin/cache-post-prep-commands.sh"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-post-prep-commands.sh"
     mode: "0755"
   tags:
     - lxc-cache
     - lxc-cache-update
 
 - name: Post-prepare cached image setup commands
-  command: "chroot /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /usr/local/bin/cache-post-prep-commands.sh"
+  command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-post-prep-commands.sh"
   tags:
     - lxc-cache
     - lxc-cache-update
 
 - name: Adjust sshd configuration in container
   lineinfile:
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/etc/ssh/sshd_config"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/etc/ssh/sshd_config"
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
@@ -111,7 +111,7 @@
 
 - name: Deploy ssh public key into the cached image
   lineinfile:
-    dest: "/var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs/root/.ssh/authorized_keys"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/root/.ssh/authorized_keys"
     line: "{{ lxc_container_ssh_key }}"
     create: true
   tags:

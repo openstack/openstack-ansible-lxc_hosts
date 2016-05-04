@@ -45,7 +45,7 @@
 
 - name: Destroy base container
   lxc_container:
-    name: "cache-{{ lxc_cache_map.distro }}"
+    name: "LXC_NAME"
     state: absent
   register: cache_destroy
   retries: 3
