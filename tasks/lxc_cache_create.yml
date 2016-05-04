@@ -30,5 +30,6 @@
     chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/"
   notify: Destroy base container
   tags:
+    - skip_ansible_lint
     - lxc-cache
     - lxc-image-cache-create
