@@ -13,9 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Remove existing cache archive
+  file:
+    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/rootfs.tar.xz"
+    state: "absent"
+  tags:
+    - lxc-cache
+    - lxc-image-cache-create
+
+# This is using a shell command because the ansible archive module does not
+#  provide for the options needed to properly create an LXC image archive.
 - name: Create lxc image
   shell: |
-    rm {{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/rootfs.tar.xz
     tar -Opc -C /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs . | xz -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/"
@@ -23,14 +32,3 @@
   tags:
     - lxc-cache
     - lxc-image-cache-create
-
-# TODO(cloudnull) This should be removed just as soon as the lxc-container create
-#  play supports using the download template instead of the distro specific one.
-- name: Create LEGACY LXC container cache
-  shell: |
-    mkdir -p /var/cache/lxc/{{ lxc_cache_map.release }}
-    cp -R /var/lib/lxc/cache-{{ lxc_cache_map.distro }}/rootfs /var/cache/lxc/{{ lxc_cache_map.release }}/rootfs-amd64
-  notify: Destroy base container
-  tags:
-    - lxc-cache
-    - lxc-legacy-image-cache-create
