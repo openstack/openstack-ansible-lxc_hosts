@@ -16,9 +16,19 @@
 ## APT Cache Options
 cache_timeout: 600
 
+# Repo mappings for each architecture
+lxc_main_apt_repo_mapping:
+  x86_64: "https://mirror.rackspace.com/ubuntu"
+  ppc64le: "http://ports.ubuntu.com/ubuntu-ports/"
+
+lxc_security_apt_repo_mapping:
+  x86_64: "{{ lxc_container_template_main_apt_repo }}"
+  ppc64le: "{{ lxc_container_template_main_apt_repo }}"
+
+
 # Container repos
-lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
-lxc_container_template_security_apt_repo: "{{ lxc_container_template_main_apt_repo }}"
+lxc_container_template_main_apt_repo: "{{ lxc_main_apt_repo_mapping.get( ansible_architecture ) }}"
+lxc_container_template_security_apt_repo: "{{ lxc_security_apt_repo_mapping.get( ansible_architecture ) }}"
 lxc_container_template_apt_components:
   - main
   - universe
@@ -45,7 +55,7 @@ lxc_packages:
 
 lxc_cache_map:
   distro: ubuntu
-  arch: amd64
+  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: trusty
   cache_packages:
     - bridge-utils
