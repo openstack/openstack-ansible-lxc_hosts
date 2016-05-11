@@ -13,14 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Copy files from the LXC host to the container cache
+  local_action:
+    module: copy
+    src: "{{ item }}"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item }}"
+  with_items: "{{ lxc_cache_map.copy_from_host }}"
+  tags:
+    - lxc-cache
+
 - name: Copy files from deployment host to the container cache
   copy:
     src: "{{ item.src }}"
-    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item.dest }}"
+    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item.dest | default(item.src) }}"
     owner: "{{ item.owner | default('root') }}"
     group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('644') }}"
-  with_items: lxc_container_cache_files
+    mode: "{{ item.mode | default('0644') }}"
+  with_items: "{{ lxc_container_cache_files }}"
   tags:
     - lxc-cache
     - lxc-cache-copy-files
@@ -30,7 +39,7 @@
     content: |
       #!/usr/bin/env bash
       set -x
-      {{ lxc_cache_map.cache_base_commands }}
+      {{ lxc_cache_map.cache_prep_commands }}
     dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-prep-commands.sh"
     mode: "0755"
   tags:
@@ -41,51 +50,6 @@
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
   command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-prep-commands.sh"
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Create repos in the cached container
-  copy:
-    content: "{{ item.value }}"
-    dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item.key }}"
-  with_dict: lxc_cache_map.repos
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Copy cached image preparation package script into the target
-  copy:
-    content: |
-      #!/usr/bin/env bash
-      set -x
-      {{ lxc_cache_install_command }} {{ lxc_cache_map.cache_packages | join(' ') }}
-    dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-package-prep-commands.sh"
-    mode: "0755"
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Prepare cached image with packages
-  command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-package-prep-commands.sh"
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Cached image post-preparation package script
-  copy:
-    content: |
-      #!/usr/bin/env bash
-      set -x
-      {{ lxc_cache_map.cache_post_commands }}
-    dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-post-prep-commands.sh"
-    mode: "0755"
-  tags:
-    - lxc-cache
-    - lxc-cache-update
-
-- name: Post-prepare cached image setup commands
-  command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-post-prep-commands.sh"
   tags:
     - lxc-cache
     - lxc-cache-update

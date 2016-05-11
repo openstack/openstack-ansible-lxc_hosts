@@ -42,11 +42,6 @@
       lxc_net_bridge: lxcbr0
       lxc_kernel_options:
         - { key: 'fs.inotify.max_user_instances', value: 1024 }
-      lxc_container_caches:
-        - url: "https://rpc-repo.rackspace.com/container_images/rpc-trusty-container.tgz"
-          name: "trusty.tgz"
-          sha256sum: "56c6a6e132ea7d10be2f3e8104f47136ccf408b30e362133f0dc4a0a9adb4d0c"
-          chroot_path: trusty/rootfs-amd64
       lxc_container_cache_files:
         - src: files/container-file-copy-test.txt
           dest: /tmp/file-copied-from-deployment-host.txt

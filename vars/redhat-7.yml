@@ -41,24 +41,28 @@ lxc_cache_map:
   distro: centos
   arch: amd64
   release: 7
-  cache_packages:
-    - openssh-server
-    - sudo
-  repos: {}
-  cache_base_commands: |
+  copy_from_host:
+    - /etc/yum.repos.d/
+    - /etc/pki/rpm-gpg/
+  cache_prep_commands: |
     rm /etc/resolv.conf
     {% for resolver in lxc_cache_resolvers %}
     echo "{{ resolver }}" | tee -a /etc/resolv.conf
     {% endfor %}
-    {{ lxc_cache_install_command }} wget python2
+    {{ lxc_cache_install_command }} {{ lxc_cache_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
     /usr/bin/wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
     /usr/bin/rpm -ivh /tmp/epel-release-latest-7.noarch.rpm || true
-  cache_post_commands: |
     yum clean all
 
 lxc_cache_install_command: "yum install -y"
+
+lxc_cache_packages:
+  - openssh-server
+  - python2
+  - sudo
+  - wget
 
 pip_install_options: >
   --global-option=build_ext
