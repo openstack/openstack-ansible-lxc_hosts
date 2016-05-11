@@ -13,17 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Check for the presence of a public key file on the host
-  stat:
+- name: Check for the presence of a public key file on the deployment host
+  local_action:
+    module: stat
     path: /root/.ssh/id_rsa.pub
   register: _ssh_key
   when: lxc_container_ssh_key is undefined
   tags:
     - always
 
-- name: Fail if a ssh public key is not set in a var and not present on the host
+- name: Fail if a ssh public key is not set in a var and is not present on the deployment host
   fail:
-    msg: "Please set the lxc_container_ssh_key variable or ensure that the host has the file /root/.ssh/id_rsa.pub present."
+    msg: "Please set the lxc_container_ssh_key variable or ensure that the deployment host has the file /root/.ssh/id_rsa.pub present."
   when:
     - lxc_container_ssh_key is undefined
     - not _ssh_key.stat.exists
