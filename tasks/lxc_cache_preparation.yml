@@ -13,6 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Generate apt keys from LXC host for the container cache
+  shell: apt-key exportall > /root/repo.keys
+  changed_when: False
+  when:
+    - ansible_pkg_mgr == 'apt'
+  tags:
+    - lxc-cache
+    - lxc-cache-apt-keys
+
 # TODO(evrardjp): replace this with a copy with remote_src: True
 # when ansible2.0 will be supported
 - name: Rsyncing files from the LXC host to the container cache
@@ -81,3 +90,14 @@
   tags:
     - lxc-cache
     - lxc-cache-update
+
+- name: Remove generated apt keys from LXC host
+  file:
+    path: /root/repo.keys
+    state: absent
+  when:
+    - ansible_pkg_mgr == 'apt'
+  changed_when: False
+  tags:
+    - lxc-cache
+    - lxc-cache-apt-keys
