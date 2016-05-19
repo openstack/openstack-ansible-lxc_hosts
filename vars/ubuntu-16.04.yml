@@ -70,6 +70,7 @@ lxc_cache_install_command: "export DEBIAN_FRONTEND=noninteractive && apt-get upd
 
 lxc_cache_packages:
   - apt-transport-https
+  - ca-certificates
   - openssh-server
   - python2.7
 

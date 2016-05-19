@@ -59,6 +59,7 @@ lxc_cache_map:
 lxc_cache_install_command: "yum install -y"
 
 lxc_cache_packages:
+  - ca-certificates
   - openssh-server
   - python2
   - sudo

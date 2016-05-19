@@ -70,6 +70,7 @@ lxc_cache_packages:
   - bridge-utils
   - bsdmainutils
   - build-essential
+  - ca-certificates
   - cgmanager
   - cgmanager-utils
   - cgroup-lite
