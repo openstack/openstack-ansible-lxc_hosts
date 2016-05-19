@@ -13,12 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO(evrardjp): replace the delegate_to with remote_src: True
+# with ansible2.0
 - name: Copy files from the LXC host to the container cache
-  local_action:
-    module: copy
+  copy:
     src: "{{ item }}"
     dest: "/var/lib/lxc/LXC_NAME/rootfs{{ item }}"
   with_items: "{{ lxc_cache_map.copy_from_host }}"
+  delegate_to: "{{ inventory_hostname }}"
   tags:
     - lxc-cache
 
