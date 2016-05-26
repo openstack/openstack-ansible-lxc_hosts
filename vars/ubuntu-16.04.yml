@@ -61,7 +61,7 @@ lxc_cache_map:
     apt-key add /root/repo.keys
     rm /root/repo.keys
     {{ lxc_cache_install_command }} {{ lxc_cache_packages | join(' ') }}
-    apt-get -y upgrade
+    apt-get upgrade -y {{ lxc_cache_install_debconf }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
     mkdir -p /root/.ssh
@@ -69,7 +69,11 @@ lxc_cache_map:
     userdel --force --remove ubuntu || true
     apt-get clean
 
-lxc_cache_install_command: "export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y"
+lxc_cache_install_command: "export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y {{ lxc_cache_install_debconf }}"
+
+# This forces any modified configurations to remain, and any unmodified configs to be replaced
+# ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
+lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes'
 
 lxc_cache_packages:
   - apt-transport-https
