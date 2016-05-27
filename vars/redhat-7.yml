@@ -44,11 +44,8 @@ lxc_cache_map:
   copy_from_host:
     - /etc/yum.repos.d/
     - /etc/pki/rpm-gpg/
+    - /etc/resolv.conf
   cache_prep_commands: |
-    rm /etc/resolv.conf
-    {% for resolver in lxc_cache_resolvers %}
-    echo "{{ resolver }}" | tee -a /etc/resolv.conf
-    {% endfor %}
     {{ lxc_cache_install_command }} {{ lxc_cache_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python

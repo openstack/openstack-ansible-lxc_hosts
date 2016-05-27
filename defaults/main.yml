@@ -52,10 +52,6 @@ lxc_kernel_options:
 lxc_pip_packages:
   - lxc-python2
 
-lxc_cache_resolvers:
-  - 'nameserver 8.8.8.8'
-  - 'nameserver 8.8.4.4'
-
 lxc_cache_sshd_configuration:
     - { regexp: "^PermitRootLogin",         line: "PermitRootLogin yes" }
     - { regexp: "^TCPKeepAlive",            line: "TCPKeepAlive yes" }

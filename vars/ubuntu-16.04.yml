@@ -47,16 +47,10 @@ lxc_cache_map:
     - /etc/apt/sources.list
     - /etc/apt/sources.list.d/
     - /etc/apt/apt.conf.d/
+    - /etc/resolvconf/
+    - /etc/resolv.conf
     - /root/repo.keys
   cache_prep_commands: |
-    rm /run/resolvconf/resolv.conf
-    # This enforces the resolvers from within the image
-    {% for resolver in lxc_cache_resolvers %}
-    echo "{{ resolver }}" | tee -a /run/resolvconf/resolv.conf
-    {% endfor %}
-    cp /run/resolvconf/resolv.conf /etc/resolvconf/resolv.conf.d/base
-    echo "# NONE" > /etc/resolvconf/resolv.conf.d/tail
-    echo "# NONE" > /etc/resolvconf/resolv.conf.d/original
     rm -rf /var/lib/apt/lists/*
     apt-key add /root/repo.keys
     rm /root/repo.keys
