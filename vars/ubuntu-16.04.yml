@@ -47,6 +47,7 @@ lxc_cache_map:
     - /etc/apt/sources.list
     - /etc/apt/sources.list.d/
     - /etc/apt/apt.conf.d/
+    - /run/resolvconf/
     - /etc/resolvconf/
     - /etc/resolv.conf
     - /root/repo.keys

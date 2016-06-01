@@ -25,7 +25,12 @@
 # TODO(evrardjp): replace this with a copy with remote_src: True
 # when ansible2.0 will be supported
 - name: Rsyncing files from the LXC host to the container cache
-  command: "rsync -a {{ item }} /var/lib/lxc/LXC_NAME/rootfs{{ item }}"
+  shell: |
+    if [[ -e "{{ item }}" ]]; then
+      rsync -av "{{ item }}" "/var/lib/lxc/LXC_NAME/rootfs{{ item }}"
+    fi
+  args:
+    executable: "/bin/bash"
   with_items: "{{ lxc_cache_map.copy_from_host }}"
   tags:
     - lxc-cache
