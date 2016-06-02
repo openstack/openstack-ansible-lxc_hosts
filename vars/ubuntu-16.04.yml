@@ -26,6 +26,7 @@ lxc_packages:
   - debootstrap
   - dnsmasq
   - git
+  - iptables
   - irqbalance
   - language-pack-en
   - liblxc1
@@ -73,6 +74,7 @@ lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Option
 lxc_cache_packages:
   - apt-transport-https
   - ca-certificates
+  - iptables
   - openssh-server
   - python2.7
 
