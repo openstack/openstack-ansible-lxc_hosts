@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lxc_download_url: "https://linuxcontainers.org/downloads/lxc/lxc-1.0.8.tar.gz"
+lxc_download_url: "https://linuxcontainers.org/downloads/lxc/lxc-2.0.1.tar.gz"
 
 # Required rpm packages.
 lxc_packages:
@@ -25,6 +25,7 @@ lxc_packages:
   - docbook2X
   - dnsmasq
   - git
+  - graphviz
   - libseccomp
   - libseccomp-devel
   - libcap-devel
