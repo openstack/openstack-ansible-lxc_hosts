@@ -1,9 +1,22 @@
-OpenStack LXC host setup
-########################
-:tags: openstack, lxc, host, cloud, ansible
-:category: \*nix
+OpenStack-Ansible LXC hosts
+###########################
 
-Role for deployment and setup of an LXC host.
+Ansible role that configures a host for running LXC containers.
+
+Default Variables
+=================
+
+.. literalinclude:: ../../defaults/main.yml
+   :language: yaml
+   :start-after: under the License.
+
+Required Variables
+==================
+
+None
+
+Example Playbook
+================
 
 .. code-block:: yaml
 
@@ -11,4 +24,4 @@ Role for deployment and setup of an LXC host.
       hosts: "hosts"
       user: root
       roles:
-        - { role: "lxc_hosts", tags: [ "lxc-host", "host-setup" ] }
+        - { role: "lxc_hosts" }
