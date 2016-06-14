@@ -21,18 +21,16 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: lxc_packages
+  with_items: "{{ lxc_packages }}"
   tags:
     - lxc-packages
 
 - name: Create base directories
   file:
-    path: "{{ item }}"
+    path: "/opt/lxc_embedded"
     state: "directory"
     owner: "root"
     group: "root"
-  with_items:
-    - /opt/lxc_embedded
   tags:
     - lxc-directories
 
@@ -118,12 +116,10 @@
 
 - name: Remove sub system lock if found
   file:
-    path: "{{ item }}"
+    path: "/var/lock/subsys/lxc"
     state: "absent"
     owner: "root"
     group: "root"
-  with_items:
-    - /var/lock/subsys/lxc
   tags:
     - lxc-directories
 

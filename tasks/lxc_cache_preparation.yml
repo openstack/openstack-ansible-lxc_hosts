@@ -74,7 +74,7 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
-  with_items: lxc_cache_sshd_configuration
+  with_items: "{{ lxc_cache_sshd_configuration }}"
   tags:
     - lxc-cache
     - lxc-cache-update

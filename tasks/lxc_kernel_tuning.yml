@@ -21,4 +21,4 @@
     state: "{{ item.state|default('present') }}"
     reload: "{{ item.reload|default('yes') }}"
   ignore_errors: true
-  with_items: lxc_kernel_options
+  with_items: "{{ lxc_kernel_options }}"
