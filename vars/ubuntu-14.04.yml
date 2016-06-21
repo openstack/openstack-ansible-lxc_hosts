@@ -42,17 +42,17 @@ lxc_cache_map:
   release: trusty
   copy_from_host:
     - /etc/apt/sources.list
-    - /etc/apt/sources.list.d/
     - /etc/apt/apt.conf.d/
     - /run/resolvconf/
     - /etc/resolvconf/
     - /etc/resolv.conf
     - /root/repo.keys
   cache_prep_commands: |
-    rm -rf /var/lib/apt/lists/*
     apt-key add /root/repo.keys
     rm /root/repo.keys
-    {{ lxc_cache_install_command }} {{ lxc_cache_packages | join(' ') }}
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
@@ -60,8 +60,6 @@ lxc_cache_map:
     chmod 700 /root/.ssh
     userdel --force --remove ubuntu || true
     apt-get clean
-
-lxc_cache_install_command: "export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y {{ lxc_cache_install_debconf }}"
 
 # This forces any modified configurations to remain, and any unmodified configs to be replaced
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install

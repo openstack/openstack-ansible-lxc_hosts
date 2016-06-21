@@ -52,7 +52,7 @@
   copy:
     content: |
       #!/usr/bin/env bash
-      set -x
+      set -e -x
       {{ lxc_cache_map.cache_prep_commands }}
     dest: "/var/lib/lxc/LXC_NAME/rootfs/usr/local/bin/cache-prep-commands.sh"
     mode: "0755"
