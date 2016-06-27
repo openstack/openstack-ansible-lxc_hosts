@@ -22,6 +22,11 @@ lxc_architecture_mapping:
 lxc_container_directory: "/var/lib/lxc"
 lxc_container_cache_path: "/var/cache/lxc/download"
 
+# The container backing store can be set to 'overlayfs' to use overlayfs
+# This should only be done for production use with a linux kernel > 3.14
+# which is when overlayfs was merged into the mainline kernel
+# lxc_container_backing_store: overlayfs
+
 # lxc container net network
 lxc_net_bridge: lxcbr0
 lxc_net_bridge_port: none
