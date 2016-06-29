@@ -122,3 +122,5 @@ lxc_cache_packages:
 lxc_cached_network_interfaces:
   - src: "lxc-net-bridge.cfg.j2"
     dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
+
+lxc_default_release: "trusty-backports"

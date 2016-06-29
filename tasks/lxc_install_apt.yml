@@ -33,7 +33,8 @@
 - name: Install apt packages
   apt:
     pkg: "{{ item }}"
-    state: present
+    state: latest
+    default_release: "{{ lxc_default_release | default(omit) }}"
   register: install_packages
   until: install_packages|success
   retries: 5
