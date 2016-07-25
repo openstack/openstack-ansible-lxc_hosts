@@ -25,3 +25,4 @@ Example Playbook
       user: root
       roles:
         - { role: "lxc_hosts" }
+
