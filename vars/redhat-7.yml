@@ -53,6 +53,7 @@ lxc_cache_map:
     /usr/bin/wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
     /usr/bin/rpm -ivh /tmp/epel-release-latest-7.noarch.rpm || true
     yum clean all
+    mkdir -p /var/backup
 
 lxc_cache_packages:
   - ca-certificates

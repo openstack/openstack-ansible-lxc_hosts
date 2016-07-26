@@ -64,6 +64,7 @@ lxc_cache_map:
     chmod 700 /root/.ssh
     userdel --force --remove ubuntu || true
     apt-get clean
+    mkdir -p /var/backup
 
 # This forces any modified configurations to remain, and any unmodified configs to be replaced
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
