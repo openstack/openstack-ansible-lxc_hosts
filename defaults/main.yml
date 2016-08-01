@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Set the package install state for distribution packages
+# Options are 'present' and 'latest'
+lxc_hosts_package_state: "latest"
+
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:
   x86_64: amd64
