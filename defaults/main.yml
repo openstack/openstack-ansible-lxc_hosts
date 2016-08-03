@@ -78,7 +78,12 @@ lxc_image_compression_ratio: 0
 #       dest: "/etc/issue"
 lxc_container_cache_files: []
 
+# The DNS name of the LXD server to source the base container cache from
 lxc_image_cache_server: images.linuxcontainers.org
+
+# The keyservers to use when validating GPG keys for the downloaded cache
+lxc_image_cache_primary_keyserver: hkp://p80.pool.sks-keyservers.net:80
+lxc_image_cache_secondary_keyserver: hkp://keyserver.ubuntu.com:80
 
 ## Default download template options
 ##  This can be customized to use a local build server and options.

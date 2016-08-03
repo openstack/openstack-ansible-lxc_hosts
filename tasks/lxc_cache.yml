@@ -19,11 +19,28 @@
     template: "download"
     state: stopped
     backing_store: "dir"
-    template_options: "{{ lxc_cache_download_template_options }}"
-  register: cache_download
+    template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_primary_keyserver }}"
+  register: cache_download_primary
   retries: 3
   delay: 10
-  until: cache_download|success
+  until: cache_download_primary | success
+  ignore_errors: yes
+  tags:
+    - lxc-cache
+    - lxc-cache-download
+
+- name: Create base container
+  lxc_container:
+    name: "LXC_NAME"
+    template: "download"
+    state: stopped
+    backing_store: "dir"
+    template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_secondary_keyserver }}"
+  when: cache_download_primary | failed
+  register: cache_download_secondary
+  retries: 3
+  delay: 10
+  until: cache_download_secondary | success
   tags:
     - lxc-cache
     - lxc-cache-download
