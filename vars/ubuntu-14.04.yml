@@ -17,8 +17,6 @@
 cache_timeout: 600
 
 # Container repos
-lxc_container_template_main_apt_repo: "https://mirror.rackspace.com/ubuntu"
-lxc_container_template_security_apt_repo: "https://mirror.rackspace.com/ubuntu"
 lxc_container_template_apt_components:
   - main
   - universe

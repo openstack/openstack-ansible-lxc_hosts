@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Default container apt sources
+lxc_container_template_main_apt_repo: "http://archive.ubuntu.com/ubuntu/"
+lxc_container_template_security_apt_repo: "http://security.ubuntu.com/ubuntu"
+
 # lxc container rootfs directory and cache path
 lxc_container_directory: "/var/lib/lxc"
 lxc_container_cache_path: "/var/cache/lxc"
