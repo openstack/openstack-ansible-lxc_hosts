@@ -65,6 +65,16 @@ lxc_cache_map:
     userdel --force --remove ubuntu || true
     apt-get clean
     mkdir -p /var/backup
+    if [ -f  "/usr/lib/systemd/system/poweroff.target" ];then
+      ln -sf /usr/lib/systemd/system/poweroff.target /etc/systemd/system/sigpwr.target || true
+    fi
+    ln -s /dev/null /etc/systemd/system/systemd-udevd.service || true
+    ln -s /dev/null /etc/systemd/system/systemd-udevd-control.socket || true
+    ln -s /dev/null /etc/systemd/system/systemd-udevd-kernel.socket || true
+    ln -s /dev/null /etc/systemd/system/proc-sys-fs-binfmt_misc.automount || true
+    echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/network/interfaces
+    mkdir -p /etc/network/interfaces.d
+    chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
 
 # This forces any modified configurations to remain, and any unmodified configs to be replaced
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
@@ -80,3 +90,13 @@ lxc_cache_packages:
 lxc_cached_network_interfaces:
   - src: "lxc-net-bridge.cfg.j2"
     dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
+
+lxc_container_default_interfaces: |
+  # The loopback network interface
+  auto lo
+  iface lo inet loopback
+  # LXC interface, this is ALWAYS assumed to be DHCP.
+  auto eth0
+  iface eth0 inet dhcp
+  # Load any additional configs
+  source /etc/network/interfaces.d/*.cfg
