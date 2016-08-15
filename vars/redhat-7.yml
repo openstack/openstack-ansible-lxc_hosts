@@ -46,6 +46,7 @@ lxc_cache_map:
     - /etc/yum.repos.d/
     - /etc/pki/rpm-gpg/
     - /etc/resolv.conf
+    - /etc/systemd/resolved.conf
   cache_prep_commands: |
     yum install -y {{ lxc_cache_packages | join(' ') }}
     rm -f /usr/bin/python
