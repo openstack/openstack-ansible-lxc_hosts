@@ -50,6 +50,7 @@ lxc_cache_map:
     - /run/resolvconf/
     - /etc/resolvconf/
     - /etc/resolv.conf
+    - /etc/systemd/resolved.conf
     - /root/repo.keys
   cache_prep_commands: |
     apt-key add /root/repo.keys
