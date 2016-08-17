@@ -41,7 +41,7 @@
   tags:
     - lxc-net
 
-# All installations of LXC on init based systems (upstart primarily) will need to have the
+# All installations of LXC will need to have the
 #  the lxc-net service override in place to ensure its not restarted on system boot
 - name: Drop lxc-net override file for upstart
   template:
@@ -52,6 +52,17 @@
     mode: 0644
   when:
     - pid1_name == "init"
+  tags:
+    - lxc-files
+    - lxc-net
+
+- name: Mask lxc-net systemd service
+  file:
+    src: /dev/null
+    path: /etc/systemd/system/lxc-net.service
+    state: link
+  when:
+    - pid1_name == "systemd"
   tags:
     - lxc-files
     - lxc-net
