@@ -31,6 +31,15 @@ lxc_container_cache_path: "/var/cache/lxc/download"
 # which is when overlayfs was merged into the mainline kernel
 # lxc_container_backing_store: overlayfs
 
+# The container backing method can be set to 'copy-on-write' to use LVM
+# snapshot-backed containers when the container backing store is set to
+# 'lvm'.
+# lxc_container_backing_method: copy-on-write
+
+# When using a base container to snapshot from for the overlayfs or LVM
+# copy-on-write backing stored, the base container can be set.
+lxc_container_base_name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}-{{ lxc_cache_map.arch }}"
+
 # lxc container net network
 lxc_net_bridge: lxcbr0
 lxc_net_bridge_port: none

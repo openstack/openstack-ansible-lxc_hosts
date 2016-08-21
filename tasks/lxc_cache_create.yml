@@ -36,7 +36,7 @@
 
 - name: Create base container to use for overlayfs containers
   lxc_container:
-    name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}-{{ lxc_cache_map.arch }}"
+    name: "{{ lxc_container_base_name }}"
     template: "download"
     state: stopped
     backing_store: "dir"
@@ -48,3 +48,19 @@
   when:
     - lxc_container_backing_store is defined
     - lxc_container_backing_store == 'overlayfs'
+
+- name: Create base container to use for LVM-backed copy-on-write containers
+  lxc_container:
+    name: "{{ lxc_container_base_name }}"
+    template: "download"
+    state: stopped
+    backing_store: "lvm"
+    template_options: "{{ lxc_cache_download_template_options }}"
+  register: cache_download
+  retries: 3
+  delay: 10
+  until: cache_download|success
+  when:
+    - lxc_container_backing_store is defined
+    - lxc_container_backing_store == 'lvm'
+    - lxc_container_backing_method == 'copy-on-write'
