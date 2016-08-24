@@ -59,6 +59,14 @@ lxc_cache_map:
     apt-get update
     apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
+    #### WORKAROUND REMOVE LATER ####
+    # PURGE packages that need to be potentially downgraded
+    #  * The "libssl1.0.0" package is using a version that is not found on the mirror which is blocking
+    #    the installation of libssl-dev due to a dep conflict. To correct this issue the ahead package
+    #    is removed and then reinstalled to force a downgrade.
+    dpkg --force-all -P libssl1.0.0
+    apt-get install -y {{ lxc_cache_install_debconf }} --reinstall libssl1.0.0
+    #### WORKAROUND REMOVE LATER ####
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
     mkdir -p /root/.ssh
