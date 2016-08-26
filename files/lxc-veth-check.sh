@@ -19,7 +19,7 @@ for container in $(lxc-ls); do
     # If the link information is a veth and does not have a "master" continue
     if ! ip -o -d link show "${net_info}" | grep veth | grep -q master; then
         # Search for the interface file that contains the veth
-        lxc_interface_file=$(grep -l "${net_info}" /var/lib/lxc/${container}/{config,*.ini} | head -n 1)
+        lxc_interface_file=$(grep -l "\b${net_info}\b" /var/lib/lxc/${container}/{config,*.ini} | head -n 1)
         # If an interface file is found continue
         if [ ! -z "${lxc_interface_file}" ];then
             # Get the first network link line from the lxc configuration file
