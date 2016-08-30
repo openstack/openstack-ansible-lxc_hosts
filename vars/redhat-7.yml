@@ -16,7 +16,7 @@
 lxc_download_url: "https://linuxcontainers.org/downloads/lxc/lxc-2.0.4.tar.gz"
 
 # Required rpm packages.
-lxc_packages:
+lxc_hosts_distro_packages:
   - '@Development Tools'
   - automake
   - autoconf
@@ -50,7 +50,7 @@ lxc_cache_map:
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
     echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
-    yum install -y {{ lxc_cache_packages | join(' ') }}
+    yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
     /usr/bin/wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
@@ -72,7 +72,7 @@ lxc_cache_map:
       rm -f /etc/resolv.conf
     fi
 
-lxc_cache_packages:
+lxc_cache_distro_packages:
   - ca-certificates
   - openssh-server
   - python2

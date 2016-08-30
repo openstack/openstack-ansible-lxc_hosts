@@ -17,7 +17,7 @@
 cache_timeout: 600
 
 # Required apt packages.
-lxc_packages:
+lxc_hosts_distro_packages:
   - apparmor
   - apparmor-utils
   - bridge-utils
@@ -53,7 +53,7 @@ lxc_cache_map:
     rm /root/repo.keys
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_packages | join(' ') }}
+    apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_distro_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
@@ -82,7 +82,7 @@ lxc_cache_map:
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
 lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes'
 
-lxc_cache_packages:
+lxc_cache_distro_packages:
   - apt-transport-https
   - bridge-utils
   - bsdmainutils
