@@ -129,8 +129,8 @@ function pre_up {
     fi
 
     # Source the lxc defaults
-    if [[ -f "/etc/default/lxc" ]]; then
-      source "/etc/default/lxc"
+    if [[ -f "{{ system_config_dir}}/lxc" ]]; then
+      source "{{ system_config_dir}}/lxc"
     fi
 
     # Set the lock type where applicable

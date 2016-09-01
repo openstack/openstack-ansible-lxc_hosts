@@ -36,6 +36,7 @@ lxc_hosts_distro_packages:
   - python3-lxc
   - pxz
 
+system_config_dir: "/etc/default"
 lxc_cache_map:
   distro: ubuntu
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"

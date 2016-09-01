@@ -46,7 +46,7 @@
 - name: Drop irqbalance config
   template:
     src: "irqbalance.j2"
-    dest: "/etc/default/irqbalance"
+    dest: "{{ system_config_dir }}/irqbalance"
     owner: "root"
     group: "root"
     mode: "0644"
