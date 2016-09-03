@@ -39,6 +39,8 @@ lxc_hosts_distro_packages:
   - redhat-lsb
   - xz
 
+lxc_xz_bin: xz
+
 lxc_cache_map:
   distro: centos
   arch: amd64

@@ -25,7 +25,7 @@
 #  provide for the options needed to properly create an LXC image archive.
 - name: Create lxc image
   shell: |
-    tar -Opc -C /var/lib/lxc/LXC_NAME/rootfs . | xz -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
+    tar -Opc -C /var/lib/lxc/LXC_NAME/rootfs . | {{ lxc_xz_bin }} -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/"
   notify: Destroy base container
