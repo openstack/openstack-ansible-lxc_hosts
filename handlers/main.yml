@@ -13,13 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Load lxc-openstack apparmor profile
-  command: apparmor_parser -Kr /etc/apparmor.d/lxc-openstack
-
-- name: Restart apparmor
+- name: Reload apparmor
   service:
     name: "apparmor"
-    state: "restarted"
+    state: "reloaded"
 
 - name: Init reload
   command: "initctl reload-configuration"

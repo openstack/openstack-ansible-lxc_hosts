@@ -64,8 +64,10 @@
     group: "root"
     mode: "0644"
   notify:
-    - Load lxc-openstack apparmor profile
-    - Restart apparmor
+    - Reload apparmor
   tags:
     - lxc-files
     - lxc-apparmor
+
+- name: Flush handler to reload apparmor profiles
+  meta: flush_handlers
