@@ -81,6 +81,7 @@ lxc_cache_distro_packages:
   - python2
   - sudo
   - wget
+  - tar
 
 pip_install_options: >
   --global-option=build_ext
