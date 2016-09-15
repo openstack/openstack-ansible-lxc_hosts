@@ -106,3 +106,13 @@
   tags:
     - lxc-cache
     - lxc-cache-apt-keys
+
+- name: Remove requiretty for sudo on centoos
+  template:
+    dest: "/var/lib/lxc/LXC_NAME/rootfs/etc/sudoers.d/openstack-ansible"
+    owner: root
+    group: root
+    mode: "0440"
+    src: sudoers.j2
+  when:
+    - ansible_pkg_mgr == 'yum'
