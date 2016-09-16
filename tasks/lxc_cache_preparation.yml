@@ -107,7 +107,7 @@
     - lxc-cache
     - lxc-cache-apt-keys
 
-- name: Remove requiretty for sudo on centoos
+- name: Remove requiretty for sudo on centos
   template:
     dest: "/var/lib/lxc/LXC_NAME/rootfs/etc/sudoers.d/openstack-ansible"
     owner: root
