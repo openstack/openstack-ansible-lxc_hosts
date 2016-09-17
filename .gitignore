@@ -29,6 +29,7 @@ doc/build/
 *.log
 *.sql
 *.sqlite
+logs/*
 
 # OS generated files #
 ######################
@@ -58,3 +59,13 @@ ChangeLog
 
 # Files created by releasenotes build
 releasenotes/build
+
+# Test temp files
+tests/plugins
+tests/playbooks
+tests/test.retry
+
+# Vagrant artifacts
+.vagrant
+
+
