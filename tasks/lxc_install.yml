@@ -14,12 +14,14 @@
 # limitations under the License.
 
 - include: lxc_install_apt.yml
+  static: no
   when:
     - ansible_pkg_mgr == 'apt'
   tags:
     - install-apt
 
 - include: lxc_install_yum.yml
+  static: no
   when:
     - ansible_pkg_mgr == 'yum'
   tags:
