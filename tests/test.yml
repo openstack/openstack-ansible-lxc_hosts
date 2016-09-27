@@ -37,7 +37,7 @@
     - set_fact:
         lxc_container_ssh_key: key_get.stdout
   roles:
-    - role: "{{ rolename | basename }}"
+    - role: "lxc_hosts"
       lxc_net_address: 10.100.100.1
       lxc_net_bridge: lxcbr0
       lxc_kernel_options:
