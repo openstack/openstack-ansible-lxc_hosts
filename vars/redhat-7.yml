@@ -83,7 +83,7 @@ lxc_cache_distro_packages:
   - wget
   - tar
 
-pip_install_options: >
+lxc_hosts_pip_install_options: >
   --global-option=build_ext
   --global-option="-L/opt/lxc_embedded/x86_64-linux-gnu/"
   --global-option="-I/opt/lxc_embedded/include/"
