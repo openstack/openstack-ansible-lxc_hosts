@@ -48,6 +48,7 @@ lxc_cache_map:
   copy_from_host:
     - /etc/yum.repos.d/
     - /etc/pki/rpm-gpg/
+    - /etc/localtime
   cache_prep_commands: |
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
