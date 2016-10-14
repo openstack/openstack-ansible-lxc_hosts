@@ -24,7 +24,7 @@
   retries: 3
   delay: 10
   until: cache_download_primary | success
-  ignore_errors: yes
+  failed_when: false
   tags:
     - lxc-cache
     - lxc-cache-download

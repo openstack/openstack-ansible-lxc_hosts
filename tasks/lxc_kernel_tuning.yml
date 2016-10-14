@@ -20,5 +20,5 @@
     sysctl_set: "{{ item.set|default('yes') }}"
     state: "{{ item.state|default('present') }}"
     reload: "{{ item.reload|default('yes') }}"
-  ignore_errors: true
+  failed_when: false
   with_items: "{{ lxc_kernel_options }}"
