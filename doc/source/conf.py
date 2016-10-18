@@ -22,7 +22,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import openstackdocstheme
 import pbr.version
+import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -39,7 +41,8 @@ import pbr.version
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'oslosphinx'
+    'oslosphinx',
+    'sphinxmark'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -129,7 +132,7 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'alabaster'
+html_theme = 'openstackdocs'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -137,7 +140,7 @@ todo_include_todos = False
 # html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = []
+html_theme_path = [openstackdocstheme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -303,3 +306,17 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 # texinfo_no_detailmenu = False
+
+
+watermark = os.popen("git branch --contains $(git rev-parse HEAD)\
+| awk -F/ '/stable/ {print $2}'").read().strip(' \n\t').capitalize()
+if watermark == "":
+    watermark = "Pre-release"
+
+# -- Options for sphinxmark -----------------------------------------------
+sphinxmark_enable = True
+sphinxmark_div = 'docs-body'
+sphinxmark_image = 'text'
+sphinxmark_text = watermark
+sphinxmark_text_color = (128, 128, 128)
+sphinxmark_text_size = 70
