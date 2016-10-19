@@ -31,7 +31,10 @@
   pip:
     name: "{{ lxc_pip_packages | join(' ') }}"
     state: latest
-    extra_args: "{{ pip_install_options|default('') }} {{ lxc_hosts_pip_install_options|default('') }}"
+    extra_args: >-
+      {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
+      {{ pip_install_options | default('') }}
+      {{ lxc_hosts_pip_install_options | default('') }}
   register: install_packages
   until: install_packages|success
   retries: 5
