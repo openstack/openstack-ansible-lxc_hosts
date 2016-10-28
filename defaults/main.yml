@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Timeout (in seconds) for the LXC cache to control how often the rootfs
+# cache will be updated. By default this timeout is set to 1 day.
+lxc_cache_timeout: 86400
+
 # Set the package install state for distribution packages
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
