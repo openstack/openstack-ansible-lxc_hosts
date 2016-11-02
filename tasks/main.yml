@@ -44,6 +44,7 @@
 
 - name: Check init system
   command: cat /proc/1/comm
+  changed_when: false
   register: _pid1_name
   tags:
     - always

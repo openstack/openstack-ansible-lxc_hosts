@@ -64,6 +64,7 @@
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
   command: "chroot /var/lib/lxc/LXC_NAME/rootfs /usr/local/bin/cache-prep-commands.sh"
+  changed_when: false
   tags:
     - lxc-cache
     - lxc-cache-update

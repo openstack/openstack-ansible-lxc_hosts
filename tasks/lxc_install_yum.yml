@@ -52,6 +52,8 @@
   tags:
     - lxc-source
     - lxc-source-unarchive
+    # don't trigger ANSIBLE0016
+    - skip_ansible_lint
 
 - name: Create new linked lib location
   copy:
@@ -71,13 +73,14 @@
     - lxc-source
 
 - name: Build and install LXC
-  shell: '{{ item }}'
+  command: '{{ item }}'
   args:
     creates: /opt/lxc_embedded/bin/lxc-ls
     chdir: "/opt/lxc_embedded/{{ lxc_download_url | basename | replace('.tar.gz', '') }}"
   environment:
     PYTHONDEV_CFLAGS: "-I/usr/include/python3.4m"
     PYTHONDEV_LIBS: "-lpython3.4m"
+  changed_when: false
   with_items:
     - ./autogen.sh
     - ./configure --prefix=/opt/lxc_embedded
@@ -185,11 +188,13 @@
     find /opt/lxc_embedded/lib64/python3.4/site-packages/* -maxdepth 0 | xargs -n1 ln -sf
   args:
     chdir: /usr/lib64/python3.4
+  changed_when: false
   tags:
     - lxc-links
 
 - name: Run ldconfig to make sure all libs are linked
   command: ldconfig -v
+  changed_when: false
   tags:
     - lxc-links
 

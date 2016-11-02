@@ -17,9 +17,10 @@
 # cache will be updated. By default this timeout is set to 1 day.
 lxc_cache_timeout: 86400
 
-# Set the package install state for distribution packages
+# Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
+lxc_hosts_pip_package_state: "latest"
 
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:
