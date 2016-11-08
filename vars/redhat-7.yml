@@ -53,6 +53,13 @@ lxc_cache_map:
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
+    # TODO(mgariepy)
+    # Remove this once https://github.com/lxc/lxc/pull/1286 has merged.
+    if [ -d /var/run/ ]; then
+      mv /var/run/* /run/
+      rmdir /var/run
+      ln -sf ../run /var/run
+    fi
     echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
