@@ -29,7 +29,7 @@
 
 - name: Install pip packages
   pip:
-    name: "{{ lxc_pip_packages | join(' ') }}"
+    name: "{{ lxc_pip_packages }}"
     state: "{{ lxc_hosts_pip_package_state }}"
     extra_args: >-
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
