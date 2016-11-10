@@ -51,7 +51,7 @@
     group: root
     mode: 0644
   when:
-    - pid1_name == "init"
+    - ansible_service_mgr == 'upstart'
   tags:
     - lxc-files
     - lxc-net
@@ -62,7 +62,7 @@
     path: /etc/systemd/system/lxc-net.service
     state: link
   when:
-    - pid1_name == "systemd"
+    - ansible_service_mgr == 'systemd'
   tags:
     - lxc-files
     - lxc-net
