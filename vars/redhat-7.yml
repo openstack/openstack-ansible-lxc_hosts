@@ -61,13 +61,6 @@ lxc_cache_map:
     /usr/bin/rpm -ivh /tmp/epel-release-latest-7.noarch.rpm || true
     yum clean all
     mkdir -p /var/backup
-    if [ -f  "/usr/lib/systemd/system/poweroff.target" ];then
-      ln -sf /usr/lib/systemd/system/poweroff.target /etc/systemd/system/sigpwr.target || true
-    fi
-    ln -s /dev/null /etc/systemd/system/systemd-udevd.service || true
-    ln -s /dev/null /etc/systemd/system/systemd-udevd-control.socket || true
-    ln -s /dev/null /etc/systemd/system/systemd-udevd-kernel.socket || true
-    ln -s /dev/null /etc/systemd/system/proc-sys-fs-binfmt_misc.automount || true
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
     if [ -a /etc/resolv.conf.org ]; then
