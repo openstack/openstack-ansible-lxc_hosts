@@ -1,0 +1,11 @@
+module lxc-attach 1.0;
+
+require {
+    type unconfined_service_t;
+    type var_lib_t;
+    class file entrypoint;
+}
+
+#============= unconfined_service_t ==============
+allow unconfined_service_t var_lib_t:file entrypoint;
+
