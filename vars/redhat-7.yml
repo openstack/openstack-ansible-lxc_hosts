@@ -37,6 +37,7 @@ lxc_hosts_distro_packages:
   - python34-devel
   - pkgconfig
   - redhat-lsb
+  - selinux-policy-devel
   - xz
 
 lxc_xz_bin: xz
