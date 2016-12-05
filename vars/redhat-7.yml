@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lxc_download_url: "https://linuxcontainers.org/downloads/lxc/lxc-2.0.5.tar.gz"
+lxc_download_url: "https://linuxcontainers.org/downloads/lxc/lxc-2.0.6.tar.gz"
+lxc_sha256sum: "7c292cd0055dac1a0e6fbb6a7740fd12b6ffb204603c198faf37c11c9d6dcd7a"
 system_config_dir: "/etc/sysconfig"
 
 # Required rpm packages.

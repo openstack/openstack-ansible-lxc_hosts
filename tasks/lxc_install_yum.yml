@@ -38,6 +38,7 @@
   get_url:
     url: "{{ lxc_download_url }}"
     dest: "/opt/lxc_embedded/{{ lxc_download_url | basename }}"
+    checksum: "sha256:{{ lxc_sha256sum }}"
   register: source_download
   tags:
     - lxc-source
