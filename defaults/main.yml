@@ -17,6 +17,11 @@
 # cache will be updated. By default this timeout is set to 1 day.
 lxc_cache_timeout: 86400
 
+# Environment to use when building LXC caches
+# You can set http_proxy environment variables here for example
+# if you would like to proxy all image downloads
+lxc_cache_environment: {}
+
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"

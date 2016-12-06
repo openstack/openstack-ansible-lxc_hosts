@@ -25,6 +25,7 @@
   delay: 10
   until: cache_download_primary | success
   failed_when: false
+  environment: "{{ lxc_cache_environment }}"
   tags:
     - lxc-cache
     - lxc-cache-download
@@ -41,6 +42,7 @@
   retries: 3
   delay: 10
   until: cache_download_secondary | success
+  environment: "{{ lxc_cache_environment }}"
   tags:
     - lxc-cache
     - lxc-cache-download

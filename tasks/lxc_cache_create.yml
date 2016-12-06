@@ -45,6 +45,7 @@
   retries: 3
   delay: 10
   until: cache_download|success
+  environment: "{{ lxc_cache_environment }}"
   when:
     - lxc_container_backing_store is defined
     - lxc_container_backing_store == 'overlayfs'
@@ -60,6 +61,7 @@
   retries: 3
   delay: 10
   until: cache_download|success
+  environment: "{{ lxc_cache_environment }}"
   when:
     - lxc_container_backing_store is defined
     - lxc_container_backing_store == 'lvm'
