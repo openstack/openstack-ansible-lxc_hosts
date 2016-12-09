@@ -138,6 +138,7 @@ lxc_cache_distro_packages:
   - sqlite3
   - ssh
   - sshpass
+  - systemd-shim
   - time
 
 lxc_cached_network_interfaces:
