@@ -41,21 +41,6 @@
   tags:
     - lxc-net
 
-# All installations of LXC will need to have the
-#  the lxc-net service override in place to ensure its not restarted on system boot
-- name: Drop lxc-net override file for upstart
-  template:
-    src: manual-init.override.j2
-    dest: /etc/init/lxc-net.override
-    owner: root
-    group: root
-    mode: 0644
-  when:
-    - ansible_service_mgr == 'upstart'
-  tags:
-    - lxc-files
-    - lxc-net
-
 - name: Mask lxc-net systemd service
   file:
     src: /dev/null

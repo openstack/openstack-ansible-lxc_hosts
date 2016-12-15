@@ -31,7 +31,6 @@
   service:
     name: "irqbalance"
     state: "restarted"
-    pattern: "irqbalance"
     enabled: "yes"
 
 - name: Restart bridge
