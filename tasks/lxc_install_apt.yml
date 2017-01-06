@@ -40,6 +40,7 @@
   tags:
     - lxc-files
     - lxc-irqbalance
+    - lxc_hosts-config
 
 - name: Drop lxc-openstack app armor profile
   template:
@@ -54,6 +55,7 @@
   tags:
     - lxc-files
     - lxc-apparmor
+    - lxc_hosts-config
 
 - name: Flush handler to reload apparmor profiles
   meta: flush_handlers

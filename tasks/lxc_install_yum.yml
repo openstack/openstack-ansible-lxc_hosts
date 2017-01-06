@@ -144,6 +144,7 @@
     mode: "0755"
   tags:
     - lxc-post-up
+    - lxc_hosts-config
 
 - name: Drop post down script
   copy:
@@ -161,6 +162,7 @@
     mode: "0755"
   tags:
     - lxc-post-down
+    - lxc_hosts-config
 
 - name: Create networking post-up data
   lineinfile:
@@ -172,6 +174,7 @@
       line: ". /etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
   tags:
     - lxc-post-up
+    - lxc_hosts-config
 
 - name: Create networking post-down data
   lineinfile:
@@ -183,6 +186,7 @@
       line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
   tags:
     - lxc-post-down
+    - lxc_hosts-config
 
 - name: Link embedded lxc to python3
   shell: >
@@ -198,6 +202,7 @@
   changed_when: false
   tags:
     - lxc-links
+    - lxc_hosts-config
 
 # This is needed because Ansible will not read an exported PATH and the default path is too restrictive
 - name: Update the sudoers defaults
@@ -214,11 +219,14 @@
       line: 'Defaults secure_path="/opt/lxc_embedded/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'
   tags:
     - lxc-path
+    - lxc_hosts-config
 
 - name: Enable lxc service
   service:
     name: lxc
     enabled: "yes"
+  tags:
+    - lxc_hosts-config
 
 - name: Create directory for compiling SELinux rule
   file:
@@ -244,4 +252,6 @@
    - semodule -i /tmp/lxc-attach-selinux/lxc-attach.pp
   when:
     - ansible_selinux.status == "enabled"
+  tags:
+    - lxc_hosts-config
 

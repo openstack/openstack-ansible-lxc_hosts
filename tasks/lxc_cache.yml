@@ -29,6 +29,7 @@
   tags:
     - lxc-cache
     - lxc-cache-download
+    - lxc_hosts-install
 
 - name: Create base container
   lxc_container:
@@ -46,6 +47,12 @@
   tags:
     - lxc-cache
     - lxc-cache-download
+    - lxc_hosts-install
 
 - include: lxc_cache_preparation.yml
+  tags:
+    - lxc_hosts-config
+
 - include: lxc_cache_create.yml
+  tags:
+    - lxc_hosts-config
