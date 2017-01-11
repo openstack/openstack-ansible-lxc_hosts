@@ -73,11 +73,15 @@ lxc_cache_map:
 
 lxc_cache_distro_packages:
   - ca-certificates
+  - git
   - openssh-server
+  - python-devel
   - python2
+  - rsync
   - sudo
   - wget
   - tar
+  - which
 
 lxc_hosts_pip_install_options: >
   --global-option=build_ext
