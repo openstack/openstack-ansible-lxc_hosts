@@ -82,10 +82,14 @@ lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Option
 
 lxc_cache_distro_packages:
   - apt-transport-https
+  - build-essential
   - ca-certificates
+  - git
   - iptables
   - openssh-server
+  - python-dev
   - python2.7
+  - rsync
 
 lxc_cached_network_interfaces:
   - src: "lxc-net-bridge.cfg.j2"
