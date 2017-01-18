@@ -48,8 +48,20 @@
     state: link
   when:
     - ansible_service_mgr == 'systemd'
+    - ansible_os_family == "Debian"
   tags:
     - lxc-files
+    - lxc-net
+
+# CentOS systems need the lxc-net service for LXC containers to boot with a
+# network interface.
+- name: Enable the lxc-net service upon reboot (CentOS)
+  service:
+    name: lxc-net
+    enabled: yes
+  when:
+    - ansible_os_family == 'RedHat'
+  tags:
     - lxc-net
 
 # All Debian based systems use the interfaces.d directory for extra network configs
