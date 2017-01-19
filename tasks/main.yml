@@ -43,16 +43,35 @@
     - always
 
 - include: lxc_pre_install.yml
+  tags:
+    - lxc_hosts-install
+
 - include: lxc_install.yml
+  tags:
+    - lxc_hosts-install
+
 - include: lxc_post_install.yml
+  tags:
+    - lxc_hosts-config
+
 - include: lxc_kernel_tuning.yml
+  tags:
+    - lxc_hosts-config
+
 - include: lxc_net.yml
+  tags:
+    - lxc_hosts-config
+
 - include: lxc_dnsmasq_cleanup.yml
+  tags:
+    - lxc_hosts-config
 
 - name: Stat the prepared LXC cache
   stat:
     path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/rootfs.tar.xz"
   register: lxc_cache_stat
+  tags:
+    - always
 
 - include: lxc_cache.yml
   static: no
@@ -60,6 +79,9 @@
     - "{{ not lxc_cache_stat.stat.exists
           or (lxc_cache_stat.stat.exists
              and lxc_cache_stat.stat.mtime > lxc_cache_timeout) }}"
+  tags:
+    - lxc_hosts-install
+    - lxc_hosts-config
 
 - name: Flush handlers
   meta: flush_handlers
