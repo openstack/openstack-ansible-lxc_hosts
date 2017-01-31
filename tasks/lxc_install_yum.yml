@@ -119,6 +119,21 @@
     - lxc-source
     - lxc-path
 
+- name: Find all LXC executables
+  find:
+    file_type: "file"
+    paths: "/opt/lxc_embedded/bin"
+    patterns:  "lxc-*"
+  register: lxc_bins
+
+- name: Link lxc binaries in /usr/local/bin/
+  file:
+    path: "/usr/local/bin/{{ item.path | basename }}"
+    src: "{{ item.path }}"
+    state: "link"
+  with_items:
+    - "{{ lxc_bins.files }}"
+
 - name: Remove sub system lock if found
   file:
     path: "/var/lock/subsys/lxc"
