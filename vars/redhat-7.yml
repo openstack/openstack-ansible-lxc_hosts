@@ -33,6 +33,7 @@ lxc_hosts_distro_packages:
   - libcap-devel
   - libselinux
   - libselinux-devel
+  - policycoreutils-python
   - python-devel
   - python34-libs
   - python34-devel
