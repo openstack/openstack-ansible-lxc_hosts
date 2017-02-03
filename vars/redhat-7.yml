@@ -50,6 +50,7 @@ lxc_cache_map:
   release: 7
   copy_from_host:
     - /etc/yum.repos.d/
+    - /etc/yum/pluginconf.d/fastestmirror.conf
     - /etc/pki/rpm-gpg/
     - /etc/localtime
   cache_prep_commands: |
