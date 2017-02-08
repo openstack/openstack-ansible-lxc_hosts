@@ -13,6 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Deploy COPR yum repo for LXC 2.0
+  yum_repository:
+    name: thm-lxc2.0
+    description: "COPR repository for LXC 2.0 packages on CentOS 7"
+    baseurl: "{{ lxc_centos_package_baseurl }}"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "{{ lxc_centos_package_key }}"
+    repo_gpgcheck: no
+    state: present
+
+- name: Add GPG key for COPR LXC repo
+  rpm_key:
+    key: "{{ lxc_centos_package_key }}"
+    state: present
+  register: add_keys
+  until: add_keys | success
+  retries: 5
+  delay: 2
+
 - name: Install yum packages
   yum:
     pkg: "{{ item }}"
@@ -21,118 +41,10 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ lxc_hosts_distro_packages }}"
+  with_items:
+    - "{{ lxc_hosts_distro_packages }}"
   tags:
     - lxc-packages
-
-- name: Create base directories
-  file:
-    path: "/opt/lxc_embedded"
-    state: "directory"
-    owner: "root"
-    group: "root"
-  tags:
-    - lxc-directories
-
-- name: download file with sha256 check
-  get_url:
-    url: "{{ lxc_download_url }}"
-    dest: "/opt/lxc_embedded/{{ lxc_download_url | basename }}"
-    checksum: "sha256:{{ lxc_sha256sum }}"
-  register: source_download
-  tags:
-    - lxc-source
-    - lxc-source-download
-
-- name: Move lxc cached image into place
-  unarchive:
-    src: "/opt/lxc_embedded/{{ lxc_download_url | basename }}"
-    dest: "/opt/lxc_embedded/"
-    copy: "no"
-  when: source_download|changed
-  tags:
-    - lxc-source
-    - lxc-source-unarchive
-    # don't trigger ANSIBLE0016
-    - skip_ansible_lint
-
-- name: Create new linked lib location
-  copy:
-    content: "/opt/lxc_embedded/x86_64-linux-gnu"
-    dest: "/etc/ld.so.conf.d/lxc-x86_64.conf"
-    mode: "0644"
-  tags:
-    - lxc-source
-    - lxc-ldconfig
-
-- name: Create python3 link
-  file:
-    src: /usr/bin/python3.4
-    dest: /usr/bin/python3
-    state: link
-  tags:
-    - lxc-source
-
-- name: Build and install LXC
-  command: '{{ item }}'
-  args:
-    creates: /opt/lxc_embedded/bin/lxc-ls
-    chdir: "/opt/lxc_embedded/{{ lxc_download_url | basename | replace('.tar.gz', '') }}"
-  environment:
-    PYTHONDEV_CFLAGS: "-I/usr/include/python3.4m"
-    PYTHONDEV_LIBS: "-lpython3.4m"
-  changed_when: false
-  with_items:
-    - ./autogen.sh
-    - ./configure --prefix=/opt/lxc_embedded
-                  --libdir=/opt/lxc_embedded/x86_64-linux-gnu
-                  --libexecdir=/opt/lxc_embedded/x86_64-linux-gnu
-                  --with-rootfs-path=/opt/lxc_embedded/x86_64-linux-gnu/lxc
-                  --sysconfdir=/etc
-                  --localstatedir=/var
-                  --with-config-path=/var/lib/lxc
-                  --with-distro={{ ansible_distribution | lower }}
-                  --with-init-script=systemd
-                  --enable-seccomp
-                  --enable-python
-                  --enable-doc
-                  --enable-rpath
-                  --enable-selinux
-                  --enable-capabilities
-                  --enable-configpath-log
-                  --disable-tests
-                  --disable-lua
-    - make
-    - make install
-  tags:
-    - lxc-source
-    - lxc-source-compile
-
-- name: Ensure embedded LXC is within the PATH
-  lineinfile:
-    dest: "{{ item.dest }}"
-    line: "{{ item.line }}"
-    create: "true"
-  with_items:
-    - { dest: "/etc/profile.d/lxc-path.sh", line: "pathmunge /opt/lxc_embedded/bin" }
-  tags:
-    - lxc-source
-    - lxc-path
-
-- name: Find all LXC executables
-  find:
-    file_type: "file"
-    paths: "/opt/lxc_embedded/bin"
-    patterns:  "lxc-*"
-  register: lxc_bins
-
-- name: Link lxc binaries in /usr/local/bin/
-  file:
-    path: "/usr/local/bin/{{ item.path | basename }}"
-    src: "{{ item.path }}"
-    state: "link"
-  with_items:
-    - "{{ lxc_bins.files }}"
 
 - name: Remove sub system lock if found
   file:
@@ -203,39 +115,6 @@
     - lxc-post-down
     - lxc_hosts-config
 
-- name: Link embedded lxc to python3
-  shell: >
-    find /opt/lxc_embedded/lib64/python3.4/site-packages/* -maxdepth 0 | xargs -n1 ln -sf
-  args:
-    chdir: /usr/lib64/python3.4
-  changed_when: false
-  tags:
-    - lxc-links
-
-- name: Run ldconfig to make sure all libs are linked
-  command: ldconfig -v
-  changed_when: false
-  tags:
-    - lxc-links
-    - lxc_hosts-config
-
-# This is needed because Ansible will not read an exported PATH and the default path is too restrictive
-- name: Update the sudoers defaults
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '{{ item.regexp }}'
-    line: '{{ item.line }}'
-    validate: 'visudo -cf %s'
-  with_items:
-    - regexp: '^Defaults.*env_reset.*'
-      line: 'Defaults env_reset'
-    - regexp: '^Defaults.*secure_path.*'
-      line: 'Defaults secure_path="/opt/lxc_embedded/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"'
-  tags:
-    - lxc-path
-    - lxc_hosts-config
-
 - name: Enable lxc service
   service:
     name: lxc
@@ -269,4 +148,3 @@
     - ansible_selinux.status == "enabled"
   tags:
     - lxc_hosts-config
-
