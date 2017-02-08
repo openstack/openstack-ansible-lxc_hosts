@@ -125,3 +125,8 @@ lxc_cache_download_template_options: >
   --arch {{ lxc_cache_map.arch }}
   --force-cache
   --server {{ lxc_image_cache_server }}
+
+# LXC must be installed from a COPR repository on CentOS 7 since the version
+# provided in EPEL is much too old (1.x).
+lxc_centos_package_baseurl: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/epel-7-x86_64/
+lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/pubkey.gpg

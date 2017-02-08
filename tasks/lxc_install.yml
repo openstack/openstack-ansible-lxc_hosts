@@ -13,18 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: lxc_install_apt.yml
-  static: no
-  when:
-    - ansible_pkg_mgr == 'apt'
+- include: "lxc_install_{{ ansible_pkg_mgr }}.yml"
   tags:
     - install-apt
-
-- include: lxc_install_yum.yml
-  static: no
-  when:
-    - ansible_pkg_mgr == 'yum'
-  tags:
     - install-yum
 
 - name: Install pip packages
@@ -34,7 +25,6 @@
     extra_args: >-
       {{ (pip_install_upper_constraints is defined) | ternary('--constraint ' + pip_install_upper_constraints | default(''),'') }}
       {{ pip_install_options | default('') }}
-      {{ lxc_hosts_pip_install_options | default('') }}
   register: install_packages
   until: install_packages|success
   retries: 5
