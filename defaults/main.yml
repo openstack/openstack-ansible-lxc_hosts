@@ -96,6 +96,11 @@ lxc_image_compression_ratio: 0
 #       dest: "/etc/issue"
 lxc_container_cache_files: []
 
+# Custom shell commands to run before/after the LXC cache prep process has taken
+# place.
+lxc_cache_prep_pre_commands: '## pre command skipped ##'
+lxc_cache_prep_post_commands: '## post command skipped ##'
+
 # The DNS name of the LXD server to source the base container cache from
 lxc_image_cache_server: images.linuxcontainers.org
 

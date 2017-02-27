@@ -49,6 +49,7 @@ lxc_cache_map:
     - /etc/localtime
     - /root/repo.keys
   cache_prep_commands: |
+    {{ lxc_cache_prep_pre_commands }}
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
@@ -81,6 +82,7 @@ lxc_cache_map:
     else
       rm -f /etc/resolv.conf
     fi
+    {{ lxc_cache_prep_post_commands }}
 
 # This forces any modified configurations to remain, and any unmodified configs to be replaced
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
