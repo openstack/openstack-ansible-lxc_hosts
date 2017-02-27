@@ -47,6 +47,7 @@ lxc_cache_map:
     - /etc/pki/rpm-gpg/
     - /etc/localtime
   cache_prep_commands: |
+    {{ lxc_cache_prep_pre_commands }}
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
@@ -65,6 +66,7 @@ lxc_cache_map:
     else
       rm -f /etc/resolv.conf
     fi
+    {{ lxc_cache_prep_post_commands }}
 
 lxc_cache_distro_packages:
   - ca-certificates
