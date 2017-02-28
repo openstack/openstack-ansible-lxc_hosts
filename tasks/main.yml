@@ -68,7 +68,7 @@
 
 - name: Stat the prepared LXC cache
   stat:
-    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/rootfs.tar.xz"
+    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/rootfs.tar.xz"
   register: lxc_cache_stat
   tags:
     - always

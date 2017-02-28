@@ -124,12 +124,16 @@ lxc_image_cache_secondary_keyserver: hkp://keyserver.ubuntu.com:80
 #   --arch CONTAINER_ARCH
 #   --force-cache
 #   --server SERVER_TO_GET_IMAGES_FROM
+lxc_cache_default_variant: default
+lxc_cache_download_template_extra_options: ""
 lxc_cache_download_template_options: >
   --dist {{ lxc_cache_map.distro }}
   --release {{ lxc_cache_map.release }}
   --arch {{ lxc_cache_map.arch }}
   --force-cache
   --server {{ lxc_image_cache_server }}
+  --variant {{ lxc_cache_default_variant }}
+  {{ lxc_cache_download_template_extra_options }}
 
 # LXC must be installed from a COPR repository on CentOS 7 since the version
 # provided in EPEL is much too old (1.x).
