@@ -13,41 +13,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Create base container
-  lxc_container:
-    name: "LXC_NAME"
-    template: "download"
-    state: stopped
-    backing_store: "dir"
-    template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_primary_keyserver }}"
-  register: cache_download_primary
-  retries: 3
-  delay: 10
-  until: cache_download_primary | success
-  failed_when: false
-  environment: "{{ lxc_cache_environment }}"
-  tags:
-    - lxc-cache
-    - lxc-cache-download
-    - lxc_hosts-install
+- block:
+    - name: Create base container
+      lxc_container:
+        name: "LXC_NAME"
+        template: "download"
+        state: stopped
+        backing_store: "dir"
+        template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_primary_keyserver }}"
+      register: cache_download_primary
+      retries: 3
+      delay: 10
+      until: cache_download_primary | success
+      environment: "{{ lxc_cache_environment }}"
+      tags:
+        - lxc-cache
+        - lxc-cache-download
+        - lxc_hosts-install
 
-- name: Create base container
-  lxc_container:
-    name: "LXC_NAME"
-    template: "download"
-    state: stopped
-    backing_store: "dir"
-    template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_secondary_keyserver }}"
-  when: cache_download_primary | failed
-  register: cache_download_secondary
-  retries: 3
-  delay: 10
-  until: cache_download_secondary | success
-  environment: "{{ lxc_cache_environment }}"
-  tags:
-    - lxc-cache
-    - lxc-cache-download
-    - lxc_hosts-install
+  rescue:
+    - name: Create base container
+      lxc_container:
+        name: "LXC_NAME"
+        template: "download"
+        state: stopped
+        backing_store: "dir"
+        template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_secondary_keyserver }}"
+      register: cache_download_secondary
+      retries: 3
+      delay: 10
+      until: cache_download_secondary | success
+      environment: "{{ lxc_cache_environment }}"
+      tags:
+        - lxc-cache
+        - lxc-cache-download
+        - lxc_hosts-install
 
 - include: lxc_cache_preparation.yml
   tags:
