@@ -21,6 +21,10 @@ lxc_cache_timeout: 86400
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
 
+# Optionally set the URL for the Ubuntu Trusty backports repository
+# lxc_package_repo_url: http://archive.ubuntu.com/ubuntu/
+lxc_package_repo_filename: "/etc/apt/sources.list.d/trusty-backports.list"
+
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:
   x86_64: amd64

@@ -13,6 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Setup the Ubuntu Backports repo for Trusty
+  include: lxc_install_apt_repo.yml
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_release == 'trusty'
+
 #TODO(evrardjp): Replace the next 2 tasks by a standard apt with cache
 #when https://github.com/ansible/ansible-modules-core/pull/1517 is merged
 #in 1.9.x or we move to 2.0 (if tested working)

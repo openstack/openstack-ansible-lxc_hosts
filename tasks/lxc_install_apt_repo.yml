@@ -1,0 +1,52 @@
+---
+# Copyright 2017, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Determine whether the Trusty backports repo is already enabled
+  find:
+    path: "/etc/apt/"
+    patterns: "\\.list$"
+    contains: "^deb.* trusty-backports.*$"
+  register: _trusty_backports_enabled
+  when:
+    - lxc_package_repo_url is not defined
+
+- name: Determine the existing Ubuntu default repo configuration
+  command: 'grep -oP "^deb \K(\[?.*\]?.*ubuntu\S*\/?)(?= {{ ansible_distribution_release }} main)" /etc/apt/sources.list'
+  register: _ubuntu_repo
+  when:
+    - lxc_package_repo_url is not defined
+    - _trusty_backports_enabled['matched'] | int < 1
+  changed_when: false
+
+- name: Set package_repo_url fact
+  set_fact:
+    lxc_package_repo_url: "{{ _ubuntu_repo.stdout_lines[0] }}"
+  when:
+    - lxc_package_repo_url is not defined
+    - _ubuntu_repo is defined
+    - _ubuntu_repo.stdout_lines | length > 0
+
+- name: Add trusty backport repo for LXC2 access
+  apt_repository:
+    repo: "deb {{ lxc_package_repo_url }} {{ ansible_distribution_release }}-backports main universe"
+    state: present
+    update_cache: yes
+    filename: "{{ lxc_package_repo_filename | default(omit) }}"
+  register: _add_backports_repo
+  until: _add_backports_repo | success
+  retries: 5
+  delay: 2
+  when:
+    - lxc_package_repo_url is defined
