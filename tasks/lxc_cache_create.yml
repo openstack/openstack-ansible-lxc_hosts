@@ -15,7 +15,7 @@
 
 - name: Remove existing cache archive
   file:
-    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/rootfs.tar.xz"
+    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/rootfs.tar.xz"
     state: "absent"
   tags:
     - lxc-cache
@@ -27,7 +27,7 @@
   shell: |
     tar -Opc -C /var/lib/lxc/LXC_NAME/rootfs . | {{ lxc_xz_bin }} -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
-    chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/default/"
+    chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/"
   notify: Destroy base container
   tags:
     - skip_ansible_lint
