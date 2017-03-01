@@ -52,7 +52,9 @@ lxc_cache_map:
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
-    echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+    {% for resolver in lxc_cache_prep_dns %}
+    echo "nameserver {{ resolver }}" >> /etc/resolv.conf
+    {% endfor %}
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
