@@ -54,7 +54,9 @@ lxc_cache_map:
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
-    echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+    {% for resolver in lxc_cache_prep_dns %}
+    echo "nameserver {{ resolver }}" >> /etc/resolv.conf
+    {% endfor %}
     apt-key add /root/repo.keys
     rm /root/repo.keys
     export DEBIAN_FRONTEND=noninteractive
