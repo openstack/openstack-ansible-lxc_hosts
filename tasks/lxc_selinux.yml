@@ -13,6 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Create directory for compiling SELinux rule
+  file:
+    path: "/tmp/lxc-attach-selinux/"
+    state: 'directory'
+    mode: '0755'
+
+- name: Drop SELinux config
+  copy:
+    src: "lxc-attach.te"
+    dest: "/tmp/lxc-attach-selinux/lxc-attach.te"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
+- name: Compile and load SELinux module
+  command: '{{ item }}'
+  args:
+    creates: '/etc/selinux/targeted/active/modules/400/lxc-attach/cil'
+    chdir: "/tmp/lxc-attach-selinux/"
+  with_items:
+   - make -f /usr/share/selinux/devel/Makefile
+   - semodule -i /tmp/lxc-attach-selinux/lxc-attach.pp
+
 - name: Check if /openstack/log exists
   stat:
     path: /openstack/log
