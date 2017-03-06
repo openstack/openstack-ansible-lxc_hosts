@@ -29,10 +29,6 @@ lxc_hosts_distro_packages:
   - lxc-libs
   - lxc-templates
   - policycoreutils-python
-  - python-devel
-  - python34-devel
-  - python34-libs
-  - python34-lxc
   - selinux-policy-devel
   - xz
 
@@ -58,8 +54,8 @@ lxc_cache_map:
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
-    /usr/bin/wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
-    /usr/bin/rpm -ivh /tmp/epel-release-latest-7.noarch.rpm || true
+    wget https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata.rpm -O /tmp/rdo-release-ocata.rpm
+    /usr/bin/rpm -ivh /tmp/rdo-release-ocata.rpm || true
     yum clean all
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
