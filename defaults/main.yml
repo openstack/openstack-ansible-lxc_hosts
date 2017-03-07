@@ -24,6 +24,7 @@ lxc_hosts_package_state: "latest"
 # Optionally set the URL for the Ubuntu Trusty backports repository
 # lxc_package_repo_url: http://archive.ubuntu.com/ubuntu/
 lxc_package_repo_filename: "/etc/apt/sources.list.d/trusty-backports.list"
+lxc_package_repo_add: yes
 
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:

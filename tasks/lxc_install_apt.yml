@@ -16,6 +16,7 @@
 - name: Setup the Ubuntu Backports repo for Trusty
   include: lxc_install_apt_repo.yml
   when:
+    - lxc_package_repo_add | bool
     - ansible_distribution == 'Ubuntu'
     - ansible_distribution_release == 'trusty'
 
