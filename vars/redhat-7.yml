@@ -53,8 +53,9 @@ lxc_cache_map:
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
-    wget https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata.rpm -O /tmp/rdo-release-ocata.rpm
+    curl -sL -o /tmp/rdo-release-ocata.rpm https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata.rpm
     /usr/bin/rpm -ivh /tmp/rdo-release-ocata.rpm || true
+    yum-config-manager --enable openstack-ocata --setopt="openstack-ocata.priority=50" --enable rdo-qemu-ev --setopt="rdo-qemu-ev.priority=50"
     yum clean all
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
@@ -68,6 +69,7 @@ lxc_cache_map:
 
 lxc_cache_distro_packages:
   - ca-certificates
+  - epel-release
   - git
   - openssh-server
   - python-devel
@@ -77,6 +79,8 @@ lxc_cache_distro_packages:
   - wget
   - tar
   - which
+  - yum-plugin-priorities
+  - yum-utils
 
 lxc_cached_network_interfaces:
   - src: "lxc-net-ifcfg-bridge.cfg.j2"
