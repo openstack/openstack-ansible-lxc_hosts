@@ -51,6 +51,7 @@ lxc_cache_map:
     {% for resolver in lxc_cache_prep_dns %}
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
+    rpm --import /etc/pki/rpm-gpg/*
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
