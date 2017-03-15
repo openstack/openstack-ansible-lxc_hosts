@@ -41,7 +41,7 @@
   apt:
     pkg: "{{ item }}"
     state: "{{ lxc_hosts_package_state }}"
-    default_release: "{{ lxc_default_release | default(omit) }}"
+    default_release: "{{ (lxc_package_repo_add | bool) | ternary(lxc_default_release | default(omit), omit) }}"
   register: install_packages
   until: install_packages|success
   retries: 5
