@@ -97,7 +97,7 @@ function add_rules {
         echo 0 > /proc/sys/net/ipv6/conf/${LXC_BRIDGE}/autoconf
         ip -6 addr add dev ${LXC_BRIDGE} ${LXC_IPV6_ADDR}/${LXC_IPV6_MASK}
         if [ "$LXC_IPV6_NAT" = "true" ]; then
-            ip6tables $use_iptables_lock -t nat -A POSTROUTING -s ${LXC_IPV6_NETWORK} ! -d ${LXC_IPV6_NETWORK} -j MASQUERADE
+            ip6tables $USE_IPTABLES_LOCK -t nat -A POSTROUTING -s ${LXC_IPV6_NETWORK} ! -d ${LXC_IPV6_NETWORK} -j MASQUERADE
         fi
     fi
 
@@ -154,8 +154,8 @@ function pre_up {
     fi
 
     # Set the lock type where applicable
-    use_iptables_lock="-w"
-    iptables -w -L -n > /dev/null 2>&1 || use_iptables_lock=""
+    USE_IPTABLES_LOCK="-w"
+    iptables -w -L -n > /dev/null 2>&1 || USE_IPTABLES_LOCK=""
 }
 
 function start_dnsmasq {
