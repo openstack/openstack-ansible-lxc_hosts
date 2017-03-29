@@ -42,6 +42,7 @@ lxc_cache_map:
     - /etc/yum.repos.d/
     - /etc/yum/pluginconf.d/fastestmirror.conf
     - /etc/pki/rpm-gpg/
+    - /etc/environment
     - /etc/localtime
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
