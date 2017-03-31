@@ -51,6 +51,7 @@ lxc_cache_map:
     - /etc/localtime
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
+    mkdir -p /etc/ansible/facts.d/
     if [ -a /etc/resolv.conf ]; then
       mv /etc/resolv.conf /etc/resolv.conf.org
     fi
