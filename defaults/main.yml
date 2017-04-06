@@ -13,10 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Timeout (in seconds) for the LXC cache to control how often the rootfs
-# cache will be updated. By default this timeout is set to 1 day.
-lxc_cache_timeout: 86400
-
 # Environment to use when building LXC caches
 # You can set http_proxy environment variables here for example
 # if you would like to proxy all image downloads
@@ -115,7 +111,20 @@ lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
 # The DNS name of the LXD server to source the base container cache from
-lxc_image_cache_server: images.linuxcontainers.org
+lxc_image_cache_server: https://images.linuxcontainers.org
+
+# Path to images on server
+lxc_image_cache_server_path: "{{ lxc_image_cache_server }}/images/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_map.variant }}/"
+
+# Local path to cached image
+lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
+
+# Mode to pull image. This is used to pull the image from a remote source.
+#  Valid options are [pull-tar, pull-raw]
+lxc_image_cache_pull_mode: pull-tar
+
+# Set this option to true to pull a new cached image.
+lxc_image_cache_refresh: false
 
 # The keyservers to use when validating GPG keys for the downloaded cache
 lxc_image_cache_primary_keyserver: hkp://p80.pool.sks-keyservers.net:80

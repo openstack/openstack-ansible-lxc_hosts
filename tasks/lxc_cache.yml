@@ -13,46 +13,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- block:
-    - name: Create base container
-      lxc_container:
-        name: "LXC_NAME"
-        template: "download"
-        state: stopped
-        backing_store: "dir"
-        template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_primary_keyserver }}"
-      register: cache_download_primary
-      retries: 3
-      delay: 10
-      until: cache_download_primary | success
-      environment: "{{ lxc_cache_environment }}"
-      tags:
-        - lxc-cache
-        - lxc-cache-download
-        - lxc_hosts-install
+- name: Set LXC cache path fact
+  set_fact:
+    cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
+    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_map.variant }}"
+    cache_time: "{{ ansible_date_time.epoch }}"
+  tags:
+    - always
 
-  rescue:
-    - name: Create base container
-      lxc_container:
-        name: "LXC_NAME"
-        template: "download"
-        state: stopped
-        backing_store: "dir"
-        template_options: "{{ lxc_cache_download_template_options }} --keyserver {{ lxc_image_cache_secondary_keyserver }}"
-      register: cache_download_secondary
-      retries: 3
-      delay: 10
-      until: cache_download_secondary | success
-      environment: "{{ lxc_cache_environment }}"
-      tags:
-        - lxc-cache
-        - lxc-cache-download
-        - lxc_hosts-install
+- name : Check cached image status
+  command: "machinectl image-status {{ lxc_container_base_name }}"
+  register: cache_check
+  changed_when: false
+  failed_when: false
+  tags:
+    - always
+
+- name: Retrieve the expiry object
+  slurp:
+    src: "{{ cache_path_fact }}/expiry"
+  failed_when: false
+  register: expiry
+  when:
+    - not lxc_image_cache_refresh | bool
+  tags:
+    - always
+
+- name: Set cache refresh fact
+  set_fact:
+    lxc_image_cache_refresh: true
+  when: >
+    (cache_check.rc != 0) or
+    cache_time >= (expiry.content|default('MQo=') | b64decode)
+  tags:
+    - always
 
 - include: lxc_cache_preparation.yml
+  when:
+    - lxc_image_cache_refresh | bool
   tags:
     - lxc_hosts-config
 
 - include: lxc_cache_create.yml
+  when:
+    - lxc_image_cache_refresh | bool
   tags:
     - lxc_hosts-config

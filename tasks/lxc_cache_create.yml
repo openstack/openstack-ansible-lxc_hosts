@@ -13,26 +13,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Create LXC cache dir
+  file:
+    path: "{{ cache_path_fact }}"
+    state: "directory"
+    recurse: true
+
 - name: Remove existing cache archive
   file:
-    path: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/rootfs.tar.xz"
+    path: "{{ cache_path_fact }}/rootfs.tar.xz"
     state: "absent"
-  tags:
-    - lxc-cache
-    - lxc-image-cache-create
 
 # This is using a shell command because the ansible archive module does not
 #  provide for the options needed to properly create an LXC image archive.
 - name: Create lxc image
   shell: |
-    tar -Opc -C /var/lib/lxc/LXC_NAME/rootfs . | {{ lxc_xz_bin }} -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
+    tar -Opc -C {{ lxc_image_cache_path }} . | {{ lxc_xz_bin }} -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
-    chdir: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/"
+    chdir: "{{ cache_path_fact }}/"
   notify: Destroy base container
   tags:
     - skip_ansible_lint
-    - lxc-cache
-    - lxc-image-cache-create
+
+- name: Update LXC image meta data
+  get_url:
+    url: "{{ lxc_image_cache_server }}/{{ item.split(';')[-1] }}/meta.tar.xz"
+    dest: "/tmp/meta.tar.xz"
+  with_items: "{{ lxc_images }}"
+  when:
+    - item | match("^{{ cache_index_item }}")
+
+- name: Place container metadata
+  unarchive:
+    src: "/tmp/meta.tar.xz"
+    dest: "{{ cache_path_fact }}"
+    remote_src: True
+
+- name: Set cache expiry
+  shell: "date -d @{{ (cache_time | int) + 31536000 }} > {{ cache_path_fact }}/expiry"
+  tags:
+    - skip_ansible_lint
+
+- name: Set build ID
+  shell: "echo {{ cache_time }} > {{ cache_path_fact }}/build_id"
+  tags:
+    - skip_ansible_lint
 
 - name: Create base container to use for overlayfs containers
   lxc_container:
