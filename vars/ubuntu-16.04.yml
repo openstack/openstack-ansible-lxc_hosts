@@ -47,6 +47,7 @@ lxc_cache_map:
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
+    - /etc/environment
     - /etc/localtime
     - /root/repo.keys
   cache_prep_commands: |
