@@ -26,7 +26,14 @@
 
 - name: Set image index fact
   set_fact:
-    lxc_images: "{{ image_index.content.splitlines() }}"
+    lxc_images: >
+      {%- set images = [] %}
+      {%- for image in image_index.content.splitlines() %}
+      {%- if image | match("^" + cache_index_item) %}
+      {%- set _ = images.append(image) %}
+      {%- endif %}
+      {%- endfor %}
+      {{- images -}}
 
 - include: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 

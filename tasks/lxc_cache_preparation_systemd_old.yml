@@ -126,8 +126,6 @@
   retries: 3
   delay: 1
   with_items: "{{ lxc_images }}"
-  when:
-    - item | match("^{{ cache_index_item }}")
 
 - name: Place container rootfs
   unarchive:
