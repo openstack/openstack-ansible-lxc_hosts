@@ -1,0 +1,141 @@
+---
+# Copyright 2015, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+# NOTE(cloudnull): This is only used when running SystemD <= 219
+# ==============================================================
+#  In later versions of SystemD this is automatically done for us
+#  by the machinectl cli on first run.
+- name: Create sparse machines file
+  command: "truncate -s 11G /var/lib/machines.raw"
+  args:
+    creates: /var/lib/machines.raw
+  register: machines_create
+
+# In later versions of SystemD this is automatically done for us
+#  by the machinectl cli on first run.
+- name: Format the machines file
+  filesystem:
+    fstype: btrfs
+    dev: /var/lib/machines.raw
+  when:
+    - machines_create | changed
+
+# In later versions of SystemD this is automatically done for us
+#  by the machinectl cli on first run.
+- name: Create machines mount point
+  file:
+    path: "/var/lib/machines"
+    state: "directory"
+    recurse: true
+
+# In later versions of SystemD this unit file has been corrected
+#  and is packaged with systemd proper.
+- name: Move machines mount into place
+  copy:
+    src: var-lib-machines.mount
+    dest: /lib/systemd/system/var-lib-machines.mount
+  register: mount_unit
+  when:
+    - machines_create | changed
+
+# In later versions of SystemD this is not needed. Referenced in
+#  the following ML post resolves the bug.
+#  * https://lists.freedesktop.org/archives/systemd-devel/2015-March/029151.html
+- name: Move machined service into place
+  copy:
+    src: systemd-machined.service
+    dest: /lib/systemd/system/systemd-machined.service
+  register: machined_unit
+  when:
+    - machines_create | changed
+
+# In later versions of SystemD this is not needed. Referenced in
+#  the following commit resolves the bug.
+#  * https://cgit.freedesktop.org/systemd/systemd/commit/src/machine/org.freedesktop.machine1.conf?id=72c3897f77a7352618ea76b880a6764f52d6327b
+- name: Move machine1 dbus config into place
+  copy:
+    src: org.freedesktop.machine1.conf
+    dest: /etc/dbus-1/system.d/org.freedesktop.machine1.conf
+  register: machine1_conf
+  when:
+    - machines_create | changed
+
+- name: Reload the System daemon
+  command: "systemctl daemon-reload"
+  when: >
+    mount_unit | changed or
+    machined_unit | changed or
+    machine1_conf | changed
+
+- name: Restart dbus
+  command: "systemctl reload dbus.service"
+  when:
+    - machine1_conf | changed
+
+- name: Mount all
+  shell: "mount | grep '/var/lib/machines' || (systemctl start var-lib-machines.mount && exit 3)"
+  register: mount_machines
+  changed_when: mount_machines.rc == 3
+  failed_when: mount_machines.rc not in [0, 3]
+  tags:
+    - skip_ansible_lint
+
+- name: Restart machined
+  command: "systemctl restart systemd-machined.service"
+  when:
+    - machined_unit | changed
+
+# Because of this post and it's related bug(s) this is adding the container
+#  volumes the old way. The new way would simply be calling `machinectl`.
+#  * https://www.mail-archive.com/systemd-devel@lists.freedesktop.org/msg28255.html
+- name : Remove old image cache
+  command: "btrfs subvolume delete /var/lib/machines/{{ lxc_container_base_name }}"
+  register: cache_refresh_del
+  changed_when: cache_refresh_del.rc == 0
+  failed_when: cache_refresh_del.rc not in [0, 1]
+  when:
+    - lxc_image_cache_refresh | bool
+
+- name : Add image cache
+  command: "btrfs subvolume create /var/lib/machines/{{ lxc_container_base_name }}"
+  register: cache_refresh_add
+  changed_when: cache_refresh_add.rc == 0
+  failed_when: cache_refresh_add.rc not in [0, 1]
+  when:
+    - lxc_image_cache_refresh | bool
+
+- name: Retrieve base image
+  get_url:
+    url: "{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz"
+    dest: "/tmp/rootfs.tar.xz"
+  register: pull_image
+  until: pull_image | success
+  retries: 3
+  delay: 1
+  with_items: "{{ lxc_images }}"
+  when:
+    - item | match("^{{ cache_index_item }}")
+
+- name: Place container rootfs
+  unarchive:
+    src: "/tmp/rootfs.tar.xz"
+    dest: "/var/lib/machines/{{ lxc_container_base_name }}"
+    remote_src: True
+
+- name: Remove rootfs archive
+  file:
+    path: "/tmp/rootfs.tar.xz"
+    state: "absent"

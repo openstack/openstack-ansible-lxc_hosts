@@ -21,8 +21,10 @@ lxc_hosts_distro_packages:
   - apparmor
   - apparmor-utils
   - bridge-utils
+  - btrfs-tools
   - cgmanager
   - cgroup-lite
+  - dbus
   - debootstrap
   - dnsmasq
   - git
@@ -35,6 +37,7 @@ lxc_hosts_distro_packages:
   - lxc-templates
   - python-dev
   - python3-lxc
+  - systemd-container
   - pxz
 
 lxc_xz_bin: pxz
@@ -44,6 +47,7 @@ lxc_cache_map:
   distro: ubuntu
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: xenial
+  variant: default
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/

@@ -1,0 +1,43 @@
+---
+# Copyright 2015, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# NOTE(cloudnull): When modern SystemD is running everywhere this can be
+#  collapsed back into the base preparation task file.
+- name : Remove old image cache
+  command: "machinectl remove {{ lxc_container_base_name }}"
+  register: cache_refresh
+  changed_when: cache_refresh.rc == 0
+  failed_when: cache_refresh.rc not in [0, 1]
+  when:
+    - lxc_image_cache_refresh | bool
+
+- name: Retrieve base image
+  command: >-
+    machinectl
+    --verify=no
+    {{ lxc_image_cache_pull_mode }}
+    {{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz
+    {{ lxc_container_base_name }}
+  register: pull_image
+  until: pull_image | success
+  retries: 3
+  delay: 1
+  changed_when: pull_image.rc == 0
+  failed_when:
+    - pull_image.rc != 0
+    - "'failed' in pull_image.stderr | lower"
+  with_items: "{{ lxc_images }}"
+  when:
+    - item | match("^{{ cache_index_item }}")
