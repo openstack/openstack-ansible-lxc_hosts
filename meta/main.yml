@@ -26,6 +26,11 @@ galaxy_info:
     - name: EL
       versions:
         - 7
+    - name: opensuse
+      versions:
+        - 42.1
+        - 42.2
+        - 42.3
   categories:
     - cloud
     - lxc

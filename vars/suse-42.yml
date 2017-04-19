@@ -1,5 +1,6 @@
 ---
 # Copyright 2016, Rackspace US, Inc.
+# Copyright 2017, SUSE LINUX GmbH.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,37 +15,31 @@
 # limitations under the License.
 
 system_config_dir: "/etc/sysconfig"
-systemd_utils_prefix: "/lib/systemd"
+systemd_utils_prefix: "/usr/lib/systemd"
 
 # Required rpm packages.
 lxc_hosts_distro_packages:
+  - apparmor-parser
+  - apparmor-utils
   - bridge-utils
-  - btrfs-progs
-  - dbus
-  - debootstrap
   - dnsmasq
-  - git
-  - libseccomp
-  - libselinux
-  - libselinux-devel
+  - git-core
+  - libseccomp2
   - lxc
   - lxc-devel
-  - lxc-libs
-  - lxc-templates
-  - policycoreutils-python
-  - selinux-policy-devel
   - xz
 
 lxc_xz_bin: xz
 
 lxc_cache_map:
-  distro: centos
+  distro: opensuse
   arch: amd64
-  release: 7
+  # NOTE(hwoarang): Ideally we would like to match the container version with
+  # that of the running host but images.linuxcontainers.org does not have a
+  # 42.1 images so our only option is to always use 42.2 for LXCs. As such we
+  # can't share many files with the host.
+  release: "42.2"
   copy_from_host:
-    - /etc/yum.repos.d/
-    - /etc/yum/pluginconf.d/fastestmirror.conf
-    - /etc/pki/rpm-gpg/
     - /etc/environment
     - /etc/localtime
   cache_prep_commands: |
@@ -56,18 +51,11 @@ lxc_cache_map:
     {% for resolver in lxc_cache_prep_dns %}
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
-    rpm --import /etc/pki/rpm-gpg/*
-    yum install -y {{ lxc_cache_distro_packages | join(' ') }}
-    rm -f /usr/bin/python
-    ln -s /usr/bin/python2.7 /usr/bin/python
-    curl -sL -o /tmp/rdo-release-ocata.rpm https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata.rpm
-    /usr/bin/yum --nogpgcheck -y install /tmp/rdo-release-ocata.rpm || true
-    yum-config-manager --enable openstack-ocata --setopt="openstack-ocata.priority=50" --enable rdo-qemu-ev --setopt="rdo-qemu-ev.priority=50" \
-       --enable base --setopt="base.priority=50" --enable updates --setopt="updates.priority=50" --enable extras --setopt="extras.priority=50" \
-       --enable epel
-    yum clean all
+    # Do a complete refresh and fetch the keys without asking
+    zypper --gpg-auto-import-keys -n ref -f
+    zypper -n in -l {{ lxc_cache_distro_packages | join(' ') }}
     mkdir -p /var/backup
-    echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
+    echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network/ifcfg-eth0
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
     if [ -a /etc/resolv.conf.org ]; then
       mv /etc/resolv.conf.org /etc/resolv.conf
@@ -78,26 +66,20 @@ lxc_cache_map:
 
 lxc_cache_distro_packages:
   - ca-certificates
-  - epel-release
-  - git
-  - openssh-server
+  - git-core
+  - openssh
   - python-devel
-  - python2
+  - python
   - rsync
   - sudo
   - wget
   - tar
   - which
-  - yum-plugin-priorities
-  - yum-utils
 
 lxc_cached_network_interfaces:
-  - src: "lxc-net-redhat-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifcfg-lxcbr0"
+  - src: "lxc-net-suse-bridge.cfg.j2"
+    dest: "/etc/sysconfig/network/ifcfg-lxcbr0"
 
 lxc_container_default_interfaces: |
   DEVICE=eth0
   BOOTPROTO=dhcp
-  ONBOOT=yes
-  NM_CONTROLLED=no
-  TYPE=Ethernet
