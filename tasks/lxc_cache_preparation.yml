@@ -88,7 +88,7 @@
 
 - name: Deploy ssh public key into the cached image
   lineinfile:
-    dest: "{{ lxc_image_cache_path }}/.ssh/authorized_keys"
+    dest: "{{ lxc_image_cache_path }}/root/.ssh/authorized_keys"
     line: "{{ lxc_container_ssh_key }}"
     create: true
 
