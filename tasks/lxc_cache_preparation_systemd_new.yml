@@ -39,5 +39,3 @@
     - pull_image.rc != 0
     - "'failed' in pull_image.stderr | lower"
   with_items: "{{ lxc_images }}"
-  when:
-    - item | match("^{{ cache_index_item }}")
