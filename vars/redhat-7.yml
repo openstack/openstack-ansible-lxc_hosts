@@ -40,7 +40,6 @@ lxc_cache_map:
   distro: centos
   arch: amd64
   release: 7
-  variant: default
   copy_from_host:
     - /etc/yum.repos.d/
     - /etc/yum/pluginconf.d/fastestmirror.conf

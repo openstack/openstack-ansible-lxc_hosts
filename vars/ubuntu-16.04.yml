@@ -47,7 +47,6 @@ lxc_cache_map:
   distro: ubuntu
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: xenial
-  variant: default
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
