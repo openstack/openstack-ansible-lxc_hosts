@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+[Service]
+{% for key, value in lxc_cache_environment.iteritems() %}
+Environment={{ key }}={{ value }}
+{% endfor %}

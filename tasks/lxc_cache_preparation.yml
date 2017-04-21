@@ -35,6 +35,30 @@
       {%- endfor %}
       {{- images -}}
 
+- block:
+    - name: Create machined proxy override unit directories
+      file:
+        path: "/etc/systemd/system/{{ item }}"
+        owner: root
+        group: root
+        mode: '0755'
+        state: directory
+      with_items:
+        - systemd-machined.service.d
+        - systemd-importd.service.d
+
+    - name: Drop the machined proxy override units
+      template:
+        src: systemd-proxy-unit.conf.j2
+        dest: /etc/systemd/system/{{ item }}/proxy.conf
+        owner: root
+        group: root
+        mode: '0644'
+      with_items:
+        - systemd-machined.service.d
+        - systemd-importd.service.d
+  when: lxc_cache_environment.keys() | length > 0
+
 - include: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 
 - name: Generate apt keys from LXC host for the container cache

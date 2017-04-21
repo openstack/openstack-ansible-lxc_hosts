@@ -15,7 +15,7 @@
 
 # NOTE(cloudnull): When modern SystemD is running everywhere this can be
 #  collapsed back into the base preparation task file.
-- name : Remove old image cache
+- name: Remove old image cache
   command: "machinectl remove {{ lxc_container_base_name }}"
   register: cache_refresh
   changed_when: cache_refresh.rc == 0
