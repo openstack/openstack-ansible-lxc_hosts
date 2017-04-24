@@ -20,7 +20,7 @@
 #  by the machinectl cli on first run.
 - name : Create volume
   shell: |
-    if [[ ! "$(ls -lh /var/lib/machines.raw | awk '{print $5}')" == "{{ lxc_host_machine_volume_size }}G" ]]; then
+    if [[ "$(ls -lh /var/lib/machines.raw | awk '{print $5}')" != "{{ lxc_host_machine_volume_size }}.0G" ]]; then
       if [[ ! -f "/var/lib/machines.raw" ]]; then
         truncate -s {{ lxc_host_machine_volume_size }}G /var/lib/machines.raw
         exit 3
@@ -29,6 +29,8 @@
   register: machines_create
   changed_when: machines_create.rc == 3
   failed_when: machines_create.rc not in [0, 3]
+  args:
+    executable: /bin/bash
   when:
     - lxc_image_cache_refresh | bool
 
