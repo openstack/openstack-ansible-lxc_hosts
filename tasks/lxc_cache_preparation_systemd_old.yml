@@ -63,8 +63,8 @@
 #  the following ML post resolves the bug.
 #  * https://lists.freedesktop.org/archives/systemd-devel/2015-March/029151.html
 - name: Move machined service into place
-  copy:
-    src: systemd-machined.service
+  template:
+    src: systemd-machined.service.j2
     dest: /etc/systemd/system/systemd-machined.service
   register: machined_unit
   when:

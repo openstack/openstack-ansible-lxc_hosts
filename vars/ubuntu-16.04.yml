@@ -43,6 +43,7 @@ lxc_hosts_distro_packages:
 lxc_xz_bin: pxz
 
 system_config_dir: "/etc/default"
+systemd_utils_prefix: "/lib/systemd"
 lxc_cache_map:
   distro: ubuntu
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
