@@ -54,7 +54,7 @@
 - name: Move machines mount into place
   copy:
     src: var-lib-machines.mount
-    dest: /lib/systemd/system/var-lib-machines.mount
+    dest: /etc/systemd/system/var-lib-machines.mount
   register: mount_unit
   when:
     - machines_create | changed
@@ -65,7 +65,7 @@
 - name: Move machined service into place
   copy:
     src: systemd-machined.service
-    dest: /lib/systemd/system/systemd-machined.service
+    dest: /etc/systemd/system/systemd-machined.service
   register: machined_unit
   when:
     - machines_create | changed
