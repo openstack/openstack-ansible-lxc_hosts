@@ -16,6 +16,7 @@
 - name: Playbook for role testing
   hosts: localhost
   connection: local
+  become: true
   pre_tasks:
     - name: Show host facts
       debug:
