@@ -61,6 +61,7 @@ ChangeLog
 releasenotes/build
 
 # Test temp files
+tests/common
 tests/plugins
 tests/playbooks
 tests/test.retry

@@ -75,6 +75,15 @@
       set_fact:
         interface_file: "{{ _rhel_interface_file.stdout }}"
       when: ansible_os_family | lower == "redhat"
+    - name: SUSE - Get deployed interface file contents, without Ansible managed line
+      shell: |
+        cat /etc/sysconfig/network/ifcfg-lxcbr0 | tail -n +3
+      register: _suse_interface_file
+      when: ansible_os_family | lower == "suse"
+    - name: SUSE - interface file fact
+      set_fact:
+        interface_file: "{{ _suse_interface_file.stdout }}"
+      when: ansible_os_family | lower == "suse"
     - name: Get bridge interface facts
       setup:
         filter: ansible_lxcbr0
