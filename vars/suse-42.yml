@@ -20,6 +20,7 @@ systemd_utils_prefix: "/usr/lib/systemd"
 # Required rpm packages.
 lxc_hosts_distro_packages:
   - apparmor-parser
+  - apparmor-profiles
   - apparmor-utils
   - bridge-utils
   - dnsmasq
