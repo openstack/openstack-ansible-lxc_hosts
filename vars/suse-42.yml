@@ -63,6 +63,10 @@ lxc_cache_map:
     else
       rm -f /etc/resolv.conf
     fi
+    # NOTE(hwoarang): Enable sshd which has been explicitely disabled in
+    # https://github.com/lxc/lxc-ci/commit/8dc7105399350a59698538a12b6d5a1a880ef2ba
+    systemctl -q unmask sshd
+    systemctl -q enable sshd
     {{ lxc_cache_prep_post_commands }}
 
 lxc_cache_distro_packages:
