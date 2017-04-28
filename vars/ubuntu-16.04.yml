@@ -66,6 +66,7 @@ lxc_cache_map:
     apt-key add /root/repo.keys
     rm /root/repo.keys
     export DEBIAN_FRONTEND=noninteractive
+    apt-get remove -y --purge snap* lxc* lxd* || true
     apt-get update
     apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_distro_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
