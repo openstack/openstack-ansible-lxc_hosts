@@ -31,7 +31,6 @@
     tar -Opc -C {{ lxc_image_cache_path }} . | {{ lxc_xz_bin }} -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ cache_path_fact }}/"
-  notify: Destroy base container
   tags:
     - skip_ansible_lint
 
