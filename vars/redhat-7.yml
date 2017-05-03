@@ -60,11 +60,6 @@ lxc_cache_map:
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
-    curl -sL -o /tmp/rdo-release-ocata.rpm https://repos.fedorapeople.org/repos/openstack/openstack-ocata/rdo-release-ocata.rpm
-    /usr/bin/yum --nogpgcheck -y install /tmp/rdo-release-ocata.rpm || true
-    yum-config-manager --enable openstack-ocata --setopt="openstack-ocata.priority=50" --enable rdo-qemu-ev --setopt="rdo-qemu-ev.priority=50" \
-       --enable base --setopt="base.priority=50" --enable updates --setopt="updates.priority=50" --enable extras --setopt="extras.priority=50" \
-       --enable epel
     yum clean all
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
