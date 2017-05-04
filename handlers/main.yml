@@ -44,12 +44,3 @@
 
 - name: Veth check
   command: "/usr/local/bin/lxc-veth-check"
-
-- name: Destroy base container
-  lxc_container:
-    name: "LXC_NAME"
-    state: absent
-  register: cache_destroy
-  retries: 3
-  delay: 10
-  until: cache_destroy|success
