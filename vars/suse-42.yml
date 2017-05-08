@@ -86,5 +86,5 @@ lxc_cached_network_interfaces:
     dest: "/etc/sysconfig/network/ifcfg-lxcbr0"
 
 lxc_container_default_interfaces: |
-  DEVICE=eth0
+  STARTMODE=auto
   BOOTPROTO=dhcp
