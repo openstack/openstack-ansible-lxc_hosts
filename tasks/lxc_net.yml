@@ -29,6 +29,24 @@
     - lxc-bridge
     - lxc-interfaces
 
+- name: Drop lxc net bridge routes (SUSE)
+  template:
+    src: "lxc-net-suse-routes.cfg.j2"
+    dest: "/etc/sysconfig/network/ifroute-{{ lxc_net_bridge }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  when:
+    - lxc_net_gateway is not none
+    - ansible_pkg_mgr == "zypper"
+  notify:
+    - Bring bridge up
+  tags:
+    - lxc-files
+    - lxc-net
+    - lxc-bridge
+    - lxc-interfaces
+
 # All Debian installations of LXC use the lxc-net service. This service breaks our network
 #  model and needs to be disabled
 - name: Disable and stop lxc-net
