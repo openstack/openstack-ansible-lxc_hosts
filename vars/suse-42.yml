@@ -83,7 +83,7 @@ lxc_cache_distro_packages:
 
 lxc_cached_network_interfaces:
   - src: "lxc-net-suse-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network/ifcfg-lxcbr0"
+    dest: "/etc/sysconfig/network/ifcfg-{{ lxc_net_bridge }}"
 
 lxc_container_default_interfaces: |
   STARTMODE=auto
