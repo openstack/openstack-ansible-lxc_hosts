@@ -75,6 +75,7 @@ lxc_cache_distro_packages:
   - openssh
   - python-devel
   - python
+  - python-xml
   - rsync
   - sudo
   - wget
