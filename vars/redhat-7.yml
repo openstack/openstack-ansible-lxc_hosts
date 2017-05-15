@@ -88,7 +88,7 @@ lxc_cache_distro_packages:
 
 lxc_cached_network_interfaces:
   - src: "lxc-net-redhat-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifcfg-lxcbr0"
+    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ lxc_net_bridge }}"
 
 lxc_container_default_interfaces: |
   DEVICE=eth0
