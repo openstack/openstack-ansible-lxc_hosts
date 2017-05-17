@@ -68,6 +68,7 @@ lxc_cache_map:
 
 lxc_cache_distro_packages:
   - ca-certificates
+  - cronie
   - epel-release
   - git
   - openssh-server
