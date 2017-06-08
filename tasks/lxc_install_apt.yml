@@ -15,7 +15,7 @@
 
 - name: Install apt packages
   apt:
-    pkg: "{{ item }}"
+    pkg: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
     default_release: "{{ lxc_default_release | default(omit) }}"
     update_cache: yes
@@ -24,7 +24,6 @@
   until: install_packages|success
   retries: 5
   delay: 2
-  with_items: "{{ lxc_hosts_distro_packages }}"
   tags:
     - lxc-apt-packages
 
