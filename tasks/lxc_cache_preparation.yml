@@ -80,15 +80,6 @@
   tags:
     - skip_ansible_lint
 
-- name: Copy files from deployment host to the container cache
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ lxc_image_cache_path }}{{ item.dest | default(item.src) }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0644') }}"
-  with_items: "{{ lxc_container_cache_files }}"
-
 - name: Cached image preparation script
   copy:
     content: |
@@ -103,6 +94,15 @@
 - name: Prepare cached image setup commands
   command: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh"
   changed_when: false
+
+- name: Copy files from deployment host to the container cache
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ lxc_image_cache_path }}{{ item.dest | default(item.src) }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  with_items: "{{ lxc_container_cache_files }}"
 
 - name: Adjust sshd configuration in container
   lineinfile:
