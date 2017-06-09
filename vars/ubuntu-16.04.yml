@@ -67,7 +67,9 @@ lxc_cache_map:
     rm /root/repo.keys
     export DEBIAN_FRONTEND=noninteractive
     apt-get remove -y --purge snap* lxc* lxd* || true
+    # Update base distribution
     apt-get update
+    apt-get upgrade -y
     apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_distro_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
     rm -f /usr/bin/python
