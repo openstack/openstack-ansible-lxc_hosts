@@ -54,6 +54,8 @@ lxc_cache_map:
     {% endfor %}
     # Do a complete refresh and fetch the keys without asking
     zypper --gpg-auto-import-keys -n ref -f
+    # Update base distribution
+    zypper -n dup -l
     zypper -n in -l {{ lxc_cache_distro_packages | join(' ') }}
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network/ifcfg-eth0
