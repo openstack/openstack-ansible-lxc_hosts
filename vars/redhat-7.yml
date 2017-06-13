@@ -24,7 +24,10 @@ lxc_hosts_distro_packages:
   - libseccomp
   - libselinux
   - libselinux-devel
-  - lxc
+  ## TODO(odyssey4me):
+  # Remove the version once the solution for the following bug is found.
+  # https://bugs.launchpad.net/openstack-ansible/+bug/1697531
+  - lxc-2.0.6
   - lxc-devel
   - lxc-libs
   - lxc-templates
