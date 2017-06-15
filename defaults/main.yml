@@ -29,7 +29,7 @@ lxc_architecture_mapping:
   ppc64le: ppc64el
 
 # Set the volume size in gigabytes for the machine image caches.
-lxc_host_machine_volume_size: 8
+lxc_host_machine_volume_size: 16
 
 # lxc container rootfs directory and cache path
 lxc_container_directory: "/var/lib/lxc"
