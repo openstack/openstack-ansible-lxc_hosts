@@ -50,6 +50,19 @@
     - lxc-files
     - lxc-config
 
+- name: Set systemd DefaultTasksMax value
+  lineinfile:
+    dest: /etc/systemd/system.conf
+    state: present
+    regexp: "^.*DefaultTasksMax.*$"
+    line: "DefaultTasksMax={{ lxc_default_tasks_max }} # Managed by Ansible"
+  when:
+    - ansible_service_mgr == 'systemd'
+  notify:
+    - Reload systemd units
+  tags:
+    - lxc-config
+
 # Ensure apparmor reindex runs before other things that may fail
 - meta: flush_handlers
 

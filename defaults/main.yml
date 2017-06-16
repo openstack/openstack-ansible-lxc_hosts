@@ -31,6 +31,10 @@ lxc_architecture_mapping:
 # Set the volume size in gigabytes for the machine image caches.
 lxc_host_machine_volume_size: 16
 
+# DefaultTasksMax systemd value. It's not recommended to change this value as it
+# could prevent new processes from starting on busy containers.
+lxc_default_tasks_max: 8192
+
 # lxc container rootfs directory and cache path
 lxc_container_directory: "/var/lib/lxc"
 lxc_container_cache_path: "/var/cache/lxc/download"
