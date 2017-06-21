@@ -39,6 +39,8 @@
     url: "{{ lxc_image_cache_server }}/{{ item.split(';')[-1] }}/meta.tar.xz"
     dest: "/tmp/meta.tar.xz"
   with_items: "{{ lxc_images }}"
+  retries: 5
+  delay: 2
 
 - name: Place container metadata
   unarchive:

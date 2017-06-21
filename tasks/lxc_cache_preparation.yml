@@ -23,6 +23,8 @@
     url: "{{ lxc_image_cache_server }}/meta/1.0/index-system"
     return_content: yes
   register: image_index
+  retries: 5
+  delay: 2
 
 - name: Set image index fact
   set_fact:

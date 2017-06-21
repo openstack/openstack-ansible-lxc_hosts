@@ -133,8 +133,8 @@
     dest: "/tmp/rootfs.tar.xz"
   register: pull_image
   until: pull_image | success
-  retries: 3
-  delay: 1
+  retries: 5
+  delay: 2
   with_items: "{{ lxc_images }}"
 
 - name: Place container rootfs
