@@ -62,11 +62,10 @@ releasenotes/build
 
 # Test temp files
 tests/common
-tests/plugins
-tests/playbooks
-tests/test.retry
+tests/*.retry
 
 # Vagrant artifacts
 .vagrant
 
-
+# Git clones
+openstack-ansible-ops
