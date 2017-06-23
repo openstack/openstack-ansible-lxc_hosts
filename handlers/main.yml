@@ -44,3 +44,10 @@
 
 - name: Veth check
   command: "/usr/local/bin/lxc-veth-check"
+
+- name: Reload systemd units
+  systemd:
+    # TODO(hwoarang): We only want to reload the units so the 'name'
+    # parameter can be removed when we move to Ansible 2.4
+    name: it_does_not_matter
+    daemon_reload: yes
