@@ -85,6 +85,7 @@ lxc_cache_distro_packages:
   - ca-certificates
   - openssh-server
   - python2
+  - rsync
   - sudo
   - wget
   - tar

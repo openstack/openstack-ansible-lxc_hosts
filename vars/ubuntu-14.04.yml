@@ -97,6 +97,7 @@ lxc_cache_distro_packages:
   - iptables
   - openssh-server
   - python2.7
+  - rsync
   - systemd-shim
   - time
 
