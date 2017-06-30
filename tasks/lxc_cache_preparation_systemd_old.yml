@@ -95,8 +95,12 @@
   when:
     - machine1_conf | changed
 
+# Ignore the Ansible warning here about using 'mount' via the shell module
+# instead of using the mount Ansible module.
 - name: Mount all
   shell: "mount | grep '/var/lib/machines' || (systemctl start var-lib-machines.mount && exit 3)"
+  args:
+    warn: no
   register: mount_machines
   changed_when: mount_machines.rc == 3
   failed_when: mount_machines.rc not in [0, 3]
