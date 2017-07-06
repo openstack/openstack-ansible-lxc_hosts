@@ -55,7 +55,7 @@
     dest: /etc/systemd/system.conf
     state: present
     regexp: "^.*DefaultTasksMax.*$"
-    line: "DefaultTasksMax={{ lxc_default_tasks_max }} # Managed by Ansible"
+    line: "DefaultTasksMax={{ lxc_default_tasks_max }}"
   when:
     - ansible_service_mgr == 'systemd'
   notify:
