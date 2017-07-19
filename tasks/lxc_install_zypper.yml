@@ -24,6 +24,23 @@
   tags:
     - lxc-packages
 
+# NOTE(hwoarang) default dnsmasq profile is too restrictive so we
+# need to adjust it for neutron.
+- name: Relax dnsmasq apparmor profile
+  blockinfile:
+    path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
+    block: |-
+      /etc/neutron/* r,
+      /var/log/neutron/* rw,
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+  notify:
+    - Start apparmor
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
+
 - name: Drop lxc-openstack apparmor profile
   template:
     src: "lxc-openstack.apparmor.j2"
