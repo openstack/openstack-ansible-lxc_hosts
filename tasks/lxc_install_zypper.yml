@@ -30,8 +30,9 @@
   blockinfile:
     path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
     block: |-
-      /etc/neutron/* r,
-      /var/log/neutron/* rw,
+      /etc/neutron/** r,
+      /var/log/neutron/** rw,
+      /var/lib/neutron/** rw,
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
   notify:
     - Start apparmor
