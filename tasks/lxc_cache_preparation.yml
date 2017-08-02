@@ -69,8 +69,6 @@
   when:
     - ansible_pkg_mgr == 'apt'
 
-# TODO(evrardjp): replace this with a copy with remote_src: True
-# when ansible2.0 will be supported
 - name: Rsyncing files from the LXC host to the container cache
   shell: |
     if [[ -e "{{ item }}" ]]; then
@@ -78,7 +76,7 @@
     fi
   args:
     executable: "/bin/bash"
-  with_items: "{{ lxc_cache_map.copy_from_host }}"
+  with_items: "{{ (lxc_cache_map.copy_from_host | union(lxc_container_cache_files_from_host)) | list }}"
   tags:
     - skip_ansible_lint
 

@@ -102,12 +102,20 @@ lxc_cache_sshd_configuration:
 # The compression ratio used when creating the container cache rootfs archive
 lxc_image_compression_ratio: 0
 
-# A list of files may be copied into the container image cache during its preparation.
+# A list of files may be copied into the container image cache from the
+# deployment host during its preparation.
 # Example:
 #   lxc_container_cache_files:
 #     - src: "/etc/openstack_deploy/files/etc/issue"
 #       dest: "/etc/issue"
 lxc_container_cache_files: []
+
+# A list of files may be copied into the container image cache from the
+# LXC host during its preparation.
+# Example:
+#   lxc_container_cache_files_from_host:
+#     - "/etc/apt/sources.list.d/myrepo.list"
+lxc_container_cache_files_from_host: []
 
 # DNS servers to use during cache preparation
 lxc_cache_prep_dns:
