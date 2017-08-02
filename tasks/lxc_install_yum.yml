@@ -50,8 +50,8 @@
   retries: 5
   delay: 2
 
-- name: Install yum packages
-  yum:
+- name: Install distro packages
+  package:
     pkg: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
   register: install_packages
