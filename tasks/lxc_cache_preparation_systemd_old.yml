@@ -133,7 +133,7 @@
 
 - name: Retrieve base image
   get_url:
-    url: "{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz"
+    url: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz"
     dest: "/tmp/rootfs.tar.xz"
   register: pull_image
   until: pull_image | success

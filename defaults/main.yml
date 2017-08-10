@@ -127,10 +127,13 @@ lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
 # The DNS name of the LXD server to source the base container cache from
-lxc_image_cache_server: https://images.linuxcontainers.org
+lxc_image_cache_server: images.linuxcontainers.org
+
+# The protocol to use to fetch from lxc_image_cache_server
+lxc_image_cache_server_proto: http
 
 # Path to images on server
-lxc_image_cache_server_path: "{{ lxc_image_cache_server }}/images/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/"
+lxc_image_cache_server_path: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}/images/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/"
 
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"

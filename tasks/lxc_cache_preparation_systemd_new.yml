@@ -36,7 +36,7 @@
     machinectl
     --verify=no
     {{ lxc_image_cache_pull_mode }}
-    {{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz
+    {{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz
     {{ lxc_container_base_name }}
   register: pull_image
   until: pull_image | success

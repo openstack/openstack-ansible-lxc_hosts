@@ -20,7 +20,7 @@
 
 - name: Retrieve Image Index
   uri:
-    url: "{{ lxc_image_cache_server }}/meta/1.0/index-system"
+    url: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}/meta/1.0/index-system"
     return_content: yes
   register: image_index
   retries: 5

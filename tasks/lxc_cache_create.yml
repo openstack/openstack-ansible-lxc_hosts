@@ -39,7 +39,7 @@
 
 - name: Update LXC image meta data
   get_url:
-    url: "{{ lxc_image_cache_server }}/{{ item.split(';')[-1] }}/meta.tar.xz"
+    url: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}/{{ item.split(';')[-1] }}/meta.tar.xz"
     dest: "/tmp/meta.tar.xz"
   with_items: "{{ lxc_images }}"
   retries: 5
