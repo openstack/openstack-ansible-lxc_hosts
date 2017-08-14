@@ -13,10 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Environment to use when building LXC caches
-# You can set http_proxy environment variables here for example
-# if you would like to proxy all image downloads
-lxc_cache_environment: {}
+# Validate certificates when downloading LXC templates
+lxc_hosts_validate_certs: yes
 
 # Set the package install state for distribution and pip packages
 # Options are 'present' and 'latest'
@@ -126,21 +124,25 @@ lxc_cache_prep_dns:
 lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
+# Set the servers to download LXC images from
+# NOTE(mhayden): The main images.linuxcontainers.org site will redirect
+# requests to (us|uk).images.linuxcontainers.org upon the first request. We
+# add the mirrors here to get around some HTTP 400 errors and allow aria2 to
+# download from both mirrors at the same time.
+lxc_image_cache_server_mirrors:
+  - https://us.images.linuxcontainers.org
+  - https://uk.images.linuxcontainers.org
+
 # The DNS name of the LXD server to source the base container cache from
-lxc_image_cache_server: images.linuxcontainers.org
-
-# The protocol to use to fetch from lxc_image_cache_server
-lxc_image_cache_server_proto: http
-
-# Path to images on server
-lxc_image_cache_server_path: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}/images/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}/"
+# NOTE(cloudnull): This var should be removed in R.
+lxc_image_cache_server: "{{ lxc_image_cache_server_mirrors[0].strip('http(?s)://') }}"
 
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
 
 # Mode to pull image. This is used to pull the image from a remote source.
-#  Valid options are [pull-tar, pull-raw]
-lxc_image_cache_pull_mode: pull-tar
+#  Valid options are [import-tar, import-raw]
+lxc_image_cache_pull_mode: import-tar
 
 # Set this option to true to pull a new cached image.
 lxc_image_cache_refresh: false

@@ -50,6 +50,10 @@
   tags:
     - lxc_hosts-install
 
+- include: lxc_cache_prestage.yml
+  tags:
+    - lxc_hosts-config
+
 - include: lxc_post_install.yml
   tags:
     - lxc_hosts-config

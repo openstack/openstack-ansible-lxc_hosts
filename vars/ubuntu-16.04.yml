@@ -20,6 +20,7 @@ cache_timeout: 600
 lxc_hosts_distro_packages:
   - apparmor
   - apparmor-utils
+  - aria2
   - bridge-utils
   - btrfs-tools
   - cgmanager

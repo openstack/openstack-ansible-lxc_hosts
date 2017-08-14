@@ -13,14 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set LXC cache path fact
-  set_fact:
-    cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
-    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }}"
-    cache_time: "{{ ansible_date_time.epoch }}"
-  tags:
-    - always
-
 - name : Check cached image status
   command: "machinectl image-status {{ lxc_container_base_name }}"
   register: cache_check

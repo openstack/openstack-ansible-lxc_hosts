@@ -1,0 +1,78 @@
+---
+# Copyright 2017, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Set LXC cache path fact
+  set_fact:
+    cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
+    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }}"
+    cache_time: "{{ ansible_date_time.epoch }}"
+  tags:
+    - always
+
+- name: Fetch LXC image-index
+  shell: >
+    aria2c
+    --max-connection-per-server=4
+    --continue
+    --allow-overwrite=true
+    --dir=/tmp
+    --out=index-system
+    --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
+    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/meta/1.0/index-system {% endfor %}
+  args:
+    warn: no
+  tags:
+    - skip_ansible_lint
+    - always
+
+- name: Retrieve the expiry object
+  slurp:
+    src: "/tmp/index-system"
+  changed_when: false
+  register: image_index
+  tags:
+    - always
+
+- name: Set image index fact
+  set_fact:
+    lxc_images: >
+      {%- set images = [] %}
+      {%- for image in (image_index.content | b64decode).splitlines() %}
+      {%- if image | match("^" + cache_index_item) %}
+      {%- set _ = images.append(image) %}
+      {%- endif %}
+      {%- endfor %}
+      {{- images -}}
+
+- name: Pre-stage the LXC image on the system
+  shell: >
+    aria2c
+    --max-connection-per-server=4
+    --continue
+    --allow-overwrite=true
+    --dir=/tmp
+    --out=rootfs.tar.xz
+    --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
+    {% for server in lxc_image_cache_server_mirrors %}{{ server }}{{ item.split(';')[-1] }}rootfs.tar.xz {% endfor %}
+  args:
+    warn: no
+  register: prestage_image
+  async: 300
+  poll: 0
+  with_items:
+    - "{{ lxc_images }}"
+  tags:
+    - skip_ansible_lint
+    - always
