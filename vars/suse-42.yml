@@ -23,6 +23,7 @@ lxc_hosts_distro_packages:
   - apparmor-profiles
   - apparmor-utils
   - bridge-utils
+  - btrfsprogs
   - dnsmasq
   - git-core
   - libseccomp2
