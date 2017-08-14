@@ -37,19 +37,34 @@
   tags:
     - skip_ansible_lint
 
-- name: Update LXC image meta data
-  get_url:
-    url: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}/{{ item.split(';')[-1] }}/meta.tar.xz"
-    dest: "/tmp/meta.tar.xz"
-  with_items: "{{ lxc_images }}"
-  retries: 5
-  delay: 2
+- name: Fetch LXC image-metadata
+  shell: >
+    aria2c
+    --max-connection-per-server=4
+    --continue
+    --allow-overwrite=true
+    --dir=/tmp
+    --out=meta.tar.xz
+    --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
+    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/{{ item.split(';')[-1] }}/meta.tar.xz {% endfor %}
+  args:
+    warn: no
+  with_items:
+    - "{{ lxc_images }}"
+  tags:
+    - skip_ansible_lint
+    - always
 
 - name: Place container metadata
   unarchive:
     src: "/tmp/meta.tar.xz"
     dest: "{{ cache_path_fact }}"
     remote_src: True
+
+- name: Remove metadata archive
+  file:
+    path: "/tmp/meta.tar.xz"
+    state: "absent"
 
 - name: Set cache expiry
   shell: "date -d @{{ (cache_time | int) + 31536000 }} > {{ cache_path_fact }}/expiry"
@@ -72,7 +87,6 @@
   retries: 3
   delay: 10
   until: cache_download|success
-  environment: "{{ lxc_cache_environment }}"
   when:
     - lxc_container_backing_store is defined
     - lxc_container_backing_store == 'overlayfs'
@@ -88,7 +102,6 @@
   retries: 3
   delay: 10
   until: cache_download|success
-  environment: "{{ lxc_cache_environment }}"
   when:
     - lxc_container_backing_store is defined
     - lxc_container_backing_store == 'lvm'

@@ -115,7 +115,7 @@
 # Because of this post and it's related bug(s) this is adding the container
 #  volumes the old way. The new way would simply be calling `machinectl`.
 #  * https://www.mail-archive.com/systemd-devel@lists.freedesktop.org/msg28255.html
-- name : Remove old image cache
+- name: Remove old image cache
   command: "btrfs subvolume delete /var/lib/machines/{{ lxc_container_base_name }}"
   register: cache_refresh_del
   changed_when: cache_refresh_del.rc == 0
@@ -123,7 +123,7 @@
   when:
     - lxc_image_cache_refresh | bool
 
-- name : Add image cache
+- name: Add image cache
   command: "btrfs subvolume create /var/lib/machines/{{ lxc_container_base_name }}"
   register: cache_refresh_add
   changed_when: cache_refresh_add.rc == 0
@@ -131,23 +131,17 @@
   when:
     - lxc_image_cache_refresh | bool
 
-- name: Retrieve base image
-  get_url:
-    url: "{{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz"
-    dest: "/tmp/rootfs.tar.xz"
-  register: pull_image
-  until: pull_image | success
-  retries: 5
-  delay: 2
-  with_items: "{{ lxc_images }}"
+- name: Ensure image has been pre-staged
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 30
+  with_items:
+    - "{{ prestage_image.results }}"
 
 - name: Place container rootfs
   unarchive:
     src: "/tmp/rootfs.tar.xz"
     dest: "/var/lib/machines/{{ lxc_container_base_name }}"
     remote_src: True
-
-- name: Remove rootfs archive
-  file:
-    path: "/tmp/rootfs.tar.xz"
-    state: "absent"

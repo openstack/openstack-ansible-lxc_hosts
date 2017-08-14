@@ -25,18 +25,27 @@
 
 # NOTE(cloudnull): When modern SystemD is running everywhere this can be
 #  collapsed back into the base preparation task file.
-- name : Set volume size
+- name: Set volume size
   shell: machinectl set-limit {{ lxc_host_machine_volume_size }}G
   changed_when: false
   args:
     executable: /bin/bash
+
+- name: Ensure image has been pre-staged
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 30
+  with_items:
+    - "{{ prestage_image.results }}"
 
 - name: Retrieve base image
   command: >-
     machinectl
     --verify=no
     {{ lxc_image_cache_pull_mode }}
-    {{ lxc_image_cache_server_proto }}://{{ lxc_image_cache_server }}{{ item.split(';')[-1] }}rootfs.tar.xz
+    /tmp/rootfs.tar.xz
     {{ lxc_container_base_name }}
   register: pull_image
   until: pull_image | success

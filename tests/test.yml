@@ -67,7 +67,7 @@
         - skip_ansible_lint
     - name: Set a fact to override lxc_image_cache_server value when in nodepool
       set_fact:
-        lxc_image_cache_server: "{{ lxc_reverse_proxy.stdout }}"
+        lxc_image_cache_server_mirrors: ["http://{{ lxc_reverse_proxy.stdout.strip('/') }}"]
       when:
         - nodepool.stat.exists | bool
 
