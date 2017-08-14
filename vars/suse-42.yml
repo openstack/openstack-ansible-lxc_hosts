@@ -35,11 +35,7 @@ lxc_xz_bin: xz
 lxc_cache_map:
   distro: opensuse
   arch: amd64
-  # NOTE(hwoarang): Ideally we would like to match the container version with
-  # that of the running host but images.linuxcontainers.org does not have a
-  # 42.1 images so our only option is to always use 42.2 for LXCs. As such we
-  # can't share many files with the host.
-  release: "42.2"
+  release: "{{ ansible_distribution_version }}"
   copy_from_host:
     - /etc/environment
     - /etc/localtime
