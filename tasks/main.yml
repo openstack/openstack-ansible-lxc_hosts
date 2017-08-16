@@ -62,10 +62,6 @@
   tags:
     - lxc_hosts-config
 
-- include: lxc_dnsmasq_cleanup.yml
-  tags:
-    - lxc_hosts-config
-
 - include: lxc_cache.yml
   tags:
     - lxc_hosts-install
