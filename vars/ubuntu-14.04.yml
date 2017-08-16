@@ -24,7 +24,7 @@ lxc_hosts_distro_packages:
   - cgmanager
   - cgroup-lite
   - debootstrap
-  - dnsmasq
+  - dnsmasq-base
   - git
   - irqbalance
   - language-pack-en
@@ -35,6 +35,10 @@ lxc_hosts_distro_packages:
   - python-dev
   - python3-lxc
   - pxz
+
+# Package to remove from the host
+lxc_hosts_remove_distro_packages:
+  - dnsmasq
 
 lxc_xz_bin: pxz
 

@@ -37,6 +37,15 @@
   tags:
     - lxc-apt-packages
 
+- name: Remove conflicting packages
+  apt:
+    pkg: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items: "{{ lxc_hosts_remove_distro_packages }}"
+  tags:
+    - lxc-apt-packages
+
 - name: Install apt packages
   apt:
     pkg: "{{ item }}"
