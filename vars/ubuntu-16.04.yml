@@ -27,7 +27,7 @@ lxc_hosts_distro_packages:
   - cgroup-lite
   - dbus
   - debootstrap
-  - dnsmasq
+  - dnsmasq-base
   - git
   - iptables
   - irqbalance
@@ -40,6 +40,10 @@ lxc_hosts_distro_packages:
   - python3-lxc
   - systemd-container
   - pxz
+
+# Package to remove from the host
+lxc_hosts_remove_distro_packages:
+  - dnsmasq
 
 lxc_xz_bin: pxz
 
