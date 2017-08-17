@@ -180,6 +180,7 @@ function start_dnsmasq {
                                 --dhcp-no-override \
                                 --strict-order \
                                 --bind-interfaces \
+                                --no-hosts \
                                 --dhcp-authoritative $LXC_IPV6_ARG
     success "dnsmasq started."
 }
