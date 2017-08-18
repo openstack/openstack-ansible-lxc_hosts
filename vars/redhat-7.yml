@@ -43,11 +43,11 @@ lxc_cache_map:
   arch: amd64
   release: 7
   copy_from_host:
-    - /etc/yum.repos.d/
-    - /etc/yum/pluginconf.d/fastestmirror.conf
-    - /etc/pki/rpm-gpg/
     - /etc/environment
     - /etc/localtime
+    - /etc/pki/rpm-gpg/
+    - /etc/yum/pluginconf.d/fastestmirror.conf
+    - /etc/yum.repos.d/
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
     mkdir -p /etc/ansible/facts.d/
