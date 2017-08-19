@@ -93,6 +93,21 @@
     - lxc-post-down
     - lxc_hosts-config
 
+# NOTE(hwoarang) The newuidmap and newgidmap binaries do not have setuid bit
+# set and that causes lxc-2.X.X to fail. As such, make sure the files have
+# the correct mode.
+# https://bugzilla.opensuse.org/show_bug.cgi?id=1054609
+- name: Set setuid bit for newuidmap and newgidmap binaries (bsc#1054609)
+  file:
+    path: "{{ item }}"
+    mode: 04755
+  with_items:
+    - "/usr/bin/newuidmap"
+    - "/usr/bin/newgidmap"
+  tags:
+    - lxc-files
+    - lxc_hosts-config
+
 - name: Flush handler to reload apparmor profiles
   meta: flush_handlers
 
