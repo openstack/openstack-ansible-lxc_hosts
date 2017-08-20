@@ -63,6 +63,44 @@
   tags:
     - lxc-config
 
+# NOTE(hwoarang): The previous task only affected newly created services.
+# However, for particular systemd versions like v228 the default one for
+# started scopes is 512
+# See https://github.com/systemd/systemd/commit/9ded9cd14cc03c67291b10a5c42ce5094ba0912f
+# This has later been fixed in v231
+# https://github.com/systemd/systemd/commit/79baeeb96d58676853521e10a358e85d83dac7f1
+# The only way to change the value for already started services and scopes is
+# by using the sysfs interface. Moreover, it appears that lxc places itself into the
+# init.scope group which is being created during boot and as such it always uses
+# the default value. There are variours reports that the init.scope breaks things
+# for LXC such as
+# https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/1497420
+# https://github.com/lxc/lxc/issues/713
+# https://bugs.archlinux.org/index.php?do=details&action=details.addvote&task_id=47303
+# In any case, it's best to also edit the pids controller to ensure that a
+# better max value is used in the init.scope
+- name: Determine if init.scope cgroup hierarchy exists
+  stat:
+    path: "/sys/fs/cgroup/pids/init.scope/pids.max"
+  register: init_scope_cgroup
+  when: ansible_service_mgr == 'systemd'
+
+- name: Get init.scope pids.max value
+  command: cat /sys/fs/cgroup/pids/init.scope/pids.max
+  register: init_scope_cgroup_pids_max
+  when:
+    - init_scope_cgroup.stat.exists
+    - ansible_service_mgr == 'systemd'
+
+- name: Set systemd pids.max in init.scope
+  shell: "echo {{ lxc_default_tasks_max }} > /sys/fs/cgroup/pids/init.scope/pids.max"
+  when:
+    - init_scope_cgroup.stat.exists
+    - init_scope_cgroup_pids_max.stdout != lxc_default_tasks_max
+    - ansible_service_mgr == 'systemd'
+  tags:
+    - lxc-config
+
 # Ensure apparmor reindex runs before other things that may fail
 - meta: flush_handlers
 
