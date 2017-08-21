@@ -33,6 +33,7 @@
       /etc/neutron/** r,
       /var/log/neutron/** rw,
       /var/lib/neutron/** rw,
+      capability chown,
     marker: "# {mark} ANSIBLE MANAGED BLOCK"
   notify:
     - Start apparmor
