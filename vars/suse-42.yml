@@ -51,6 +51,10 @@ lxc_cache_map:
     {% endfor %}
     # Do a complete refresh and fetch the keys without asking
     zypper --gpg-auto-import-keys -n ref -f
+    # Disable recommended packages. Only update what's really needed
+    if ! fgrep -qx "solver.onlyRequires = true" /etc/zypp/zypp.conf; then
+        echo -e "\n\n## Disable recommended packages\nsolver.onlyRequires = true" >> /etc/zypp/zypp.conf
+    fi
     # Update base distribution
     zypper -n dup -l
     zypper -n in -l {{ lxc_cache_distro_packages | join(' ') }}
