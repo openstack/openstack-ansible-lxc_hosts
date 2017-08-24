@@ -74,6 +74,7 @@ lxc_cache_map:
 
 lxc_cache_distro_packages:
   - ca-certificates
+  - ca-certificates-mozilla
   - git-core
   - openssh
   - python-devel
