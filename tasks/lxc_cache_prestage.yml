@@ -66,6 +66,7 @@
     --out=rootfs.tar.xz
     --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
     {% for server in lxc_image_cache_server_mirrors %}{{ server }}{{ item.split(';')[-1] }}rootfs.tar.xz {% endfor %}
+    > /var/log/aria2c-image-prestage.log 2>&1
   args:
     warn: no
   register: prestage_image
