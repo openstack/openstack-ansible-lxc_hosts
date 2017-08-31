@@ -77,6 +77,7 @@
   service:
     name: lxc-net
     enabled: yes
+    state: started
   when:
     - ansible_os_family == 'RedHat'
   tags:
