@@ -13,6 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+- name: Add zypper containers repository
+  zypper_repository:
+    auto_import_keys: yes
+    autorefresh: yes
+    name: "{{ item.name }}"
+    repo: "{{ item.uri }}"
+    runrefresh: yes
+  with_items: "{{ lxc_hosts_external_repo }}"
+  tags:
+    - lxc_hosts-config
+
 - name: Install zypper packages
   zypper:
     name: "{{ lxc_hosts_distro_packages }}"
