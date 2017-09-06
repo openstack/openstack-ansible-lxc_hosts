@@ -56,7 +56,7 @@
     enabled: no
     state: stopped
   when:
-    - ansible_os_family in ["Debian", "RedHat"]
+    - ansible_os_family in ["Debian", "RedHat", "Suse"]
   tags:
     - lxc-net
 
@@ -67,7 +67,7 @@
     state: link
   when:
     - ansible_service_mgr == 'systemd'
-    - ansible_os_family in ["Debian", "RedHat"]
+    - ansible_os_family in ["Debian", "RedHat", "Suse"]
   tags:
     - lxc-files
     - lxc-net
