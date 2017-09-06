@@ -39,6 +39,14 @@
     - lxc-files
     - lxc-config
 
+- name: Create machinectl base template
+  copy:
+    src: "lxc-machinectl.j2"
+    dest: "/usr/share/lxc/templates/lxc-machinectl"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
 - name: Drop lxc veth check script
   copy:
     src: "lxc-veth-check.sh"
