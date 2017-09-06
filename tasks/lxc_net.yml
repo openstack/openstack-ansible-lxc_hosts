@@ -55,8 +55,6 @@
     name: lxc-net
     enabled: no
     state: stopped
-  when:
-    - ansible_os_family in ["Debian", "RedHat", "Suse"]
   tags:
     - lxc-net
 
@@ -65,9 +63,6 @@
     src: /dev/null
     path: /etc/systemd/system/lxc-net.service
     state: link
-  when:
-    - ansible_service_mgr == 'systemd'
-    - ansible_os_family in ["Debian", "RedHat", "Suse"]
   tags:
     - lxc-files
     - lxc-net
