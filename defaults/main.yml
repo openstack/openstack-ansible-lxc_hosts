@@ -177,3 +177,11 @@ lxc_cache_download_template_options: >-
 # provided in EPEL is much too old (1.x).
 lxc_centos_package_baseurl: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/epel-7-x86_64/
 lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/pubkey.gpg
+
+## Set default mirror for openSUSE repositories
+# NOTE(hwoarang): Ensure that the full path to the 'opensuse' directory is used.
+# Additionally, set 'lxc_hosts_opensuse_mirror_obs_url' to a mirror which also mirrors
+# the OBS repositories. If you want to use the same mirror in both cases, then leave the
+# 'lxc_hosts_opensuse_mirror_obs_url' to its default value.
+lxc_hosts_opensuse_mirror_url: 'http://download.opensuse.org'
+lxc_hosts_opensuse_mirror_obs_url: "{{ lxc_hosts_opensuse_mirror_url }}"
