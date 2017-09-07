@@ -16,7 +16,7 @@
 
 lxc_hosts_external_repo:
   - name: "OBS:Virtualization:containers"
-    uri: "http://download.opensuse.org/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
+    uri: "{{ lxc_hosts_opensuse_mirror_obs_url }}/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
 
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/usr/lib/systemd"
@@ -45,6 +45,8 @@ lxc_cache_map:
   copy_from_host:
     - /etc/environment
     - /etc/localtime
+    - /etc/zypp/repos.d/repo-oss.repo
+    - /etc/zypp/repos.d/repo-update.repo
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
     mkdir -p /etc/ansible/facts.d/
@@ -54,6 +56,12 @@ lxc_cache_map:
     {% for resolver in lxc_cache_prep_dns %}
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
+    # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
+    find /etc/zypp/repos.d/ -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
+    zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
+    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
+    # Clean metadata
+    zypper -n clean -a
     # Do a complete refresh and fetch the keys without asking
     zypper --gpg-auto-import-keys -n ref -f
     # Disable recommended packages. Only update what's really needed
