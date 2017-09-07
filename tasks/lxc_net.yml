@@ -47,15 +47,16 @@
     - lxc-bridge
     - lxc-interfaces
 
-# All Debian installations of LXC use the lxc-net service. This service breaks our network
-#  model and needs to be disabled
+# NOTE(mhayden): There are ifup hooks that handle the customized LXC container
+# networking. Starting lxc-net will trample over these hooks and cause
+# networking issues for containers.
 - name: Disable and stop lxc-net
   service:
     name: lxc-net
     enabled: no
     state: stopped
   when:
-    - ansible_os_family == "Debian"
+    - ansible_os_family in ["Debian", "RedHat"]
   tags:
     - lxc-net
 
@@ -66,20 +67,9 @@
     state: link
   when:
     - ansible_service_mgr == 'systemd'
-    - ansible_os_family == "Debian"
+    - ansible_os_family in ["Debian", "RedHat"]
   tags:
     - lxc-files
-    - lxc-net
-
-# CentOS systems need the lxc-net service for LXC containers to boot with a
-# network interface.
-- name: Enable the lxc-net service upon reboot (CentOS)
-  service:
-    name: lxc-net
-    enabled: yes
-  when:
-    - ansible_os_family == 'RedHat'
-  tags:
     - lxc-net
 
 # All Debian based systems use the interfaces.d directory for extra network configs
