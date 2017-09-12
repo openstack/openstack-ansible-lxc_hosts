@@ -58,42 +58,6 @@
     - lxc-apparmor
     - lxc_hosts-config
 
-- name: Drop post up script
-  copy:
-    content: |
-      #!/usr/bin/env bash
-      if [ "${1}" == "{{ lxc_net_bridge }}" ];then
-        if [ "{{ lxc_net_nat }}" == "True" ];then
-          /usr/local/bin/lxc-system-manage iptables-create
-          /usr/local/bin/lxc-system-manage dnsmasq-start || true
-        fi
-      fi
-    dest: "/etc/sysconfig/network/scripts/ifup-post-{{ lxc_net_bridge }}"
-    owner: "root"
-    group: "root"
-    mode: "0755"
-  tags:
-    - lxc-post-up
-    - lxc_hosts-config
-
-- name: Drop post down script
-  copy:
-    content: |
-      #!/usr/bin/env bash
-      if [ "${1}" == "{{ lxc_net_bridge }}" ];then
-        if [ "{{ lxc_net_nat }}" == "True" ];then
-          /usr/local/bin/lxc-system-manage dnsmasq-stop
-          /usr/local/bin/lxc-system-manage iptables-remove
-        fi
-      fi
-    dest: "/etc/sysconfig/network/scripts/ifdown-post-{{ lxc_net_bridge }}"
-    owner: "root"
-    group: "root"
-    mode: "0755"
-  tags:
-    - lxc-post-down
-    - lxc_hosts-config
-
 # NOTE(hwoarang) The newuidmap and newgidmap binaries do not have setuid bit
 # set and that causes lxc-2.X.X to fail. As such, make sure the files have
 # the correct mode.
