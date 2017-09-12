@@ -125,6 +125,9 @@ lxc_cache_prep_dns:
 lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
+# List of packages to be installed into the base container cache
+lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages }}"
+
 # Set the servers to download LXC images from
 # NOTE(mhayden): The main images.linuxcontainers.org site will redirect
 # requests to (us|uk).images.linuxcontainers.org upon the first request. We

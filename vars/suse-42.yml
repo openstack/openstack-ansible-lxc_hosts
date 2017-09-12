@@ -84,7 +84,7 @@ lxc_cache_map:
     systemctl -q enable sshd
     {{ lxc_cache_prep_post_commands }}
 
-lxc_cache_distro_packages:
+_lxc_cache_distro_packages:
   - ca-certificates
   - ca-certificates-mozilla
   - git-core
