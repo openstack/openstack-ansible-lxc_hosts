@@ -57,7 +57,7 @@ lxc_cache_map:
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
     # Wipe default repositories and recreate them
-    find /etc/zypp/repos.d/*.repo -type f ! -name "repo-oss.repo"-o ! -name "repo-update.repo" -delete
+    find /etc/zypp/repos.d/*.repo -type f ! -name "repo-oss.repo" -o ! -name "repo-update.repo" -delete
     # In case the host didn't have any of these two repos then create it (althought that indicates that the host is not in a good state!)
     [[ ! -e /etc/zypp/repos.d/repo-oss.repo ]] && zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
     [[ ! -e /etc/zypp/repos.d/repo-update.repo ]] && zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
