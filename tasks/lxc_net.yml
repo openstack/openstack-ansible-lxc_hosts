@@ -19,10 +19,10 @@
     dest: "{{ item.dest }}"
     owner: "root"
     group: "root"
-    mode: "0644"
+    mode: "{{ item.mode | default('0644') }}"
   with_items: "{{ lxc_cached_network_interfaces }}"
   notify:
-    - Bring bridge up
+    - Restart bridge
   tags:
     - lxc-files
     - lxc-net
@@ -46,6 +46,24 @@
     - lxc-net
     - lxc-bridge
     - lxc-interfaces
+
+- name: Create networking post-up and post-down data for Red Hat
+  lineinfile:
+    dest: "{{ item.dest }}"
+    line: "{{ item.line }}"
+    insertbefore: "^exit\ 0$"
+  with_items:
+    - dest: "/etc/sysconfig/network-scripts/ifup-post"
+      line: ". /etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
+    - dest: "/etc/sysconfig/network-scripts/ifdown-post"
+      line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
+  when: ansible_os_family | lower == "redhat"
+  notify:
+    - Restart bridge
+  tags:
+    - lxc-post-up
+    - lxc-post-down
+    - lxc_hosts-config
 
 # NOTE(mhayden): There are ifup hooks that handle the customized LXC container
 # networking. Starting lxc-net will trample over these hooks and cause
@@ -79,22 +97,6 @@
   tags:
     - lxc-net
     - lxc-interfaces
-
-- name: Drop lxc net bridge - Debian
-  template:
-    src: "lxc-net-bridge.cfg.j2"
-    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  when:
-    - ansible_os_family == "Debian"
-  notify:
-    - Restart bridge
-  tags:
-    - lxc-files
-    - lxc-net
-    - lxc-bridge
 
 # Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists
