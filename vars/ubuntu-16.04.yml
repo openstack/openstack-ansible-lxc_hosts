@@ -99,7 +99,7 @@ lxc_cache_map:
 # ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
 lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes'
 
-lxc_cache_distro_packages:
+_lxc_cache_distro_packages:
   - apt-transport-https
   - build-essential
   - ca-certificates

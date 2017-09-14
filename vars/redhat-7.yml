@@ -81,7 +81,7 @@ lxc_cache_map:
     fi
     {{ lxc_cache_prep_post_commands }}
 
-lxc_cache_distro_packages:
+_lxc_cache_distro_packages:
   - ca-certificates
   - cronie
   - epel-release
