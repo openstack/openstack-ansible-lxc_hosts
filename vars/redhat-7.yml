@@ -85,6 +85,12 @@ lxc_cache_distro_packages:
 lxc_cached_network_interfaces:
   - src: "lxc-net-ifcfg-bridge.cfg.j2"
     dest: "/etc/sysconfig/network-scripts/ifcfg-lxcbr0"
+  - src: "lxc-net-redhat-postup.cfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
+    mode: "0755"
+  - src: "lxc-net-redhat-postdown.cfg.j2"
+    dest: "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
+    mode: "0755"
 
 lxc_container_default_interfaces: |
   DEVICE=eth0
