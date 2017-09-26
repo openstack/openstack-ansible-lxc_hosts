@@ -101,14 +101,15 @@ lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Option
 
 _lxc_cache_distro_packages:
   - apt-transport-https
-  - build-essential
   - ca-certificates
-  - git
-  - iptables
+  - cron # xenial doesn't have cronie
   - openssh-server
-  - python-dev
   - python2.7
   - rsync
+  - sudo
+  - tar
+  - wget
+  - debianutils # for 'which' executable
 
 lxc_cached_network_interfaces:
   - src: "lxc-net-bridge.cfg.j2"

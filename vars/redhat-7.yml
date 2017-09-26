@@ -83,14 +83,12 @@ _lxc_cache_distro_packages:
   - ca-certificates
   - cronie
   - epel-release
-  - git
   - openssh-server
-  - python-devel
   - python2
   - rsync
   - sudo
-  - wget
   - tar
+  - wget
   - which
   - yum-plugin-priorities
   - yum-utils

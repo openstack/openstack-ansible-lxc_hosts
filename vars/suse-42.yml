@@ -85,17 +85,15 @@ lxc_cache_map:
     {{ lxc_cache_prep_post_commands }}
 
 _lxc_cache_distro_packages:
-  - ca-certificates
   - ca-certificates-mozilla
-  - git-core
+  - cronie
   - openssh
-  - python-devel
   - python
   - python-xml
   - rsync
   - sudo
-  - wget
   - tar
+  - wget
   - which
 
 lxc_cached_network_interfaces:
