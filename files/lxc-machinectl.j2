@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+
+# Copyright 2017, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -eu
+
+
+## Vars ----------------------------------------------------------------------
+LXC_CACHE_BASE="/var/cache/lxc/"
+LXC_CACHE_PATH="${LXC_CACHE_PATH:-$LXC_CACHE_BASE}"
+LXC_HOOK_DIR="/usr/share/lxc/hooks"
+LXC_TEMPLATE_CONFIG="/usr/share/lxc/config"
+
+# Default variables
+DOWNLOAD_VARIANT=
+DOWNLOAD_DIST=
+DOWNLOAD_RELEASE=
+DOWNLOAD_ARCH=
+
+# NOTE(cloudnull): These variables are created magically through the
+#                  `lxc-create` command and must exist at the top of the file.
+LXC_NAME=
+LXC_PATH=
+LXC_ROOTFS=
+
+## Functions ------------------------------------------------------------------
+usage() {
+  # Return usage information
+  cat <<EOF
+LXC container image in machinectl
+
+Special arguments:
+[ -h | --help ]: Print this help message and exit.
+
+Required arguments:
+[ --name <name> ]: The container name
+[ -d | --dist <distribution> ]: The name of the distribution
+[ -r | --release <release> ]: Release name/version
+[ -a | --arch <architecture> ]: Architecture of the container
+
+Optional arguments:
+[ --variant <variant> ]: Variant of the image (default: "default")
+[ -b | --base <base-image> ]: Set the image base name to ANY existing machine image
+
+EOF
+
+}
+
+# Trap all exit signals
+trap EXIT HUP INT TERM
+
+## Exports --------------------------------------------------------------------
+# Make sure the usual locations are in PATH
+export PATH=$PATH:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin
+
+
+## Main -----------------------------------------------------------------------
+if ! options=$(getopt -o d:r:a:hl -l dist:,release:,arch:,help,list,variant:,name:,path:,rootfs: -- "$@"); then
+    usage
+    exit 1
+fi
+eval set -- "$options"
+
+while :; do
+    case "$1" in
+        -h|--help)     usage && exit 1;;
+        -l|--list)     DOWNLOAD_LIST_IMAGES="true"; shift 1;;
+        -d|--dist)     DOWNLOAD_DIST="$2"; shift 2;;
+        -r|--release)  DOWNLOAD_RELEASE="$2"; shift 2;;
+        -a|--arch)     DOWNLOAD_ARCH="$2"; shift 2;;
+        --variant)     DOWNLOAD_VARIANT="$2"; shift 2;;
+        --name)        LXC_NAME="$2"; shift 2;;
+        --path)        LXC_PATH="$2"; shift 2;;
+        --rootfs)      LXC_ROOTFS="$2"; shift 2;;
+        *)             break;;
+    esac
+done
+
+# Setup the basic information used for machine images
+if [ -z "${LXC_MACHINE_IMAGE:-}" ]; then
+  export LXC_MACHINE_IMAGE="${DOWNLOAD_DIST}-${DOWNLOAD_RELEASE}-${DOWNLOAD_ARCH}"
+fi
+
+# NOTE(cloudnull): If a variant name has not been defined, set it as "default".
+#                  If a variant is set, amend the machine image name
+if [ -z "${DOWNLOAD_VARIANT:-}" ]; then
+  export DOWNLOAD_VARIANT="default"
+fi
+
+# Setup the basic pathing pointing at the known LXC cache
+LXC_CACHE_PATH="${LXC_CACHE_PATH}/download/${DOWNLOAD_DIST}"
+LXC_CACHE_PATH="${LXC_CACHE_PATH}/${DOWNLOAD_RELEASE}/${DOWNLOAD_ARCH}/"
+export LXC_CACHE_PATH="${LXC_CACHE_PATH}/${DOWNLOAD_VARIANT}"
+
+# Check for required binaries
+for bin in machinectl; do
+    if ! command -V "${bin}" >/dev/null 2>&1; then
+        echo "ERROR: Missing required tool: ${bin}" 1>&2
+        exit 1
+    fi
+done
+
+# Check for the lxc base image
+if ! btrfs subvolume show "/var/lib/machines/${LXC_MACHINE_IMAGE}" 2>&1 > /dev/null; then
+  echo "[FAILURE] Base image does not exist."
+  exit 99
+fi
+
+if btrfs subvolume show "/var/lib/machines/${LXC_NAME}" 2>&1 > /dev/null; then
+  echo "[NOTICE] Contianer volume already exists"
+else
+  btrfs subvolume snapshot \
+                  "/var/lib/machines/${LXC_MACHINE_IMAGE}" \
+                  "/var/lib/machines/${LXC_NAME}"
+  echo "[NOTICE] New machine volume created"
+fi
+
+# Set the LXC_ROOTFS to the machines path
+export LXC_ROOTFS="/var/lib/machines/${LXC_NAME}"
+
+# Ensuing the container path exists
+mkdir -p "${LXC_ROOTFS}/${LXC_NAME}/dev/pts/"
+mkdir -p "${LXC_PATH}/rootfs"
+
+cat <<EOF
+=== CONTAINER DETAILS ===
+machine image:  ${LXC_MACHINE_IMAGE}
+lxc cache path: ${LXC_CACHE_PATH}
+container path: ${LXC_PATH}
+rootfs path:    ${LXC_ROOTFS}
+container name: ${LXC_NAME}
+=== CONTAINER DETAILS ===
+EOF
+
+if [ ! -e "${LXC_CACHE_PATH}/config" ]; then
+    echo "ERROR: meta tarball is missing the configuration file" 1>&2
+    exit 1
+fi
+
+# Build container specific configurations
+echo -e "\n# Distribution configuration" >> "${LXC_PATH}/config"
+cat "${LXC_CACHE_PATH}/config" >> "${LXC_PATH}/config"
+
+echo -e "\n# Container specific configuration" >> "${LXC_PATH}/config"
+
+# If an older fstab file exists in the template, extend the lxc config.
+if [ -e "${LXC_CACHE_PATH}/fstab" ]; then
+    echo "lxc.mount.fstab = ${LXC_PATH}/fstab" >> "${LXC_PATH}/config"
+fi
+
+# Set the uts name
+echo "lxc.utsname = ${LXC_NAME}" >> "${LXC_PATH}/config"
+
+# Look for extra templates
+TEMPLATE_FILES="${LXC_PATH}/config"
+if [ -e "${LXC_CACHE_PATH}/templates" ]; then
+    while read -r line; do
+        fullpath="${LXC_ROOTFS}/${line}"
+        [ ! -e "${fullpath}" ] && continue
+        TEMPLATE_FILES="${TEMPLATE_FILES};${fullpath}"
+    done < "${LXC_CACHE_PATH}/templates"
+fi
+
+# Replace variables in all templates
+OLD_IFS=${IFS}
+IFS=";"
+for file in ${TEMPLATE_FILES}; do
+    [ ! -f "${file}" ] && continue
+    sed -i "s#LXC_NAME#${LXC_NAME}#g" "${file}"
+    sed -i "s#LXC_PATH#${LXC_PATH}#g" "${file}"
+    sed -i "s#LXC_ROOTFS#${LXC_ROOTFS}#g" "${file}"
+    sed -i "s#LXC_TEMPLATE_CONFIG#${LXC_TEMPLATE_CONFIG}#g" "${file}"
+    sed -i "s#LXC_HOOK_DIR#${LXC_HOOK_DIR}#g" "${file}"
+done
+IFS=${OLD_IFS}
+
+# Add the machinectl backend store for the new containe
+if grep -q '^lxc\.rootfs =' "${LXC_PATH}/config"; then
+  sed -i "s|^lxc\.rootfs =.*|lxc.rootfs = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
+else
+  echo "lxc.rootfs = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
+fi
+if grep -q '^lxc\.rootfs\.backend =' "${LXC_PATH}/config"; then
+  sed -i "s|^lxc\.rootfs\.backend =.*|lxc.rootfs.backend = btrfs|" "${LXC_PATH}/config"
+else
+  echo "lxc.rootfs.backend = btrfs" >> "${LXC_PATH}/config"
+fi
+
+# Prevent mingetty from calling vhangup(2)
+if [ -f "${LXC_ROOTFS}/etc/init/tty.conf" ]; then
+    sed -i 's|mingetty|mingetty --nohangup|' "${LXC_ROOTFS}/etc/init/tty.conf"
+fi
+
+# Display exit message
+if [ -e "${LXC_CACHE_PATH}/create-message" ]; then
+    echo -e "\n---"
+    cat "${LXC_CACHE_PATH}/create-message"
+fi
+
+exit 0
