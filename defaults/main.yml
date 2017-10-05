@@ -53,6 +53,9 @@ lxc_container_cache_path: "/var/cache/lxc/download"
 # copy-on-write backing stored, the base container can be set.
 lxc_container_base_name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}-{{ lxc_cache_map.arch }}"
 
+# Set the default zfs root name
+lxc_container_zfs_root_name: "pool/lxc"
+
 # lxc container net network
 lxc_net_bridge: lxcbr0
 lxc_net_bridge_port: none
