@@ -93,7 +93,7 @@
 # This task runs several commands against the cached image to speed up the
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
-  command: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh"
+  shell: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
   changed_when: false
 
 - name: Adjust sshd configuration in container
