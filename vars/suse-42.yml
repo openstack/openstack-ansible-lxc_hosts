@@ -68,8 +68,8 @@ lxc_cache_map:
         echo -e "\n\n## Disable recommended packages\nsolver.onlyRequires = true" >> /etc/zypp/zypp.conf
     fi
     # Update base distribution
-    zypper -n dup -l
-    zypper -n in -l {{ lxc_cache_distro_packages | join(' ') }}
+    zypper -n dup --force-resolution -l
+    zypper -n in --force-resolution -l {{ lxc_cache_distro_packages | join(' ') }}
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network/ifcfg-eth0
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
