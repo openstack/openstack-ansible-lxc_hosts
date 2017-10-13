@@ -95,6 +95,19 @@
 - name: Prepare cached image setup commands
   command: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh"
   changed_when: false
+  # It should only take a couple of minutes to prepare the cache. But if network is slow it might take longer.
+  # Lets be optimistic and set the limit to 10 minutes
+  async: 600
+  poll: 0
+  register: _lxc_cache_prepare_commands
+
+- name: Ensure that the LXC cache has been prepared
+  async_status:
+    jid: "{{ _lxc_cache_prepare_commands.ansible_job_id }}"
+  register: _lxc_cache_prepare_commands_result
+  until: _lxc_cache_prepare_commands_result.finished
+  delay: 10
+  retries: 60
 
 - name: Adjust sshd configuration in container
   lineinfile:
