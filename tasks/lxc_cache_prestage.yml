@@ -25,7 +25,6 @@
   shell: >
     aria2c
     --max-connection-per-server=4
-    --continue
     --allow-overwrite=true
     --dir=/tmp
     --out=index-system
@@ -60,7 +59,6 @@
   shell: >
     aria2c
     --max-connection-per-server=4
-    --continue
     --allow-overwrite=true
     --dir=/tmp
     --out=rootfs.tar.xz
