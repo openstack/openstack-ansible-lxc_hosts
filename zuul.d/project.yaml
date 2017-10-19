@@ -21,6 +21,11 @@
         - openstack-ansible-functional-centos-7
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
+        - openstack-ansible-lxc-dir
+        - openstack-ansible-lxc-btrfs
+        - openstack-ansible-lxc-machinectl
+        - openstack-ansible-lxc-overlayfs
+        - openstack-ansible-lxc-zfs
     gate:
       queue: openstack-ansible
       jobs:
@@ -28,3 +33,4 @@
         - openstack-ansible-functional-centos-7
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
+        - openstack-ansible-lxc-dir
