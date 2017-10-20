@@ -7,9 +7,6 @@ iface {{ lxc_net_bridge }} inet static
 {% if lxc_net_gateway is not none %}
     gateway {{ lxc_net_gateway }}
 {% endif %}
-{% if lxc_net_mtu is defined %}
-    mtu {{ lxc_net_mtu }}
-{% endif %}
 {% if lxc_net_nat | bool %}
     # dnsmasq start and stop
 {% if lxc_net_manage_iptables | bool %}

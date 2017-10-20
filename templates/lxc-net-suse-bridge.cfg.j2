@@ -3,9 +3,6 @@
 BRIDGE='yes'
 IPADDR={{ lxc_net_address }}
 NETMASK={{ lxc_net_netmask }}
-{% if lxc_net_mtu is defined %}
-MTU={{ lxc_net_mtu }}
-{% endif %}
 BOOTPROTO=static
 STARTMODE=auto
 BRIDGE_STP='off'
