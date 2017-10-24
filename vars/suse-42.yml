@@ -56,11 +56,12 @@ lxc_cache_map:
     {% for resolver in lxc_cache_prep_dns %}
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
-    # Wipe default repositories and recreate them
-    find /etc/zypp/repos.d/*.repo -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -a ! -name "OBS:Cloud:OpenStack:Pike.repo"-delete
-    # In case the host didn't have any of these two repos then create it (althought that indicates that the host is not in a good state!)
-    [[ ! -e /etc/zypp/repos.d/repo-oss.repo ]] && zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
-    [[ ! -e /etc/zypp/repos.d/repo-update.repo ]] && zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
+    # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
+    find /etc/zypp/repos.d/*.repo -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
+    zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
+    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
+    # Clean metadata
+    zypper -n clean -a
     # Do a complete refresh and fetch the keys without asking
     zypper --gpg-auto-import-keys -n ref -f
     # Disable recommended packages. Only update what's really needed
