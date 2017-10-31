@@ -56,3 +56,5 @@
     - pull_image.rc != 0
     - "'failed' in pull_image.stderr | lower"
   with_items: "{{ lxc_images }}"
+  notify:
+    - Remove rootfs archive

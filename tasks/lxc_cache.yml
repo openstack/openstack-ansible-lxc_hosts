@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name : Check cached image status
+- name: Check cached image status
   command: "machinectl image-status {{ lxc_container_base_name }}"
   register: cache_check
   changed_when: false

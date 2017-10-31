@@ -87,25 +87,32 @@
 # https://bugs.archlinux.org/index.php?do=details&action=details.addvote&task_id=47303
 # In any case, it's best to also edit the pids controller to ensure that a
 # better max value is used in the init.scope
-- name: Determine if init.scope cgroup hierarchy exists
-  stat:
-    path: "/sys/fs/cgroup/pids/init.scope/pids.max"
-  register: init_scope_cgroup
-  when: ansible_service_mgr == 'systemd'
+- block:
+    - name: Get init.scope pids.max value
+      slurp:
+        src: "/sys/fs/cgroup/pids/init.scope/pids.max"
+      register: init_scope_cgroup_pids_max
+      changed_when: false
 
-- name: Get init.scope pids.max value
-  command: cat /sys/fs/cgroup/pids/init.scope/pids.max
-  register: init_scope_cgroup_pids_max
-  when:
-    - init_scope_cgroup.stat.exists
-    - ansible_service_mgr == 'systemd'
-
-- name: Set systemd pids.max in init.scope
-  shell: "echo {{ lxc_default_tasks_max }} > /sys/fs/cgroup/pids/init.scope/pids.max"
-  when:
-    - init_scope_cgroup.stat.exists
-    - init_scope_cgroup_pids_max.stdout != lxc_default_tasks_max
-    - ansible_service_mgr == 'systemd'
+    # NOTE(cloudnull): The "shell" module is being used instead of "copy" with
+    #                  content as we need direct write access to the sysFS.
+    - name: Set systemd pids.max in init.scope
+      shell: "echo {{ lxc_default_tasks_max }} > /sys/fs/cgroup/pids/init.scope/pids.max"
+      when:
+        - (init_scope_cgroup_pids_max.content | b64decode) != lxc_default_tasks_max
+      tags:
+        - skip_ansible_lint
+  rescue:
+    - name: Notice regarding setting the init.scope/pids.max
+      debug:
+        msg: |
+          Failed writing to "/sys/fs/cgroup/pids/init.scope/pids.max". While
+          we prefer setting this option it's not required. See the following
+          issues on why this is desired and what can be done when the cgroup
+          hierarchy exists.
+            * https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/1497420
+            * https://github.com/lxc/lxc/issues/713
+            * https://bugs.archlinux.org/index.php?do=details&action=details.addvote&task_id=47303
   tags:
     - lxc-config
 
