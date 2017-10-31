@@ -40,31 +40,44 @@
       with_items:
         - systemd-machined.service.d
         - systemd-importd.service.d
-  when: (deployment_environment_variables | default({})).keys() | length > 0
+  when:
+    - (deployment_environment_variables | default({})).keys() | length > 0
 
 - include: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 
-- name: Remove rootfs archive
-  file:
-    path: "/tmp/rootfs.tar.xz"
-    state: "absent"
+- block:
+    - name: Generate apt keys from LXC host for the container cache
+      shell: "apt-key exportall"
+      changed_when: false
+      register: _apt_exportall
+      tags:
+        - skip_ansible_lint
 
-- name: Generate apt keys from LXC host for the container cache
-  shell: apt-key exportall > /root/repo.keys
-  changed_when: False
+    - name: Write exported keys to temporary file
+      copy:
+        content: "{{ _apt_exportall.stdout }}"
+        dest: "/root/repo.keys"
+      notify:
+        - Remove generated apt keys from LXC host
   when:
     - ansible_pkg_mgr == 'apt'
 
+# NOTE(cloudnull): We're using rsync  and an if block because we've no means
+#                  to loop over a block. Re-evaluate this task when/if this is
+#                  merged https://github.com/ansible/ansible/issues/13262
 - name: Rsyncing files from the LXC host to the container cache
   shell: |
     if [[ -e "{{ item }}" ]]; then
       rsync -av "{{ item }}" "{{ lxc_image_cache_path }}{{ item }}"
+    else
+      exit 3
     fi
+  changed_when: _rsync_container_cache.rc == 0
+  failed_when: _rsync_container_cache.rc not in [0, 3]
+  register: _rsync_container_cache
   args:
     executable: "/bin/bash"
   with_items: "{{ (lxc_cache_map.copy_from_host | union(lxc_container_cache_files_from_host)) | list }}"
-  tags:
-    - skip_ansible_lint
 
 - name: Ensure directories exist for lxc_container_cache_files
   file:
@@ -101,22 +114,6 @@
   poll: 0
   register: _lxc_cache_prepare_commands
 
-- name: Ensure that the LXC cache has been prepared
-  async_status:
-    jid: "{{ _lxc_cache_prepare_commands.ansible_job_id }}"
-  register: _lxc_cache_prepare_commands_result
-  until: _lxc_cache_prepare_commands_result.finished
-  delay: 10
-  retries: 60
-
-- name: Adjust sshd configuration in container
-  lineinfile:
-    dest: "{{ lxc_image_cache_path }}/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-  with_items: "{{ lxc_cache_sshd_configuration }}"
-
 - name: Obtain the deploy system's ssh public key
   set_fact:
     lxc_container_ssh_key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
@@ -128,13 +125,15 @@
     line: "{{ lxc_container_ssh_key }}"
     create: true
 
-- name: Remove generated apt keys from LXC host
-  file:
-    path: /root/repo.keys
-    state: absent
-  when:
-    - ansible_pkg_mgr == 'apt'
-  changed_when: False
+# NOTE(cloudnull): Wait for the cache preparation script has completed before
+#                  building the new RootFS
+- name: Ensure that the LXC cache has been prepared
+  async_status:
+    jid: "{{ _lxc_cache_prepare_commands.ansible_job_id }}"
+  register: _lxc_cache_prepare_commands_result
+  until: _lxc_cache_prepare_commands_result.finished
+  delay: 10
+  retries: 60
 
 - name: Remove requiretty for sudo on centos
   template:
@@ -145,3 +144,11 @@
     src: sudoers.j2
   when:
     - ansible_pkg_mgr == 'yum'
+
+- name: Adjust sshd configuration in container
+  lineinfile:
+    dest: "{{ lxc_image_cache_path }}/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items: "{{ lxc_cache_sshd_configuration }}"

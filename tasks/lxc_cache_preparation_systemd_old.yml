@@ -145,3 +145,5 @@
     src: "/tmp/rootfs.tar.xz"
     dest: "/var/lib/machines/{{ lxc_container_base_name }}"
     remote_src: True
+  notify:
+    - Remove rootfs archive
