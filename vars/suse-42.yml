@@ -45,8 +45,8 @@ lxc_cache_map:
   copy_from_host:
     - /etc/environment
     - /etc/localtime
-    - /etc/zypp/repos.d/repo-oss
-    - /etc/zypp/repos.d/repo-update
+    - /etc/zypp/repos.d/repo-oss.repo
+    - /etc/zypp/repos.d/repo-update.repo
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
     mkdir -p /etc/ansible/facts.d/
@@ -57,7 +57,7 @@ lxc_cache_map:
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
     # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
-    find /etc/zypp/repos.d/*.repo -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
+    find /etc/zypp/repos.d/ -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
     zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
     zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
     # Clean metadata
