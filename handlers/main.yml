@@ -27,11 +27,20 @@
 - name: Init reload
   command: "initctl reload-configuration"
 
+- name: Restart dbus
+  service:
+    name: "dbus"
+    state: "reloaded"
+
+- name: Restart machined
+  command: "systemctl restart systemd-machined.service"
+
 - name: Restart irqbalance
   service:
     name: "irqbalance"
     state: "restarted"
     enabled: "yes"
+    daemon_reload: yes
 
 - name: Restart bridge
   shell: "ifdown {{ lxc_net_bridge }} || true"
@@ -66,3 +75,14 @@
   file:
     path: "/tmp/meta.tar.xz"
     state: "absent"
+
+- name: Restart dnsmasq
+  service:
+    name: "lxc-dnsmasq"
+    state: "restarted"
+    enabled: "yes"
+    daemon_reload: yes
+  register: _lxc_dnsmasq_service
+  until: _lxc_dnsmasq_service | success
+  retries: 5
+  delay: 5

@@ -80,6 +80,9 @@
     content: "{{ cache_time }}"
     dest: "{{ cache_path_fact }}/build_id"
 
-- include: "lxc_container_{{ lxc_container_backing_store }}.yml"
-  when:
-    - lxc_container_backing_store is defined
+- include: "{{ item }}"
+  static: no
+  with_first_found:
+    - files:
+        - "lxc_container_{{ lxc_container_backing_store | default('None') }}.yml"
+      skip: true

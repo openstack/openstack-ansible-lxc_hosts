@@ -7,17 +7,6 @@ iface {{ lxc_net_bridge }} inet static
 {% if lxc_net_gateway is not none %}
     gateway {{ lxc_net_gateway }}
 {% endif %}
-{% if lxc_net_nat | bool %}
-    # dnsmasq start and stop
-{% if lxc_net_manage_iptables | bool %}
-    post-up /usr/local/bin/lxc-system-manage iptables-create
-{% endif %}
-    post-up /usr/local/bin/lxc-system-manage dnsmasq-start || true
-{% if lxc_net_manage_iptables | bool %}
-    post-down /usr/local/bin/lxc-system-manage iptables-remove
-{% endif %}
-    post-down /usr/local/bin/lxc-system-manage dnsmasq-stop
-{% endif %}
     bridge_fd 0
     bridge_maxwait 0
     bridge_ports {{ lxc_net_bridge_port }}

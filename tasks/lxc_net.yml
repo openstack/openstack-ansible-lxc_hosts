@@ -29,6 +29,13 @@
     - lxc-bridge
     - lxc-interfaces
 
+# NOTE(cloudnull): This task cleans up an old post up script that is no longer
+#                  used. Remove this task in "R".
+- name: Remove old post up script
+  file:
+    path: "/etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
+    state: "absent"
+
 - name: Drop lxc net bridge routes (SUSE)
   template:
     src: "lxc-net-suse-routes.cfg.j2"
@@ -97,6 +104,19 @@
   tags:
     - lxc-net
     - lxc-interfaces
+
+- name: Create systemd unit for dnsmasq
+  template:
+    src: lxc-dnsmasq-systemd-init.j2
+    dest: "/etc/systemd/system/lxc-dnsmasq.service"
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - lxc_net_nat | bool
+  notify:
+    - Reload systemd units
+    - Restart dnsmasq
 
 # Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists
