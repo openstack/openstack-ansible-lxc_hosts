@@ -6,12 +6,14 @@ After=syslog.target
 After=network.target
 
 [Service]
-Type=forking
+Type=simple
 User=root
 
 {% if lxc_net_manage_iptables | bool %}
 ExecStartPre=/usr/local/bin/lxc-system-manage iptables-create
 {% endif %}
+
+ExecStartPre=-/usr/bin/killall -u lxc-dnsmasq --regexp "^dnsmasq"
 
 ExecStart=/usr/local/bin/lxc-system-manage dnsmasq-start
 
