@@ -24,6 +24,7 @@
 - job:
     name: openstack-ansible-lxc-dir
     parent: openstack-ansible-lxc-container-create
+    voting: false
     vars:
       tox_env: dir
 
