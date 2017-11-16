@@ -60,81 +60,29 @@
     src: "/tmp/meta.tar.xz"
     dest: "{{ cache_path_fact }}"
     remote_src: True
-
-- name: Remove metadata archive
-  file:
-    path: "/tmp/meta.tar.xz"
-    state: "absent"
+  notify:
+    - Remove metadata archive
 
 - name: Set cache expiry
-  shell: "date -d @{{ (cache_time | int) + 31536000 }} > {{ cache_path_fact }}/expiry"
+  shell: "date -d @{{ (cache_time | int) + 31536000 }}"
+  changed_when: false
+  register: _cache_expiry
   tags:
     - skip_ansible_lint
+
+- name: Set expiry
+  copy:
+    content: "{{ _cache_expiry.stdout }}"
+    dest: "{{ cache_path_fact }}/expiry"
 
 - name: Set build ID
-  shell: "echo {{ cache_time }} > {{ cache_path_fact }}/build_id"
-  tags:
-    - skip_ansible_lint
+  copy:
+    content: "{{ cache_time }}"
+    dest: "{{ cache_path_fact }}/build_id"
 
-- name: Create base container to use for overlayfs containers
-  lxc_container:
-    name: "{{ lxc_container_base_name }}"
-    template: "download"
-    state: stopped
-    backing_store: "dir"
-    template_options: "{{ lxc_cache_download_template_options }}"
-  register: cache_download
-  retries: 3
-  delay: 10
-  until: cache_download|success
-  when:
-    - lxc_container_backing_store is defined
-    - lxc_container_backing_store == 'overlayfs'
-
-- name: Create base container to use for LVM-backed copy-on-write containers
-  lxc_container:
-    name: "{{ lxc_container_base_name }}"
-    template: "download"
-    state: stopped
-    backing_store: "lvm"
-    template_options: "{{ lxc_cache_download_template_options }}"
-  register: cache_download
-  retries: 3
-  delay: 10
-  until: cache_download|success
-  when:
-    - lxc_container_backing_store is defined
-    - lxc_container_backing_store == 'lvm'
-    - lxc_container_backing_method is defined
-    - lxc_container_backing_method == 'copy-on-write'
-
-- name: Create base container to use for ZFS-backed containers
-  lxc_container:
-    name: "{{ lxc_container_base_name }}"
-    template: "download"
-    state: stopped
-    backing_store: "zfs"
-    zfs_root: "{{ lxc_container_zfs_root_name }}"
-    template_options: "{{ lxc_cache_download_template_options }}"
-  register: cache_download
-  retries: 3
-  delay: 10
-  until: cache_download|success
-  when:
-    - lxc_container_backing_store is defined
-    - lxc_container_backing_store == 'zfs'
-
-- name: Create base container to use for BTRFS-backed containers
-  lxc_container:
-    name: "{{ lxc_container_base_name }}"
-    template: "download"
-    state: stopped
-    backing_store: "btrfs"
-    template_options: "{{ lxc_cache_download_template_options }}"
-  register: cache_download
-  retries: 3
-  delay: 10
-  until: cache_download|success
-  when:
-    - lxc_container_backing_store is defined
-    - lxc_container_backing_store == 'btrfs'
+- include: "{{ item }}"
+  static: no
+  with_first_found:
+    - files:
+        - "lxc_container_{{ lxc_container_backing_store | default('None') }}.yml"
+      skip: true
