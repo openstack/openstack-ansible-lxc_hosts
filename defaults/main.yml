@@ -127,6 +127,12 @@ lxc_cache_prep_dns:
 lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
+# The maximum amount of time (in seconds) to wait until failing the cache
+# preparation process. This is necessary to mitigate the issue that can
+# arise where the cache prep hangs and never fails.
+# The value is specified in seconds, with the default being 10 minutes.
+lxc_cache_prep_timeout: 600
+
 # Set the servers to download LXC images from
 # NOTE(mhayden): The main images.linuxcontainers.org site will redirect
 # requests to (us|uk).images.linuxcontainers.org upon the first request. We
