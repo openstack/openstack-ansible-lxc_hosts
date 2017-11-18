@@ -110,7 +110,7 @@
   changed_when: false
   # It should only take a couple of minutes to prepare the cache. But if network is slow it might take longer.
   # Lets be optimistic and set the limit to 10 minutes
-  async: 600
+  async: "{{ lxc_cache_prep_timeout }}"
   poll: 0
   register: _lxc_cache_prepare_commands
 
@@ -133,7 +133,7 @@
   register: _lxc_cache_prepare_commands_result
   until: _lxc_cache_prepare_commands_result.finished
   delay: 10
-  retries: 60
+  retries: "{{ lxc_cache_prep_timeout // 10 }}"
 
 - name: Remove requiretty for sudo on centos
   template:
