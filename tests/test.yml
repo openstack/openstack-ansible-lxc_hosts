@@ -21,22 +21,24 @@
     - name: Show host facts
       debug:
         var: hostvars
+
     - name: First ensure apt cache is always refreshed
       apt:
         update_cache: yes
       when:
         - ansible_pkg_mgr == 'apt'
+
     - name: Ensure root ssh key
       user:
         name: "{{ ansible_env.USER | default('root') }}"
         generate_ssh_key: "yes"
         ssh_key_bits: 2048
         ssh_key_file: ".ssh/id_rsa"
-    - name: get the calling users key
-      command: cat ~/.ssh/id_rsa.pub
-      register: key_get
-    - set_fact:
-        lxc_container_ssh_key: key_get.stdout
+
+    - name: Prepare container ssh key fact
+      set_fact:
+        lxc_container_ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
     # This is a very dirty hack due to images.linuxcontainers.org
     # constantly failing to resolve in openstack-infra.
     - name: Implement hard-coded hosts entries for consistently failing name
@@ -54,6 +56,7 @@
       stat:
         path: /etc/nodepool/provider
       register: nodepool
+
     - name: Discover the lxc_image_cache_server value when in nodepool
       shell: |
         source /etc/ci/mirror_info.sh
@@ -65,6 +68,7 @@
         - nodepool.stat.exists | bool
       tags:
         - skip_ansible_lint
+
     - name: Set a fact to override lxc_image_cache_server value when in nodepool
       set_fact:
         lxc_image_cache_server_mirrors: ["http://{{ lxc_reverse_proxy.stdout.strip('/') }}"]
@@ -80,54 +84,47 @@
       lxc_container_cache_files:
         - src: files/container-file-copy-test.txt
           dest: /tmp/file-copied-from-deployment-host.txt
+
   post_tasks:
     - name: Get sysctl content
-      shell: |
-        cat /etc/sysctl.conf
-      register: sysctl_content
+      set_fact:
+        sysctl_conf: "{{ lookup('file', '/etc/sysctl.conf') }}"
+
     - name: Check for lxc bridge
       stat:
         path: /sys/class/net/lxcbr0/bridge/bridge_id
       register: lxc_bridge_file
+
     - name: Check dnsmasq is running
       shell: ps auxfww | grep -w 'dnsmasq -u lxc-dnsmasq'
+      changed_when: false
+
     - name: DEBIAN - Get deployed interface file contents, without Ansible managed line
-      shell: |
-        cat /etc/network/interfaces.d/lxc-net-bridge.cfg | tail -n +3
-      register: _debian_interface_file
-      when: ansible_os_family | lower == "debian"
-    - name: DEBIAN - interface file fact
       set_fact:
-        interface_file: "{{ _debian_interface_file.stdout }}"
+        interface_file: "{{ lookup('pipe', 'cat /etc/network/interfaces.d/lxc-net-bridge.cfg | tail -n +3') }}"
       when: ansible_os_family | lower == "debian"
+
     - name: RHEL - Get deployed interface file contents, without Ansible managed line
-      shell: |
-        cat /etc/sysconfig/network-scripts/ifcfg-lxcbr0 | tail -n +3
-      register: _rhel_interface_file
-      when: ansible_os_family | lower == "redhat"
-    - name: RHEL - interface file fact
       set_fact:
-        interface_file: "{{ _rhel_interface_file.stdout }}"
+        interface_file: "{{ lookup('pipe', 'cat /etc/sysconfig/network-scripts/ifcfg-lxcbr0 | tail -n +3') }}"
       when: ansible_os_family | lower == "redhat"
+
     - name: SUSE - Get deployed interface file contents, without Ansible managed line
-      shell: |
-        cat /etc/sysconfig/network/ifcfg-lxcbr0 | tail -n +3
-      register: _suse_interface_file
-      when: ansible_os_family | lower == "suse"
-    - name: SUSE - interface file fact
       set_fact:
-        interface_file: "{{ _suse_interface_file.stdout }}"
+        interface_file: "{{ lookup('pipe', 'cat /etc/sysconfig/network/ifcfg-lxcbr0 | tail -n +3') }}"
       when: ansible_os_family | lower == "suse"
+
     - name: Get bridge interface facts
       setup:
         filter: ansible_lxcbr0
       register: lxcbr0_facts
+
     - name: Check role functions
       assert:
         that:
           - interface_file | search('.*lxcbr0.*')
           - interface_file | search('.*10.100.100.1.*')
           - interface_file | search('.*255.255.255.0.*')
-          - sysctl_content.stdout | search('fs.inotify.max_user_instances.*')
+          - sysctl_conf | search('fs.inotify.max_user_instances.*')
           - "lxc_bridge_file.stat.exists"
           - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"
