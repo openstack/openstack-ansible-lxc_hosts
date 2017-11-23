@@ -56,14 +56,9 @@
 
 - name: Create networking post-up and post-down data for Red Hat
   lineinfile:
-    dest: "{{ item.dest }}"
-    line: "{{ item.line }}"
+    dest: "/etc/sysconfig/network-scripts/ifdown-post"
+    line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
     insertbefore: "^exit\ 0$"
-  with_items:
-    - dest: "/etc/sysconfig/network-scripts/ifup-post"
-      line: ". /etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
-    - dest: "/etc/sysconfig/network-scripts/ifdown-post"
-      line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
   when: ansible_os_family | lower == "redhat"
   notify:
     - Restart bridge
