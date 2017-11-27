@@ -73,7 +73,7 @@ lxc_cache_map:
     apt-key add /root/repo.keys
     rm /root/repo.keys
     export DEBIAN_FRONTEND=noninteractive
-    apt-get remove -y --purge snap* lxc* lxd* || true
+    apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
     # Update base distribution
     apt-get update
     apt-get upgrade -y
@@ -82,13 +82,13 @@ lxc_cache_map:
     rm -f /usr/bin/python
     rm /etc/machine-id || true
     rm /var/lib/dbus/machine-id || true
+    touch /etc/machine-id
     ln -s /usr/bin/python2.7 /usr/bin/python
     mkdir -p /root/.ssh
     chmod 700 /root/.ssh
     userdel --force --remove ubuntu || true
     apt-get clean
     mkdir -p /var/backup
-    echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/network/interfaces
     mkdir -p /etc/network/interfaces.d
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
     if [ -a /etc/resolv.conf.org ]; then
@@ -96,6 +96,12 @@ lxc_cache_map:
     else
       rm -f /etc/resolv.conf
     fi
+    for action in disable mask; do
+      systemctl ${action} resolvconf.service || true
+      systemctl ${action} systemd-networkd-resolvconf-update.path || true
+      systemctl ${action} systemd-networkd-resolvconf-update.service || true
+    done
+    systemctl enable systemd-networkd
     {{ lxc_cache_prep_post_commands }}
 
 # This forces any modified configurations to remain, and any unmodified configs to be replaced
@@ -106,6 +112,7 @@ _lxc_cache_distro_packages:
   - apt-transport-https
   - ca-certificates
   - cron # xenial doesn't have cronie
+  - dbus
   - gcc
   - libffi-dev
   - libssl-dev
@@ -123,13 +130,3 @@ _lxc_cache_distro_packages:
 lxc_cached_network_interfaces:
   - src: "lxc-net-bridge.cfg.j2"
     dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"
-
-lxc_container_default_interfaces: |
-  # The loopback network interface
-  auto lo
-  iface lo inet loopback
-  # LXC interface, this is ALWAYS assumed to be DHCP.
-  auto eth0
-  iface eth0 inet dhcp
-  # Load any additional configs
-  source /etc/network/interfaces.d/*.cfg

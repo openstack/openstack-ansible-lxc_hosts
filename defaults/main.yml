@@ -86,11 +86,6 @@ lxc_net6_address: null ## ie. fd05:ffb8:32b4:1212::1
 lxc_net6_netmask: null ## ie. 64
 lxc_net6_nat: false
 
-# lxc_container_net_link variable should be set to the lxc-net bridge.
-lxc_container_net_link: "{{ lxc_net_bridge }}"  ## name of the host bridge to attach to
-lxc_container_net_type: veth  ## lxc network interface type (veth, phys, vlan, macvlan, empty)
-lxc_container_net_name: eth0  ## name of the interface inside the container.
-
 # System control kernel tuning
 lxc_kernel_options:
   - { key: 'fs.inotify.max_user_instances', value: 1024 }
