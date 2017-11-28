@@ -59,17 +59,14 @@ lxc_cache_map:
     # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
     find /etc/zypp/repos.d/ -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
     zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
-    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss repo-update
-    zypper lr | grep -q 'tumbleweed-oss' || zypper --quiet ar --priority 999 {{ lxc_hosts_opensuse_mirror_url }}/tumbleweed/repo/oss tumbleweed-oss
-    zypper locks | grep -q 'systemd' || zypper --quiet al --repo tumbleweed-oss systemd
+    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
     # Disable recommended packages. Only update what's really needed
     if ! fgrep -qx "solver.onlyRequires = true" /etc/zypp/zypp.conf; then
         echo -e "\n\n## Disable recommended packages\nsolver.onlyRequires = true" >> /etc/zypp/zypp.conf
     fi
     # Update base distribution
-    zypper --gpg-auto-import-keys -n dup --force-resolution -l --no-confirm
-    zypper --gpg-auto-import-keys -n in --force-resolution -l --no-confirm {{ lxc_cache_distro_packages | join(' ') }}
-    zypper --gpg-auto-import-keys -n in --force-resolution -l --no-confirm --repo tumbleweed-oss systemd
+    zypper --gpg-auto-import-keys -n dup --force-resolution -l
+    zypper --gpg-auto-import-keys -n in --force-resolution -l {{ lxc_cache_distro_packages | join(' ') }}
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network/ifcfg-eth0
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
@@ -87,7 +84,6 @@ lxc_cache_map:
 _lxc_cache_distro_packages:
   - ca-certificates-mozilla
   - cronie
-  - less
   - openssh
   - python
   - python-xml
