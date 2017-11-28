@@ -59,7 +59,7 @@ lxc_cache_map:
     # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
     find /etc/zypp/repos.d/ -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
     zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
-    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss/ repo-update
+    zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss repo-update
     # Disable recommended packages. Only update what's really needed
     if ! fgrep -qx "solver.onlyRequires = true" /etc/zypp/zypp.conf; then
         echo -e "\n\n## Disable recommended packages\nsolver.onlyRequires = true" >> /etc/zypp/zypp.conf
@@ -84,6 +84,7 @@ lxc_cache_map:
 _lxc_cache_distro_packages:
   - ca-certificates-mozilla
   - cronie
+  - dbus-1
   - openssh
   - python
   - python-xml
@@ -104,3 +105,8 @@ lxc_cached_network_interfaces:
 lxc_container_default_interfaces: |
   STARTMODE=auto
   BOOTPROTO=dhcp
+
+# The value is specified in seconds, with the default being 20 minutes. This is
+#  double the amount of time used by default to mitigate issues with slow
+#  mirrors / testing nodes.
+lxc_cache_prep_timeout: 1200

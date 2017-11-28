@@ -22,36 +22,45 @@
       osa_test_repo: "openstack/openstack-ansible-lxc_container_create"
 
 - job:
-    name: openstack-ansible-lxc-dir
+    name: openstack-ansible-lxc-dir-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
-    voting: false
     vars:
       tox_env: dir
 
 - job:
-    name: openstack-ansible-lxc-btrfs
+    name: openstack-ansible-lxc-dir-centos-7
     parent: openstack-ansible-lxc-container-create
-    voting: false
+    nodeset: centos-7
+    vars:
+      tox_env: dir
+
+- job:
+    name: openstack-ansible-lxc-dir-opensuse-423
+    parent: openstack-ansible-lxc-container-create
+    nodeset: opensuse-423
+    vars:
+      tox_env: dir
+
+- job:
+    name: openstack-ansible-lxc-btrfs-ubuntu-xenial
+    parent: openstack-ansible-lxc-container-create
     vars:
       tox_env: btrfs
 
 - job:
-    name: openstack-ansible-lxc-machinectl
+    name: openstack-ansible-lxc-machinectl-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
-    voting: false
     vars:
       tox_env: mnctl
 
 - job:
-    name: openstack-ansible-lxc-overlayfs
+    name: openstack-ansible-lxc-overlayfs-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
-    voting: false
     vars:
       tox_env: ofs
 
 - job:
-    name: openstack-ansible-lxc-zfs
+    name: openstack-ansible-lxc-zfs-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
-    voting: false
     vars:
       tox_env: zfs
