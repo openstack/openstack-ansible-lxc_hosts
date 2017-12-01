@@ -109,8 +109,3 @@ lxc_container_default_interfaces: |
   ONBOOT=yes
   NM_CONTROLLED=no
   TYPE=Ethernet
-
-# The value is specified in seconds, with the default being 20 minutes. This is
-#  double the amount of time used by default to mitigate issues with slow
-#  mirrors / testing nodes.
-lxc_cache_prep_timeout: 1200
