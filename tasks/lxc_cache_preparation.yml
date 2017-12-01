@@ -108,8 +108,6 @@
 - name: Prepare cached image setup commands
   shell: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
   changed_when: false
-  # It should only take a couple of minutes to prepare the cache. But if network is slow it might take longer.
-  # Lets be optimistic and set the limit to 10 minutes
   async: "{{ lxc_cache_prep_timeout }}"
   poll: 0
   register: _lxc_cache_prepare_commands
