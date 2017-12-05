@@ -40,4 +40,3 @@ dependencies:
   - role: apt_package_pinning
     when:
       - ansible_pkg_mgr == 'apt'
-  - role: pip_install
