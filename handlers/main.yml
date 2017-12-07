@@ -33,7 +33,9 @@
     state: "reloaded"
 
 - name: Restart machined
-  command: "systemctl restart systemd-machined.service"
+  systemd:
+    name: "systemd-machined.service"
+    state: "restarted"
 
 - name: Restart irqbalance
   service:
