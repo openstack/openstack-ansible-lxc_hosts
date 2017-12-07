@@ -17,6 +17,9 @@
   command: "systemctl --version"
   changed_when: false
   register: systemd_version
+  tags:
+    # Avoid ANSIBLE0006 lint issue: systemctl used in place of systemd module
+    - skip_ansible_lint
 
 - block:
     - name: Create machined proxy override unit directories
