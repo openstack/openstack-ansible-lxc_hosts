@@ -91,6 +91,7 @@ _lxc_cache_distro_packages:
   - rsync
   - sudo
   - systemd-networkd
+  - systemd-sysv
   - tar
   - wget
   - which
