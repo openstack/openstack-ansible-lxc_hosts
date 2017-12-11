@@ -52,6 +52,8 @@ lxc_cache_map:
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
     rpm --import /etc/pki/rpm-gpg/*
+    # The containers do not need the LXC repository (only hosts need it).
+    rm -f /etc/yum.repos.d/thm-lxc2.0.repo
     yum install -y {{ lxc_cache_distro_packages | join(' ') }}
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
