@@ -13,12 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Deploy COPR yum repo for LXC 2.0
+- name: Ensure createrepo package is installed
+  yum:
+    name: createrepo
+    state: latest
+
+- name: Deploy upstream COPR yum repo for LXC 2.0
   yum_repository:
     name: thm-lxc2.0
     description: "COPR repository for LXC 2.0 packages on CentOS 7"
     baseurl: "{{ lxc_centos_package_baseurl }}"
-    enabled: yes
+    enabled: no
+    gpgcheck: yes
+    gpgkey: "{{ lxc_centos_package_key }}"
+    repo_gpgcheck: no
+    priority: 50
+    state: present
+
+- name: Deploy local COPR yum repo for LXC 2.0
+  yum_repository:
+    name: thm-lxc2.0-local
+    description: "Local repository for LXC 2.0 packages on CentOS 7"
+    baseurl: "file:///opt/thm-lxc2.0"
+    enabled: no
     gpgcheck: yes
     gpgkey: "{{ lxc_centos_package_key }}"
     repo_gpgcheck: no
@@ -49,6 +66,14 @@
   until: add_keys | success
   retries: 5
   delay: 2
+
+- name: Create and enable local LXC package repository
+  command: "{{ item }}"
+  with_items:
+    - "reposync --repoid=thm-lxc2.0 --download_path=/tmp/"
+    - "createrepo /tmp/thm-lxc2.0"
+    - "rsync -a --delete /tmp/thm-lxc2.0/ /opt/thm-lxc2.0/"
+    - "yum-config-manager --enable thm-lxc2.0-local"
 
 - name: Install distro packages
   package:
