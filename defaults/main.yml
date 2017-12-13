@@ -29,7 +29,10 @@ lxc_architecture_mapping:
   armv7l: armhf
 
 # Set the volume size in gigabytes for the machine image caches.
-lxc_host_machine_volume_size: 16
+lxc_host_machine_volume_size: "64G"
+
+# Disable the machinctl quota system.
+lxc_host_machine_quota_disabled: true
 
 # DefaultTasksMax systemd value. It's not recommended to change this value as it
 # could prevent new processes from starting on busy containers.
