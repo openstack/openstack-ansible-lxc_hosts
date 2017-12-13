@@ -35,6 +35,13 @@
 - name: Restart machined
   command: "systemctl restart systemd-machined.service"
 
+- name: Start machines mount
+  systemd:
+    daemon_reload: yes
+    name: "var-lib-machines.mount"
+    enabled: "yes"
+    state: "started"
+
 - name: Restart irqbalance
   service:
     name: "irqbalance"
