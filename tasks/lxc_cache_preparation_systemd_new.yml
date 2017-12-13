@@ -15,6 +15,21 @@
 
 # NOTE(cloudnull): When modern SystemD is running everywhere this can be
 #  collapsed back into the base preparation task file.
+# NOTE(odyssey4me):
+# The size is forced to be set in Gigabytes to maintain compatibility
+#  with the initial implementation done in Pike-Rocky. Do not change
+#  this without implementing some way of converting any pre-existing
+#  value properly during a major upgrade.
+- name: Set volume size
+  shell: machinectl set-limit {{ lxc_host_machine_volume_size | regex_replace('\D*$', '') }}G
+  changed_when: false
+  args:
+    executable: /bin/bash
+
+- name: Disable the machinectl quota system
+  command: "btrfs quota {{ lxc_host_machine_quota_disabled | bool | ternary('disable', 'enable') }} /var/lib/machines"
+  changed_when: false
+
 - name: Remove old image cache
   command: "machinectl remove {{ lxc_container_base_name }}"
   register: cache_refresh
@@ -22,14 +37,6 @@
   failed_when: cache_refresh.rc not in [0, 1]
   when:
     - lxc_image_cache_refresh | bool
-
-# NOTE(cloudnull): When modern SystemD is running everywhere this can be
-#  collapsed back into the base preparation task file.
-- name: Set volume size
-  shell: machinectl set-limit {{ lxc_host_machine_volume_size }}G
-  changed_when: false
-  args:
-    executable: /bin/bash
 
 - name: Ensure image has been pre-staged
   async_status:
