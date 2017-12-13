@@ -90,8 +90,6 @@ _lxc_cache_distro_packages:
   - python2
   - rsync
   - sudo
-  - systemd-networkd
-  - systemd-sysv
   - tar
   - wget
   - which
