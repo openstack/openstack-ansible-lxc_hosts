@@ -12,6 +12,6 @@ MTU={{ lxc_net_mtu }}
 {% endif %}
 ONBOOT=yes
 BOOTPROTO=none
-NM_CONTROLLED=no
+NM_CONTROLLED={{ (networkmanager_check.rc == 0) | ternary('yes', 'no') }}
 DELAY=0
 STP=no

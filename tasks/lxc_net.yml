@@ -13,6 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NOTE(mhayden): One of three exit codes should be returned.
+#   0 = service is running
+#   3 = service is installed, but not running
+#   4 = service is not installed, and not running
+- name: Check if NetworkManager is running
+  command: systemctl status NetworkManager
+  changed_when: false
+  failed_when: false
+  register: networkmanager_check
+  tags:
+    - skip_ansible_lint
+
+- name: Ensure network services wait on networking (if using NetworkManager)
+  service:
+    name: NetworkManager-wait-online.service
+    enabled: yes
+  when: networkmanager_check.rc == 0
+
 - name: Drop lxc net bridge
   template:
     src: "{{ item.src }}"
