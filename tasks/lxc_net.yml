@@ -28,7 +28,7 @@
 - name: Ensure network services wait on networking (if using NetworkManager)
   service:
     name: NetworkManager-wait-online.service
-    status: enabled
+    enabled: yes
   when: networkmanager_check.rc == 0
 
 - name: Drop lxc net bridge
