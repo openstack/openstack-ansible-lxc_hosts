@@ -87,6 +87,13 @@
 # https://bugs.archlinux.org/index.php?do=details&action=details.addvote&task_id=47303
 # In any case, it's best to also edit the pids controller to ensure that a
 # better max value is used in the init.scope
+- name: Check that the init.scope support the pid controller
+  stat:
+    path: "/sys/fs/cgroup/pids/init.scope/pids.max"
+  register: _init_scope_pid
+  tags:
+    - lxc-config
+
 - block:
     - name: Get init.scope pids.max value
       slurp:
@@ -113,6 +120,7 @@
             * https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/1497420
             * https://github.com/lxc/lxc/issues/713
             * https://bugs.archlinux.org/index.php?do=details&action=details.addvote&task_id=47303
+  when: _init_scope_pid.stat.exists
   tags:
     - lxc-config
 
