@@ -35,9 +35,14 @@
         ssh_key_bits: 2048
         ssh_key_file: ".ssh/id_rsa"
 
+    - name: Get root ssh key
+      slurp:
+        src: '~/.ssh/id_rsa.pub'
+      register: _root_ssh_key
+
     - name: Prepare container ssh key fact
       set_fact:
-        lxc_container_ssh_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        lxc_container_ssh_key: "{{ _root_ssh_key['content'] | b64decode }}"
 
     # This is a very dirty hack due to images.linuxcontainers.org
     # constantly failing to resolve in openstack-infra.
