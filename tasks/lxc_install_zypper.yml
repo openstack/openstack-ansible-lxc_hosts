@@ -35,40 +35,6 @@
   tags:
     - lxc-packages
 
-# NOTE(hwoarang) default dnsmasq profile is too restrictive so we
-# need to adjust it for neutron.
-- name: Relax dnsmasq apparmor profile
-  blockinfile:
-    path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
-    block: |-
-      /etc/neutron/** r,
-      /var/log/neutron/** rw,
-      /var/lib/neutron/** rw,
-      capability chown,
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
-  notify:
-    - Start apparmor
-    - Reload apparmor
-  tags:
-    - lxc-files
-    - lxc-apparmor
-    - lxc_hosts-config
-
-- name: Drop lxc-openstack apparmor profile
-  template:
-    src: "lxc-openstack.apparmor.j2"
-    dest: "/etc/apparmor.d/lxc/lxc-openstack"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  notify:
-    - Start apparmor
-    - Reload apparmor
-  tags:
-    - lxc-files
-    - lxc-apparmor
-    - lxc_hosts-config
-
 # NOTE(hwoarang) The newuidmap and newgidmap binaries do not have setuid bit
 # set and that causes lxc-2.X.X to fail. As such, make sure the files have
 # the correct mode.
@@ -83,6 +49,8 @@
   tags:
     - lxc-files
     - lxc_hosts-config
+
+- include: lxc_apparmor.yml
 
 - name: Flush handler to reload apparmor profiles
   meta: flush_handlers
