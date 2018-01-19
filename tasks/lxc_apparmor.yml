@@ -1,0 +1,48 @@
+# Copyright 2018, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# NOTE(hwoarang) default dnsmasq profile is too restrictive so we
+# need to adjust it for neutron.
+- name: Relax dnsmasq apparmor profile
+  blockinfile:
+    path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
+    block: |-
+      /etc/neutron/** r,
+      /var/log/neutron/** rw,
+      /var/lib/neutron/** rw,
+      capability chown,
+    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+  notify:
+    - Start apparmor
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
+
+- name: Drop lxc-openstack apparmor profile
+  template:
+    src: "lxc-openstack.apparmor.j2"
+    dest: "/etc/apparmor.d/lxc/lxc-openstack"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - Start apparmor
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
+

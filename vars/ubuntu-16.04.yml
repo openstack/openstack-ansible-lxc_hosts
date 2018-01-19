@@ -19,6 +19,7 @@ cache_timeout: 600
 # Required apt packages.
 lxc_hosts_distro_packages:
   - apparmor
+  - apparmor-profiles
   - apparmor-utils
   - aria2
   - bridge-utils
