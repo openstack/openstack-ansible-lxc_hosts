@@ -19,6 +19,7 @@
     path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
     block: |-
       /etc/neutron/** r,
+      /openstack/log/** rw,
       /var/log/neutron/** rw,
       /var/lib/neutron/** rw,
       capability chown,
