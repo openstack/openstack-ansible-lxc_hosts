@@ -16,7 +16,7 @@
 - name: Set LXC cache path fact
   set_fact:
     cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
-    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }}"
+    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }};"
     cache_time: "{{ ansible_date_time.epoch }}"
   tags:
     - always
@@ -44,6 +44,11 @@
   tags:
     - always
 
+# Example index lines:
+# ubuntu;xenial;amd64;default;20180123_08:05;/images/ubuntu/xenial/amd64/default/20180123_08:05/
+# As there may be multiple images, and they use a timestamp, we can sort
+# the resulting list in reverse order and use the first item in the list
+# as it will be the latest available.
 - name: Set image index fact
   set_fact:
     lxc_images: >
@@ -53,8 +58,11 @@
       {%- set _ = images.append(image) %}
       {%- endif %}
       {%- endfor %}
-      {{- images -}}
+      {{- images | sort(reverse=True) -}}
 
+# We only want to download a single image, rather than downloading
+# each of them in turn and they overwrite each other as they all
+# download to the same file name and path.
 - name: Pre-stage the LXC image on the system
   shell: >
     aria2c
@@ -63,15 +71,13 @@
     --dir=/tmp
     --out=rootfs.tar.xz
     --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
-    {% for server in lxc_image_cache_server_mirrors %}{{ server }}{{ item.split(';')[-1] }}rootfs.tar.xz {% endfor %}
+    {% for server in lxc_image_cache_server_mirrors %}{{ server }}{{ lxc_images[0].split(';')[-1] }}rootfs.tar.xz {% endfor %}
     > /var/log/aria2c-image-prestage.log 2>&1
   args:
     warn: no
   register: prestage_image
   async: 300
   poll: 0
-  with_items:
-    - "{{ lxc_images }}"
   tags:
     - skip_ansible_lint
     - always
