@@ -46,11 +46,9 @@
     --dir=/tmp
     --out=meta.tar.xz
     --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
-    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/{{ item.split(';')[-1] }}/meta.tar.xz {% endfor %}
+    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/{{ lxc_images[0].split(';')[-1] }}/meta.tar.xz {% endfor %}
   args:
     warn: no
-  with_items:
-    - "{{ lxc_images }}"
   tags:
     - skip_ansible_lint
     - always

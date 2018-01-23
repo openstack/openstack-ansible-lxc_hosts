@@ -33,12 +33,10 @@
 
 - name: Ensure image has been pre-staged
   async_status:
-    jid: "{{ item.ansible_job_id }}"
+    jid: "{{ prestage_image.ansible_job_id }}"
   register: job_result
   until: job_result.finished
   retries: 60
-  with_items:
-    - "{{ prestage_image.results }}"
 
 - name: Retrieve base image
   command: >-
