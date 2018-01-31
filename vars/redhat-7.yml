@@ -26,16 +26,22 @@ lxc_hosts_distro_packages:
   - dnsmasq
   - git
   - libseccomp
-  - libselinux
-  - libselinux-devel
   - lxc
   - lxc-devel
   - lxc-libs
   - lxc-templates
-  - policycoreutils-python
-  - selinux-policy-devel
   - unzip
   - xz
+
+# NOTE(mhayden): This packages are required for building the SELinux policy
+# for LXC on CentOS 7. They're separate from the main package list because
+# they take a signficant of time to install and they can be installed while
+# other tasks run.
+lxc_hosts_distro_selinux_packages:
+  - libselinux
+  - libselinux-devel
+  - policycoreutils-python
+  - selinux-policy-devel
 
 lxc_xz_bin: xz
 

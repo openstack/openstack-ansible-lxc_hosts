@@ -86,6 +86,16 @@
   tags:
     - lxc-packages
 
+- name: Install distro SELinux packages asynchronously
+  package:
+    pkg: "{{ lxc_hosts_distro_selinux_packages }}"
+    state: "{{ lxc_hosts_package_state }}"
+  register: install_selinux_packages
+  async: 600
+  poll: 0
+  tags:
+    - lxc-packages
+
 - name: Remove sub system lock if found
   file:
     path: "/var/lock/subsys/lxc"
