@@ -95,7 +95,7 @@ lxc_pip_packages:
   - lxc-python2
 
 lxc_cache_sshd_configuration:
-    - { regexp: "^PermitRootLogin",         line: "PermitRootLogin yes" }
+    - { regexp: "^PermitRootLogin",         line: "PermitRootLogin prohibit-password" }
     - { regexp: "^TCPKeepAlive",            line: "TCPKeepAlive yes" }
     - { regexp: "^UseDNS",                  line: "UseDNS no" }
     - { regexp: "^X11Forwarding",           line: "X11Forwarding no" }
