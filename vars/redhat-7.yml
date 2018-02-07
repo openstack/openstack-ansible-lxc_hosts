@@ -74,6 +74,7 @@ lxc_cache_map:
     echo "install {{ lxc_cache_distro_packages | join(' ') }}" >> /tmp/package-transaction.txt
     echo "run" >> /tmp/package-transaction.txt
     $RHT_PKG_MGR -y shell /tmp/package-transaction.txt
+    yum-complete-transaction --cleanup-only
     rm -f /tmp/package-transaction.txt
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
