@@ -100,6 +100,7 @@ _lxc_cache_distro_packages:
   - wget
   - which
   - yum-plugin-priorities
+  - yum-plugin-rpm-warm-cache
   - yum-utils
 
 lxc_cached_network_interfaces:
