@@ -80,6 +80,8 @@ lxc_cache_map:
     apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_distro_packages | join(' ') }}
     apt-get upgrade -y {{ lxc_cache_install_debconf }}
     rm -f /usr/bin/python
+    rm /etc/machine-id || true
+    rm /var/lib/dbus/machine-id || true
     ln -s /usr/bin/python2.7 /usr/bin/python
     mkdir -p /root/.ssh
     chmod 700 /root/.ssh
