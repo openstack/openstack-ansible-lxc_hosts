@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include: "lxc_install_{{ ansible_pkg_mgr }}.yml"
+- include_tasks: "lxc_install_{{ ansible_pkg_mgr }}.yml"
   tags:
     - install-apt
     - install-yum

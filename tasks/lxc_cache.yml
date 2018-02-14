@@ -40,13 +40,13 @@
   tags:
     - always
 
-- include: lxc_cache_preparation.yml
+- include_tasks: lxc_cache_preparation.yml
   when:
     - lxc_image_cache_refresh | bool
   tags:
     - lxc_hosts-config
 
-- include: lxc_cache_create.yml
+- include_tasks: lxc_cache_create.yml
   when:
     - lxc_image_cache_refresh | bool
   tags:

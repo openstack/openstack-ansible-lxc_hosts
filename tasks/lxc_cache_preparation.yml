@@ -46,7 +46,7 @@
   when:
     - (deployment_environment_variables | default({})).keys() | length > 0
 
-- include: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
+- include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 
 - block:
     - name: Generate apt keys from LXC host for the container cache

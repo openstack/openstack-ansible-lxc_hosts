@@ -50,7 +50,7 @@
     - lxc-files
     - lxc_hosts-config
 
-- include: lxc_apparmor.yml
+- include_tasks: lxc_apparmor.yml
 
 - name: Flush handler to reload apparmor profiles
   meta: flush_handlers

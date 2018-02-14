@@ -42,31 +42,31 @@
   tags:
     - always
 
-- include: lxc_pre_install.yml
+- include_tasks: lxc_pre_install.yml
   tags:
     - lxc_hosts-install
 
-- include: lxc_install.yml
+- include_tasks: lxc_install.yml
   tags:
     - lxc_hosts-install
 
-- include: lxc_cache_prestage.yml
+- include_tasks: lxc_cache_prestage.yml
   tags:
     - lxc_hosts-config
 
-- include: lxc_post_install.yml
+- include_tasks: lxc_post_install.yml
   tags:
     - lxc_hosts-config
 
-- include: lxc_kernel_tuning.yml
+- include_tasks: lxc_kernel_tuning.yml
   tags:
     - lxc_hosts-config
 
-- include: lxc_net.yml
+- include_tasks: lxc_net.yml
   tags:
     - lxc_hosts-config
 
-- include: lxc_cache.yml
+- include_tasks: lxc_cache.yml
   tags:
     - lxc_hosts-install
     - lxc_hosts-config
