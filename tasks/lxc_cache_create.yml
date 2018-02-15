@@ -78,8 +78,7 @@
     content: "{{ cache_time }}"
     dest: "{{ cache_path_fact }}/build_id"
 
-- include: "{{ item }}"
-  static: no
+- include_tasks: "{{ item }}"
   with_first_found:
     - files:
         - "lxc_container_{{ lxc_container_backing_store | default('None') }}.yml"
