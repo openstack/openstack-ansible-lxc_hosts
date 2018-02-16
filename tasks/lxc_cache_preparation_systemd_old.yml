@@ -25,6 +25,8 @@
     systemctl start var-lib-machines.mount || true
     sleep 1
     grep -w '/var/lib/machines' /proc/mounts
+  args:
+    warn: no
   failed_when: false
   changed_when: false
   register: machinectl_mount
