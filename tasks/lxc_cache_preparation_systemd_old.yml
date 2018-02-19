@@ -33,8 +33,14 @@
   tags:
     - skip_ansible_lint
 
+# NOTE(odyssey4me):
+# The size is forced to be set in Gigabytes to maintain compatibility
+#  with the initial implementation done in Pike-Rocky. Do not change
+#  this without implementing some way of converting any pre-existing
+#  value properly during a major upgrade.
 - name: Create systemd sparse file
-  shell: "truncate -s '>{{ lxc_host_machine_volume_size }}' /var/lib/machines.raw"
+  shell: |
+    truncate -s '>{{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G' /var/lib/machines.raw
 
 - name: Old systemd machinectl mount
   block:

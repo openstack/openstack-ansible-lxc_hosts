@@ -28,8 +28,9 @@ lxc_architecture_mapping:
   s390x: s390x
   armv7l: armhf
 
-# Set the volume size in gigabytes for the machine image caches.
-lxc_host_machine_volume_size: "64G"
+# Set the volume size for the machine image caches.
+# NOTE: Size is set in Gigabytes.
+lxc_host_machine_volume_size: "64"
 
 # Disable the machinctl quota system.
 lxc_host_machine_quota_disabled: true
