@@ -78,6 +78,8 @@ lxc_cache_map:
     rm -f /tmp/package-transaction.txt
     rm -f /usr/bin/python
     ln -s /usr/bin/python2.7 /usr/bin/python
+    rm /etc/machine-id || true
+    rm /var/lib/dbus/machine-id || true
     yum clean all
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
