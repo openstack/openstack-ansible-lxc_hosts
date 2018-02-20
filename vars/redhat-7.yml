@@ -95,8 +95,13 @@ _lxc_cache_distro_packages:
   - ca-certificates
   - cronie
   - epel-release
+  - gcc
+  - libffi-devel
   - openssh-server
+  - openssl
+  - openssl-devel
   - python2
+  - python-devel
   - rsync
   - sudo
   - tar

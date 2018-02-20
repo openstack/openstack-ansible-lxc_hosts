@@ -85,8 +85,13 @@ _lxc_cache_distro_packages:
   - ca-certificates-mozilla
   - cronie
   - dbus-1
+  - gcc
+  - libffi-devel
+  - libopenssl-devel
   - openssh
+  - openssl
   - python
+  - python-devel
   - python-xml
   - rsync
   - sudo

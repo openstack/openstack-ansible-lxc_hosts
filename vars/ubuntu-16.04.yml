@@ -106,8 +106,14 @@ _lxc_cache_distro_packages:
   - apt-transport-https
   - ca-certificates
   - cron # xenial doesn't have cronie
+  - gcc
+  - libffi-dev
+  - libssl-dev
   - openssh-server
+  - openssl
   - python2.7
+  - python-dev
+  - python3-dev
   - rsync
   - sudo
   - tar
