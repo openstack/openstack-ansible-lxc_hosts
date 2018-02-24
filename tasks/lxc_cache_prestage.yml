@@ -18,8 +18,6 @@
     cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
     cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }};"
     cache_time: "{{ ansible_date_time.epoch }}"
-  tags:
-    - always
 
 - name: Fetch LXC image-index
   shell: >
@@ -34,15 +32,12 @@
     warn: no
   tags:
     - skip_ansible_lint
-    - always
 
 - name: Retrieve the expiry object
   slurp:
     src: "/tmp/index-system"
   changed_when: false
   register: image_index
-  tags:
-    - always
 
 # Example index lines:
 # ubuntu;xenial;amd64;default;20180123_08:05;/images/ubuntu/xenial/amd64/default/20180123_08:05/
@@ -80,4 +75,3 @@
   poll: 0
   tags:
     - skip_ansible_lint
-    - always

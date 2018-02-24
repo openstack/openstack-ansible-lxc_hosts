@@ -52,6 +52,7 @@
 
 - include_tasks: lxc_cache_prestage.yml
   tags:
+    - always
     - lxc_hosts-config
 
 - include_tasks: lxc_post_install.yml
