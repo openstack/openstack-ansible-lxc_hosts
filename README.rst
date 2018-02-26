@@ -2,8 +2,8 @@
 Team and repository tags
 ========================
 
-.. image:: http://governance.openstack.org/badges/openstack-ansible-lxc_hosts.svg
-    :target: http://governance.openstack.org/reference/tags/index.html
+.. image:: https://governance.openstack.org/tc/badges/openstack-ansible-lxc_hosts.svg
+    :target: https://governance.openstack.org/tc/reference/tags/index.html
 
 .. Change things from this point on
 
@@ -17,4 +17,4 @@ Documentation for the project can be found at:
   https://docs.openstack.org/openstack-ansible-lxc_hosts/latest
 
 The project home is at:
-  http://launchpad.net/openstack-ansible
+  https://launchpad.net/openstack-ansible
