@@ -48,14 +48,56 @@
       tox_env: btrfs
 
 - job:
+    name: openstack-ansible-lxc-btrfs-opensuse-423
+    parent: openstack-ansible-lxc-container-create
+    nodeset: opensuse-423
+    vars:
+      tox_env: btrfs
+
+- job:
+    name: openstack-ansible-lxc-btrfs-centos-7
+    parent: openstack-ansible-lxc-container-create
+    nodeset: centos-7
+    vars:
+      tox_env: btrfs
+
+- job:
     name: openstack-ansible-lxc-machinectl-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
     vars:
       tox_env: mnctl
 
 - job:
+    name: openstack-ansible-lxc-machinectl-opensuse-423
+    parent: openstack-ansible-lxc-container-create
+    nodeset: opensuse-423
+    vars:
+      tox_env: mnctl
+
+- job:
+    name: openstack-ansible-lxc-machinectl-centos-7
+    parent: openstack-ansible-lxc-container-create
+    nodeset: centos-7
+    vars:
+      tox_env: mnctl
+
+- job:
     name: openstack-ansible-lxc-overlayfs-ubuntu-xenial
     parent: openstack-ansible-lxc-container-create
+    vars:
+      tox_env: ofs
+
+- job:
+    name: openstack-ansible-lxc-overlayfs-opensuse-423
+    parent: openstack-ansible-lxc-container-create
+    nodeset: opensuse-423
+    vars:
+      tox_env: ofs
+
+- job:
+    name: openstack-ansible-lxc-overlayfs-centos-7
+    parent: openstack-ansible-lxc-container-create
+    nodeset: centos-7
     vars:
       tox_env: ofs
 

@@ -23,8 +23,14 @@
         - openstack-ansible-lxc-dir-opensuse-423
         - openstack-ansible-lxc-dir-ubuntu-xenial
         - openstack-ansible-lxc-btrfs-ubuntu-xenial
+        - openstack-ansible-lxc-btrfs-centos-7
+        - openstack-ansible-lxc-btrfs-opensuse-423
         - openstack-ansible-lxc-machinectl-ubuntu-xenial
+        - openstack-ansible-lxc-machinectl-centos-7
+        - openstack-ansible-lxc-machinectl-opensuse-423
         - openstack-ansible-lxc-overlayfs-ubuntu-xenial
+        - openstack-ansible-lxc-overlayfs-centos-7
+        - openstack-ansible-lxc-overlayfs-opensuse-423
         - openstack-ansible-lxc-zfs-ubuntu-xenial
     experimental:
       jobs:
