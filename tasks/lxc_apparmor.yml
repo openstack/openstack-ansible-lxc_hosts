@@ -32,6 +32,21 @@
     - lxc-apparmor
     - lxc_hosts-config
 
+# NOTE(hwoarang) add attach_disconnected to ping profile to allow it to
+# work on overlayfs
+- name: Relax ping apparmor profile
+  lineinfile:
+    line: /{usr/,}bin/ping flags=(attach_disconnected) {
+    path: "/etc/apparmor.d/bin.ping"
+    regexp: '^/\{usr/,\}bin/ping.*\{'
+  notify:
+    - Start apparmor
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
+
 - name: Drop lxc-openstack apparmor profile
   template:
     src: "lxc-openstack.apparmor.j2"
