@@ -70,6 +70,8 @@ lxc_cache_map:
     zypper --gpg-auto-import-keys -n in --force-resolution -l {{ lxc_cache_distro_packages | join(' ') }}
     mkdir -p /var/backup
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
+    # Set the IP of the lxcbr0 interface as the DNS server
+    echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
     # NOTE(hwoarang): Enable sshd which has been explicitely disabled in
     # https://github.com/lxc/lxc-ci/commit/8dc7105399350a59698538a12b6d5a1a880ef2ba
     systemctl -q unmask sshd
