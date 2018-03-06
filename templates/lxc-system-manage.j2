@@ -173,6 +173,7 @@ function start_dnsmasq {
                                 --conf-file="${LXC_DHCP_CONFILE}" \
                                 --listen-address="${LXC_ADDR}" \
                                 --dhcp-range="${LXC_DHCP_RANGE}" \
+                                --dhcp-option="6,${LXC_ADDR}" \
                                 --dhcp-lease-max="${LXC_DHCP_MAX}" \
                                 --except-interface="lo" \
                                 --interface="${LXC_BRIDGE}" \
