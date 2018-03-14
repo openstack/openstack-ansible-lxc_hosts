@@ -27,9 +27,20 @@ lxc_architecture_mapping:
   ppc64le: ppc64el
   s390x: s390x
 
-# Set the volume size for the machine image caches.
+# Set the volume size for the machine image caches. We only use the
+# most specific mountpoint from the hierarchy.
 # NOTE: Size is set in Gigabytes.
-lxc_host_machine_volume_size: "64"
+lxc_host_machine_volume_size: |-
+    {%- set mounts = [] -%}
+    {%- set mount_points = ['/var/lib/machines', '/var/lib/', '/var', '/'] -%}
+    {%- for mount in mount_points -%}
+    {%-   for dev in ansible_mounts -%}
+    {%-     if mount == dev.mount -%}
+    {%-       set _ = mounts.append(dev.size_total // (1024 ** 3)) -%}
+    {%-     endif -%}
+    {%-   endfor -%}
+    {%- endfor -%}
+    {{ mounts[0] }}
 
 # Disable the machinctl quota system.
 lxc_host_machine_quota_disabled: true
