@@ -38,15 +38,35 @@
     - _ubuntu_repo is defined
     - _ubuntu_repo.stdout_lines | length > 0
 
+# When updating the cache in the apt_repository
+# task, and the update fails, a retry does not
+# detect a change the second attempt and therefore
+# does not update the cache, resulting in a changed
+# repo config, but no updated cache. To work around
+# this bug we implement the change of repo config
+# and the cache update as two seperate tasks.
 - name: Add trusty backport repo for LXC2 access
   apt_repository:
     repo: "deb {{ lxc_package_repo_url }} {{ ansible_distribution_release }}-backports main universe"
     state: present
-    update_cache: yes
+    update_cache: no
     filename: "{{ lxc_package_repo_filename | default(omit) }}"
   register: _add_backports_repo
-  until: _add_backports_repo | success
-  retries: 5
-  delay: 2
   when:
     - lxc_package_repo_url is defined
+
+# Due to our Ansible strategy, a skipped task does not
+# have a dictionary result, so we have to cater to the
+# situation where either of the apt_repository tasks
+# may not have the results dict in the register. As
+# such we validate that the register is a mapping (dict).
+- name: Update Apt cache
+  apt:
+    update_cache: yes
+  when:
+    - _add_backports_repo is mapping
+    - _add_backports_repo | changed
+  register: update_apt_cache
+  until: update_apt_cache | success
+  retries: 5
+  delay: 2
