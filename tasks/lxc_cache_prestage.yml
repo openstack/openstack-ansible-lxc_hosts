@@ -70,6 +70,8 @@
     > /var/log/aria2c-image-prestage.log 2>&1
   args:
     warn: no
+  when:
+    - lxc_images is defined
   register: prestage_image
   async: 300
   poll: 0
