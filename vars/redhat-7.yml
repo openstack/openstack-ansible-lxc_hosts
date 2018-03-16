@@ -80,6 +80,8 @@ lxc_cache_map:
     ln -s /usr/bin/python2.7 /usr/bin/python
     rm /etc/machine-id || true
     rm /var/lib/dbus/machine-id || true
+    rm /etc/sysctl.d/*
+    echo '' > /etc/sysctl.conf
     touch /etc/machine-id
     yum clean all
     mkdir -p /var/backup

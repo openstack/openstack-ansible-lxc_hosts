@@ -83,6 +83,8 @@ lxc_cache_map:
     rm /etc/machine-id || true
     rm /var/lib/dbus/machine-id || true
     touch /etc/machine-id
+    rm /etc/sysctl.d/*
+    echo '' > /etc/sysctl.conf
     ln -s /usr/bin/python2.7 /usr/bin/python
     mkdir -p /root/.ssh
     chmod 700 /root/.ssh

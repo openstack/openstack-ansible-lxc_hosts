@@ -79,6 +79,8 @@ lxc_cache_map:
     rm /etc/machine-id || true
     rm /var/lib/dbus/machine-id || true
     touch /etc/machine-id
+    rm /etc/sysctl.d/*
+    echo '' > /etc/sysctl.conf
     for action in disable mask; do
       systemctl ${action} wicked.service || true
       systemctl ${action} wickedd.service || true
