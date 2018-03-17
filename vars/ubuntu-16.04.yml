@@ -101,6 +101,7 @@ lxc_cache_map:
       systemctl ${action} systemd-networkd-resolvconf-update.path || true
       systemctl ${action} systemd-networkd-resolvconf-update.service || true
     done
+    rm /etc/network/interfaces
     systemctl enable systemd-networkd
     {{ lxc_cache_prep_post_commands }}
 

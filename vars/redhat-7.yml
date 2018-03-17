@@ -89,6 +89,7 @@ lxc_cache_map:
     else
       rm -f /etc/resolv.conf
     fi
+    rm /etc/sysconfig/network-scripts/ifcfg-eth0
     systemctl enable systemd-networkd
     {{ lxc_cache_prep_post_commands }}
 
