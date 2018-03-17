@@ -16,6 +16,8 @@
 ## APT Cache Options
 cache_timeout: 600
 
+_lxc_hosts_container_image_url: "http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.4-base-{{ lxc_cache_map.arch }}.tar.gz"
+
 # Required apt packages.
 lxc_hosts_distro_packages:
   - apparmor
@@ -74,6 +76,8 @@ _lxc_cache_distro_packages:
   - cron # xenial doesn't have cronie
   - dbus
   - gcc
+  - iproute2
+  - iputils-ping
   - libffi-dev
   - libssl-dev
   - openssh-server
@@ -83,6 +87,8 @@ _lxc_cache_distro_packages:
   - python3-dev
   - rsync
   - sudo
+  - systemd
+  - systemd-sysv
   - tar
   - wget
   - debianutils # for 'which' executable

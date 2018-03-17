@@ -18,6 +18,8 @@ lxc_hosts_external_repo:
   - name: "OBS:Virtualization:containers"
     uri: "{{ lxc_hosts_opensuse_mirror_obs_url }}/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
 
+_lxc_hosts_container_image_url: "https://github.com/openSUSE/docker-containers-build/raw/openSUSE-Leap-42.3/{{ ansible_architecture }}/openSUSE-Leap-42.3.base.{{ ansible_architecture }}.tar.xz"
+
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/usr/lib/systemd"
 
@@ -41,8 +43,8 @@ lxc_xz_bin: xz
 
 lxc_cache_map:
   distro: opensuse
-  arch: amd64
-  release: "{{ ansible_distribution_version }}"
+  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
+  release: "42.3"
   copy_from_host:
     - /etc/environment
     - /etc/localtime
@@ -56,6 +58,8 @@ _lxc_cache_distro_packages:
   - cronie
   - dbus-1
   - gcc
+  - iproute2
+  - iputils
   - libffi-devel
   - libopenssl-devel
   - openssh
@@ -65,6 +69,8 @@ _lxc_cache_distro_packages:
   - python-xml
   - rsync
   - sudo
+  - systemd
+  - systemd-sysvinit
   - tar
   - wget
   - which

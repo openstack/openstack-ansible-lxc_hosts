@@ -77,7 +77,7 @@
 
 - name: Remove rootfs archive
   file:
-    path: "/tmp/rootfs.tar.xz"
+    path: "/tmp/{{ cache_basename }}"
     state: "absent"
 
 - name: Restart dnsmasq

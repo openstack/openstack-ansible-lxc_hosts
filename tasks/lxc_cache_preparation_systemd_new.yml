@@ -50,7 +50,7 @@
     machinectl
     --verify=no
     {{ lxc_image_cache_pull_mode }}
-    /tmp/rootfs.tar.xz
+    /tmp/{{ cache_basename }}
     {{ lxc_container_base_name }}
   register: pull_image
   until: pull_image | success
@@ -60,6 +60,5 @@
   failed_when:
     - pull_image.rc != 0
     - "'failed' in pull_image.stderr | lower"
-  with_items: "{{ lxc_images }}"
   notify:
     - Remove rootfs archive

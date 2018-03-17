@@ -13,65 +13,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set LXC cache path fact
+- name: Set LXC cache fact(s)
   set_fact:
     cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
-    cache_index_item: "{{ lxc_cache_map.distro }};{{ lxc_cache_map.release }};{{ lxc_cache_map.arch }};{{ lxc_cache_default_variant }};"
     cache_time: "{{ ansible_date_time.epoch }}"
 
-- name: Fetch LXC image-index
-  shell: >
-    aria2c
-    --max-connection-per-server=4
-    --allow-overwrite=true
-    --dir=/tmp
-    --out=index-system
-    --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
-    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/meta/1.0/index-system {% endfor %}
-  args:
-    warn: no
-  tags:
-    - skip_ansible_lint
+- name: Legacy image url fetch
+  block:
+    - name: Create legacy image URL fetch
+      template:
+        src: "lxc-image-fetch-url.py.j2"
+        dest: "/usr/local/bin/lxc-image-fetch-url"
+        owner: "root"
+        group: "root"
+        mode: "0755"
 
-- name: Retrieve the expiry object
-  slurp:
-    src: "/tmp/index-system"
-  changed_when: false
-  register: image_index
+    - name: Fetch legacy container image url
+      command: "/usr/local/bin/lxc-image-fetch-url {{ lxc_cache_map.distro }} {{ lxc_cache_map.release }} {{ lxc_cache_map.arch }} {{ lxc_cache_default_variant }}"
+      register: legacy_image_url
+      retries: 3
+      delay: 1
+      until: legacy_image_url | success
 
-# Example index lines:
-# ubuntu;xenial;amd64;default;20180123_08:05;/images/ubuntu/xenial/amd64/default/20180123_08:05/
-# As there may be multiple images, and they use a timestamp, we can sort
-# the resulting list in reverse order and use the first item in the list
-# as it will be the latest available.
-- name: Set image index fact
+    - name: Set LXC cache fact(s) (legacy)
+      set_fact:
+        lxc_hosts_container_image_url: "{{ legacy_image_url.stdout.strip() }}"
+  when:
+    - lxc_hosts_container_image_download_legacy | bool
+
+- name: Set LXC cache basename
   set_fact:
-    lxc_images: >
-      {%- set images = [] %}
-      {%- for image in (image_index.content | b64decode).splitlines() %}
-      {%- if image | match("^" + cache_index_item) %}
-      {%- set _ = images.append(image) %}
-      {%- endif %}
-      {%- endfor %}
-      {{- images | sort(reverse=True) -}}
+    cache_basename: "{{ lxc_hosts_container_image_url | basename }}"
 
-# We only want to download a single image, rather than downloading
-# each of them in turn and they overwrite each other as they all
-# download to the same file name and path.
 - name: Pre-stage the LXC image on the system
   shell: >
     aria2c
     --max-connection-per-server=4
     --allow-overwrite=true
     --dir=/tmp
-    --out=rootfs.tar.xz
+    --out={{ cache_basename }}
     --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
-    {% for server in lxc_image_cache_server_mirrors %}{{ server }}{{ lxc_images[0].split(';')[-1] }}rootfs.tar.xz {% endfor %}
+    {{ lxc_hosts_container_image_url }}
     > /var/log/aria2c-image-prestage.log 2>&1
   args:
     warn: no
-  when:
-    - lxc_images is defined
   register: prestage_image
   async: 300
   poll: 0

@@ -3,12 +3,7 @@ set -e -x
 
 {{ lxc_cache_prep_pre_commands }}
 
-mkdir -p /etc/ansible/facts.d/
-rm /etc/resolv.conf || true
-
-{% for resolver in lxc_cache_prep_dns %}
-echo "nameserver {{ resolver }}" >> /etc/resolv.conf
-{% endfor %}
+{% include 'templates/prep-scripts/_container_sys_setup.sh.j2' %}
 
 rpm --import /etc/pki/rpm-gpg/*
 

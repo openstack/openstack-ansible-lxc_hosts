@@ -16,6 +16,8 @@
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/lib/systemd"
 
+_lxc_hosts_container_image_url: "https://github.com/CentOS/sig-cloud-instance-images/raw/CentOS-7/docker/centos-7-docker.tar.xz"
+
 # Required rpm packages.
 lxc_hosts_distro_packages:
   - aria2
@@ -47,7 +49,7 @@ lxc_xz_bin: xz
 
 lxc_cache_map:
   distro: centos
-  arch: amd64
+  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: 7
   copy_from_host:
     - /etc/environment
@@ -63,6 +65,8 @@ _lxc_cache_distro_packages:
   - cronie
   - epel-release
   - gcc
+  - iproute
+  - iputils
   - libffi-devel
   - openssh-server
   - openssl
@@ -71,6 +75,8 @@ _lxc_cache_distro_packages:
   - python-devel
   - rsync
   - sudo
+  - systemd
+  - systemd-sysv
   - systemd-networkd
   - tar
   - wget

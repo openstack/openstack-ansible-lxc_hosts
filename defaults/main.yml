@@ -154,25 +154,22 @@ lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages }}"
 # The value is specified in seconds, with the default being 20 minutes.
 lxc_cache_prep_timeout: 1200
 
-# Set the servers to download LXC images from
-# NOTE(mhayden): The main images.linuxcontainers.org site will redirect
-# requests to (us|uk).images.linuxcontainers.org upon the first request. We
-# add the mirrors here to get around some HTTP 400 errors and allow aria2 to
-# download from both mirrors at the same time.
+# Set the server to download LXC images from.
 lxc_image_cache_server_mirrors:
-  - https://us.images.linuxcontainers.org
-  - https://uk.images.linuxcontainers.org
+  - https://images.linuxcontainers.org
 
-# The DNS name of the LXD server to source the base container cache from
-# NOTE(cloudnull): This var should be removed in R.
-lxc_image_cache_server: "{{ lxc_image_cache_server_mirrors[0].strip('http(?s)://') }}"
+# URL for the image to build our containers
+lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url }}"
+
+# If enabled the image will be fetched from the legacy [images.linuxcontainers.org].
+lxc_hosts_container_image_download_legacy: false
 
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
 
 # Mode to pull image. This is used to pull the image from a remote source.
 #  Valid options are [import-tar, import-raw]
-lxc_image_cache_pull_mode: import-tar
+lxc_image_cache_pull_mode: "import-tar"
 
 # Set this option to true to pull a new cached image.
 lxc_image_cache_refresh: false
@@ -198,7 +195,7 @@ lxc_cache_download_template_options: >-
   --release {{ lxc_cache_map.release }}
   --arch {{ lxc_cache_map.arch }}
   --force-cache
-  --server {{ lxc_image_cache_server }}
+  --server localhost
   --variant {{ lxc_cache_default_variant }}
   {{ lxc_cache_download_template_extra_options }}
 

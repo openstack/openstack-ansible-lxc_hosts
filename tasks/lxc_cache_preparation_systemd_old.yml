@@ -136,7 +136,7 @@
 
 - name: Place container rootfs
   unarchive:
-    src: "/tmp/rootfs.tar.xz"
+    src: "/tmp/{{ cache_basename }}"
     dest: "/var/lib/machines/{{ lxc_container_base_name }}"
     remote_src: True
   notify:
