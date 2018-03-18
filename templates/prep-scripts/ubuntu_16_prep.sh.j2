@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -e -x
+
+{{ lxc_cache_prep_pre_commands }}
+
+mkdir -p /etc/ansible/facts.d/
+rm /etc/resolv.conf || true
+
+{% for resolver in lxc_cache_prep_dns %}
+echo "nameserver {{ resolver }}" >> /etc/resolv.conf
+{% endfor %}
+
+apt-key add /root/repo.keys
+rm /root/repo.keys
+export DEBIAN_FRONTEND=noninteractive
+apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
+
+# Update base distribution
+apt-get update
+apt-get upgrade -y
+apt-get install -y {{ lxc_cache_install_debconf }} {{ lxc_cache_distro_packages | join(' ') }}
+apt-get upgrade -y {{ lxc_cache_install_debconf }}
+rm -f /usr/bin/python
+rm /etc/machine-id || true
+rm /var/lib/dbus/machine-id || true
+touch /etc/machine-id
+rm /etc/sysctl.d/* || true
+echo '' > /etc/sysctl.conf
+ln -s /usr/bin/python2.7 /usr/bin/python
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+userdel --force --remove ubuntu || true
+apt-get clean
+mkdir -p /var/backup
+mkdir -p /etc/network/interfaces.d
+chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
+for action in disable mask; do
+  systemctl ${action} resolvconf.service || true
+  systemctl ${action} systemd-networkd-resolvconf-update.path || true
+  systemctl ${action} systemd-networkd-resolvconf-update.service || true
+done
+
+# Set the IP of the lxcbr0 interface as the DNS server
+echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+systemctl enable systemd-networkd
+{{ lxc_cache_prep_post_commands }}

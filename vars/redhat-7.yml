@@ -55,45 +55,8 @@ lxc_cache_map:
     - /etc/pki/rpm-gpg/
     - /etc/yum/pluginconf.d/fastestmirror.conf
     - /etc/yum.repos.d/
-  cache_prep_commands: |
-    {{ lxc_cache_prep_pre_commands }}
-    mkdir -p /etc/ansible/facts.d/
-    if [ -a /etc/resolv.conf ]; then
-      mv /etc/resolv.conf /etc/resolv.conf.org
-    fi
-    {% for resolver in lxc_cache_prep_dns %}
-    echo "nameserver {{ resolver }}" >> /etc/resolv.conf
-    {% endfor %}
-    rpm --import /etc/pki/rpm-gpg/*
-    # The containers do not need the LXC repository (only hosts need it).
-    rm -f /etc/yum.repos.d/thm-lxc2.0*
-    # Prefer dnf over yum for CentOS.
-    which dnf &>/dev/null && RHT_PKG_MGR='dnf' || RHT_PKG_MGR='yum'
-    # Create yum/dnf transaction file and run it all at once
-    echo "update" > /tmp/package-transaction.txt
-    echo "install {{ lxc_cache_distro_packages | join(' ') }}" >> /tmp/package-transaction.txt
-    echo "run" >> /tmp/package-transaction.txt
-    $RHT_PKG_MGR -y shell /tmp/package-transaction.txt
-    yum-complete-transaction --cleanup-only
-    rm -f /tmp/package-transaction.txt
-    rm -f /usr/bin/python
-    ln -s /usr/bin/python2.7 /usr/bin/python
-    rm /etc/machine-id || true
-    rm /var/lib/dbus/machine-id || true
-    rm /etc/sysctl.d/*
-    echo '' > /etc/sysctl.conf
-    touch /etc/machine-id
-    yum clean all
-    mkdir -p /var/backup
-    chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
-    if [ -a /etc/resolv.conf.org ]; then
-      mv /etc/resolv.conf.org /etc/resolv.conf
-    else
-      rm -f /etc/resolv.conf
-    fi
-    rm /etc/sysconfig/network-scripts/ifcfg-eth0
-    systemctl enable systemd-networkd
-    {{ lxc_cache_prep_post_commands }}
+
+_lxc_cache_prep_template: "prep-scripts/centos_7_prep.sh.j2"
 
 _lxc_cache_distro_packages:
   - ca-certificates

@@ -127,6 +127,13 @@ lxc_cache_prep_dns:
 lxc_cache_prep_pre_commands: '## pre command skipped ##'
 lxc_cache_prep_post_commands: '## post command skipped ##'
 
+# Full path to the base image prep script. By default this will use the
+# named script for a given OS within the "templates/prep-scripts" directory.
+# If a deployer wishes to override this script with something else they can
+# do so by defining a user variable with the full path to the local script
+# which will be templated onto the deployment targets.
+lxc_cache_prep_template: "{{ _lxc_cache_prep_template }}"
+
 # List of packages to be installed into the base container cache
 lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages }}"
 
