@@ -14,34 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-lxc_hosts_external_repo:
-  - name: "OBS:Virtualization:containers"
-    uri: "{{ lxc_hosts_opensuse_mirror_obs_url }}/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
 
 _lxc_hosts_container_image_url: "https://github.com/openSUSE/docker-containers-build/raw/openSUSE-Leap-42.3/{{ ansible_architecture }}/openSUSE-Leap-42.3.base.{{ ansible_architecture }}.tar.xz"
 
-system_config_dir: "/etc/sysconfig"
-systemd_utils_prefix: "/usr/lib/systemd"
-
-# Required rpm packages.
-lxc_hosts_distro_packages:
-  - apparmor-parser
-  - apparmor-profiles
-  - apparmor-utils
-  - aria2
-  - bridge-utils
-  - btrfsprogs
-  - dbus-1
-  - dnsmasq
-  - git-core
-  - libseccomp2
-  - lxc
-  - liblxc-devel
-  - xz
-
-lxc_xz_bin: xz
-
-lxc_cache_map:
+_lxc_cache_map:
   distro: opensuse
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: "42.3"
@@ -74,11 +50,3 @@ _lxc_cache_distro_packages:
   - tar
   - wget
   - which
-
-lxc_cached_network_interfaces:
-  - src: "lxc-net-suse-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network/ifcfg-{{ lxc_net_bridge }}"
-  - src: "lxc-net-suseredhat-postdown.cfg.j2"
-    dest: "/etc/sysconfig/network/scripts/ifdown-post-{{ lxc_net_bridge }}"
-    mode: "0755"
-    interface: "${1}"

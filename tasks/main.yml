@@ -34,6 +34,18 @@
 - name: Gather variables for each operating system
   include_vars: "{{ item }}"
   with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}-host.yml"
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}-host.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}-host.yml"
+    - "{{ ansible_distribution | lower }}-host.yml"
+    - "{{ ansible_os_family | lower }}-host.yml"
+  tags:
+    - always
+
+- name: Gather container variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ lxc_user_defined_container }}"
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
     - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"

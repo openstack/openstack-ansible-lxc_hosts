@@ -7,8 +7,8 @@ set -e -x
 
 # We have (tried to!) copied repo-oss and repo-update from the host so wipe everything else.
 find /etc/zypp/repos.d/ -type f ! -name "repo-oss.repo" -a ! -name "repo-update.repo" -delete
-zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ ansible_distribution_version }}/repo/oss repo-oss
-zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ ansible_distribution_version }}/oss repo-update
+zypper lr | grep -q 'repo-oss' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/distribution/leap/{{ lxc_cache_map.release }}/repo/oss repo-oss
+zypper lr | grep -q 'repo-update' || zypper --quiet ar {{ lxc_hosts_opensuse_mirror_url }}/update/leap/{{ lxc_cache_map.release }}/oss repo-update
 
 # Disable recommended packages. Only update what's really needed
 if ! fgrep -qx "solver.onlyRequires = true" /etc/zypp/zypp.conf; then

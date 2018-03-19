@@ -13,46 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-## APT Cache Options
-cache_timeout: 600
-
 _lxc_hosts_container_image_url: "http://cdimage.ubuntu.com/ubuntu-base/releases/16.04/release/ubuntu-base-16.04.4-base-{{ lxc_cache_map.arch }}.tar.gz"
 
-# Required apt packages.
-lxc_hosts_distro_packages:
-  - apparmor
-  - apparmor-profiles
-  - apparmor-utils
-  - aria2
-  - bridge-utils
-  - btrfs-tools
-  - cgmanager
-  - cgroup-lite
-  - dbus
-  - debootstrap
-  - dnsmasq-base
-  - git
-  - iptables
-  - irqbalance
-  - language-pack-en
-  - liblxc1
-  - lxc
-  - lxc-dev
-  - lxc-templates
-  - python-dev
-  - python3-lxc
-  - systemd-container
-  - pxz
-
-# Package to remove from the host
-lxc_hosts_remove_distro_packages:
-  - dnsmasq
-
-lxc_xz_bin: pxz
-
-system_config_dir: "/etc/default"
-systemd_utils_prefix: "/lib/systemd"
-lxc_cache_map:
+_lxc_cache_map:
   distro: ubuntu
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: xenial
@@ -63,10 +26,6 @@ lxc_cache_map:
     - /etc/environment
     - /etc/localtime
     - /root/repo.keys
-
-# This forces any modified configurations to remain, and any unmodified configs to be replaced
-# ref: http://serverfault.com/questions/259226/automatically-keep-current-version-of-config-files-when-apt-get-install
-lxc_cache_install_debconf: '-o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes'
 
 _lxc_cache_prep_template: "prep-scripts/ubuntu_16_prep.sh.j2"
 
@@ -92,7 +51,3 @@ _lxc_cache_distro_packages:
   - tar
   - wget
   - debianutils # for 'which' executable
-
-lxc_cached_network_interfaces:
-  - src: "lxc-net-bridge.cfg.j2"
-    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"

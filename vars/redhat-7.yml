@@ -13,41 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-system_config_dir: "/etc/sysconfig"
-systemd_utils_prefix: "/lib/systemd"
-
 _lxc_hosts_container_image_url: "https://github.com/CentOS/sig-cloud-instance-images/raw/CentOS-7/docker/centos-7-docker.tar.xz"
 
-# Required rpm packages.
-lxc_hosts_distro_packages:
-  - aria2
-  - bridge-utils
-  - btrfs-progs
-  - dbus
-  - debootstrap
-  - dnsmasq
-  - git
-  - libseccomp
-  - lxc
-  - lxc-devel
-  - lxc-libs
-  - lxc-templates
-  - unzip
-  - xz
-
-# NOTE(mhayden): This packages are required for building the SELinux policy
-# for LXC on CentOS 7. They're separate from the main package list because
-# they take a signficant of time to install and they can be installed while
-# other tasks run.
-lxc_hosts_distro_selinux_packages:
-  - libselinux
-  - libselinux-devel
-  - policycoreutils-python
-  - selinux-policy-devel
-
-lxc_xz_bin: xz
-
-lxc_cache_map:
+_lxc_cache_map:
   distro: centos
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: 7
@@ -84,11 +52,3 @@ _lxc_cache_distro_packages:
   - yum-plugin-priorities
   - yum-plugin-rpm-warm-cache
   - yum-utils
-
-lxc_cached_network_interfaces:
-  - src: "lxc-net-redhat-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ lxc_net_bridge }}"
-  - src: "lxc-net-suseredhat-postdown.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
-    mode: "0755"
-    interface: "${DEVICE}"
