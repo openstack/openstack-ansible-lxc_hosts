@@ -89,6 +89,7 @@ lxc_cache_map:
       systemctl ${action} wickedd-dhcp6.service || true
       systemctl ${action} wickedd-nanny.service || true
     done
+    rm /etc/sysconfig/network/ifcfg-eth0
     systemctl enable systemd-networkd
     {{ lxc_cache_prep_post_commands }}
 
