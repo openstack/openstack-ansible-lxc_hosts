@@ -80,11 +80,6 @@
     path: "/tmp/rootfs.tar.xz"
     state: "absent"
 
-- name: Remove metadata archive
-  file:
-    path: "/tmp/meta.tar.xz"
-    state: "absent"
-
 - name: Restart dnsmasq
   service:
     name: "lxc-dnsmasq"

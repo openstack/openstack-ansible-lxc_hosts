@@ -37,29 +37,19 @@
   tags:
     - skip_ansible_lint
 
-- name: Fetch LXC image-metadata
-  shell: >
-    aria2c
-    --max-connection-per-server=4
-    --continue
-    --allow-overwrite=true
-    --dir=/tmp
-    --out=meta.tar.xz
-    --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
-    {% for server in lxc_image_cache_server_mirrors %}{{ server }}/{{ lxc_images[0].split(';')[-1] }}/meta.tar.xz {% endfor %}
-  args:
-    warn: no
-  tags:
-    - skip_ansible_lint
-    - always
-
-- name: Place container metadata
-  unarchive:
-    src: "/tmp/meta.tar.xz"
-    dest: "{{ cache_path_fact }}"
-    remote_src: True
-  notify:
-    - Remove metadata archive
+- name: Drop container meta-data
+  template:
+    src: "meta-data/{{ item }}"
+    dest: "{{ cache_path_fact }}/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  with_items:
+    - config
+    - config.5
+    - create-message
+    - expiry
+    - templates
 
 - name: Set cache expiry
   shell: "date -d @{{ (cache_time | int) + 31536000 }}"
