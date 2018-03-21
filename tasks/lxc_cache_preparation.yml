@@ -98,18 +98,15 @@
   with_items: "{{ lxc_container_cache_files }}"
 
 - name: Cached image preparation script
-  copy:
-    content: |
-      #!/usr/bin/env bash
-      set -e -x
-      {{ lxc_cache_map.cache_prep_commands }}
-    dest: "{{ lxc_image_cache_path }}/usr/local/bin/cache-prep-commands.sh"
+  template:
+    src: "{{ lxc_cache_prep_template }}"
+    dest: "{{ lxc_image_cache_path }}/opt/cache-prep-commands.sh"
     mode: "0755"
 
 # This task runs several commands against the cached image to speed up the
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
-  shell: "chroot {{ lxc_image_cache_path }} /usr/local/bin/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
+  shell: "chroot {{ lxc_image_cache_path }} /opt/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
   changed_when: false
   async: "{{ lxc_cache_prep_timeout }}"
   poll: 0
