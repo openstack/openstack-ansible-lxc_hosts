@@ -40,6 +40,7 @@ _lxc_cache_distro_packages:
   - openssh-server
   - openssl
   - openssl-devel
+  - policycoreutils
   - python2
   - python-devel
   - rsync
