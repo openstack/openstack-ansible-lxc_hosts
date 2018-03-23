@@ -23,8 +23,11 @@ chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
 
 # NOTE(hwoarang): Enable sshd which has been explicitely disabled in
 # https://github.com/lxc/lxc-ci/commit/8dc7105399350a59698538a12b6d5a1a880ef2ba
-systemctl -q unmask sshd
-systemctl -q enable sshd
+if systemctl list-unit-files sshd.service | egrep '(masked|disabled)'; then
+  systemctl -q unmask sshd
+  systemctl -q enable sshd
+fi
+
 rm /etc/machine-id || true
 rm /var/lib/dbus/machine-id || true
 touch /etc/machine-id

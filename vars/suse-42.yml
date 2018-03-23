@@ -24,6 +24,7 @@ _lxc_cache_map:
   copy_from_host:
     - /etc/environment
     - /etc/localtime
+    - /etc/protocols
     - /etc/zypp/repos.d/repo-oss.repo
     - /etc/zypp/repos.d/repo-update.repo
 
@@ -38,6 +39,7 @@ _lxc_cache_distro_packages:
   - iputils
   - libffi-devel
   - libopenssl-devel
+  - netcfg
   - openssh
   - openssl
   - python

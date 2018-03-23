@@ -22,6 +22,7 @@ _lxc_cache_map:
   copy_from_host:
     - /etc/environment
     - /etc/localtime
+    - /etc/protocols
     - /etc/pki/rpm-gpg/
     - /etc/yum/pluginconf.d/fastestmirror.conf
     - /etc/yum.repos.d/
@@ -42,6 +43,7 @@ _lxc_cache_distro_packages:
   - python2
   - python-devel
   - rsync
+  - setup
   - sudo
   - systemd
   - systemd-sysv

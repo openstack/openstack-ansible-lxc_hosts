@@ -26,6 +26,7 @@ _lxc_cache_map:
     - /etc/environment
     - /etc/localtime
     - /root/repo.keys
+    - /etc/protocols
 
 _lxc_cache_prep_template: "prep-scripts/ubuntu_16_prep.sh.j2"
 
@@ -39,6 +40,7 @@ _lxc_cache_distro_packages:
   - iputils-ping
   - libffi-dev
   - libssl-dev
+  - netbase
   - openssh-server
   - openssl
   - python2.7

@@ -5,7 +5,9 @@ set -e -x
 
 {% include 'templates/prep-scripts/_container_sys_setup.sh.j2' %}
 
-rpm --import /etc/pki/rpm-gpg/*
+if [[ -d "/etc/pki/rpm-gpg" ]]; then
+  rpm --import /etc/pki/rpm-gpg/* || true
+fi
 
 # The containers do not need the LXC repository (only hosts need it).
 rm -f /etc/yum.repos.d/thm-lxc2.0*
