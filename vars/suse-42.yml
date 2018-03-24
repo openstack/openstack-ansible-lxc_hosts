@@ -22,8 +22,10 @@ _lxc_cache_map:
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: "42.3"
   copy_from_host:
+    - /etc/default/locale
     - /etc/environment
     - /etc/localtime
+    - /etc/locale.conf
     - /etc/protocols
     - /etc/zypp/repos.d/repo-oss.repo
     - /etc/zypp/repos.d/repo-update.repo

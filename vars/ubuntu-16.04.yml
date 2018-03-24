@@ -23,8 +23,10 @@ _lxc_cache_map:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
     - /etc/apt/preferences.d/
+    - /etc/default/locale
     - /etc/environment
     - /etc/localtime
+    - /etc/locale.conf
     - /root/repo.keys
     - /etc/protocols
 

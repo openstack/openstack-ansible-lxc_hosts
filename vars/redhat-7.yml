@@ -20,8 +20,10 @@ _lxc_cache_map:
   arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
   release: 7
   copy_from_host:
+    - /etc/default/locale
     - /etc/environment
     - /etc/localtime
+    - /etc/locale.conf
     - /etc/protocols
     - /etc/pki/rpm-gpg/
     - /etc/yum/pluginconf.d/fastestmirror.conf
