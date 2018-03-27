@@ -65,7 +65,7 @@ lxc_container_cache_path: "/var/cache/lxc/download"
 # lxc_container_backing_method: copy-on-write
 
 # The cache map is used as a basic instruction set when prep'ing the base
-# container image. If the cache map is overriden, the following fields are
+# container image. If the cache map is overridden, the following fields are
 # required:
 #     lxc_cache_map:
 #       distro: name of the distro
