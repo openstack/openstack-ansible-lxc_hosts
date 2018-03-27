@@ -16,8 +16,6 @@
 - job:
     name: openstack-ansible-lxc-container-create
     parent: openstack-ansible-cross-repo-functional
-    required-projects:
-      - name: openstack/openstack-ansible-lxc_container_create
     vars:
       osa_test_repo: "openstack/openstack-ansible-lxc_container_create"
 
