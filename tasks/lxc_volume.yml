@@ -1,0 +1,88 @@
+---
+# Copyright 2017, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Check machinectl mount point
+  command: mountpoint /var/lib/machines
+  failed_when: false
+  changed_when: false
+  register: machinectl_mount
+
+# NOTE(odyssey4me):
+# The size is forced to be set in Gigabytes to maintain compatibility
+#  with the initial implementation done in Pike-Rocky. Do not change
+#  this without implementing some way of converting any pre-existing
+#  value properly during a major upgrade.
+- name: Set volume size
+  shell: |
+    if ! machinectl set-limit {{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G; then
+      truncate -s '>{{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G' /var/lib/machines.raw
+    fi
+  changed_when: false
+  register: machines_create
+  args:
+    executable: /bin/bash
+  tags:
+    - skip_ansible_lint
+
+- name: Systemd machinectl mount
+  block:
+    - name: Format the machines sparse file
+      filesystem:
+        fstype: btrfs
+        dev: /var/lib/machines.raw
+
+    - name: Create machines mount point
+      file:
+        path: "/var/lib/machines"
+        state: "directory"
+
+    - name: Move machines mount into place
+      template:
+        src: var-lib-machines.mount
+        dest: /etc/systemd/system/var-lib-machines.mount
+      register: mount_unit
+      notify:
+        - Reload systemd units
+        - Start machines mount
+  when:
+    - machinectl_mount.rc != 0
+
+- meta: flush_handlers
+
+- name: Disable the machinectl quota system
+  command: "btrfs quota {{ lxc_host_machine_quota_disabled | bool | ternary('disable', 'enable') }} /var/lib/machines"
+  args:
+    executable: /bin/bash
+  failed_when: false
+  register: machines_create
+  tags:
+  - skip_ansible_lint
+
+- name: Notice quota system was not disabled
+  debug:
+    msg: >-
+      The machinectl quota system could not be disabled. This typically
+      means it is already off or not available on the system.
+  when:
+    - machines_create.rc != 0
+
+# NOTE(cloudnull): Because the machines mount may be a manually created sparse
+#                  file we run an online resize to ensure the machines mount is
+#                  the size we expect.
+- name: Ensure the machines fs is sized correctly
+  command: "btrfs filesystem resize max /var/lib/machines"
+  failed_when: false
+  when:
+    - machines_create is changed

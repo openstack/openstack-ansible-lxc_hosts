@@ -13,98 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NOTE(cloudnull): This is only used when running SystemD <= 219
-# ==============================================================
-#  In later versions of SystemD this is automatically done for us
-#  by the machinectl cli on first run. To ensure we're handling the
-#  case of a mount point being just offline, we first try and start
-#  the systemd mount unit and then check for the mount points existance.
-- name: Check machinectl mount point
-  shell: |
-    mount -a || true
-    systemctl start var-lib-machines.mount || true
-    sleep 1
-    grep -w '/var/lib/machines' /proc/mounts
-  failed_when: false
-  changed_when: false
-  register: machinectl_mount
-  tags:
-    - skip_ansible_lint
+# In later versions of systemd this is not needed. Referenced in
+#  the following ML post resolves the bug.
+#  * https://lists.freedesktop.org/archives/systemd-devel/2015-March/029151.html
+- name: Move machined service into place
+  template:
+    src: systemd-machined.service.j2
+    dest: /etc/systemd/system/systemd-machined.service
+  register: machined_unit
+  notify:
+    - Reload systemd units
+    - Restart machined
 
-# NOTE(odyssey4me):
-# The size is forced to be set in Gigabytes to maintain compatibility
-#  with the initial implementation done in Pike-Rocky. Do not change
-#  this without implementing some way of converting any pre-existing
-#  value properly during a major upgrade.
-- name: Create systemd sparse file
-  shell: |
-    truncate -s '>{{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G' /var/lib/machines.raw
-
-- name: Old systemd machinectl mount
-  block:
-    # In later versions of SystemD this is automatically done for us
-    #  by the machinectl cli on first run.
-    - name: Format the machines sparse file
-      filesystem:
-        fstype: btrfs
-        dev: /var/lib/machines.raw
-
-    # In later versions of SystemD this is automatically done for us
-    #  by the machinectl cli on first run.
-    - name: Create machines mount point
-      file:
-        path: "/var/lib/machines"
-        state: "directory"
-
-    # In later versions of SystemD this unit file has been corrected
-    #  and is packaged with systemd proper.
-    - name: Move machines mount into place
-      copy:
-        src: var-lib-machines.mount
-        dest: /etc/systemd/system/var-lib-machines.mount
-      register: mount_unit
-      notify:
-        - Start machines mount
-
-    # In later versions of SystemD this is not needed. Referenced in
-    #  the following ML post resolves the bug.
-    #  * https://lists.freedesktop.org/archives/systemd-devel/2015-March/029151.html
-    - name: Move machined service into place
-      template:
-        src: systemd-machined.service.j2
-        dest: /etc/systemd/system/systemd-machined.service
-      register: machined_unit
-      notify:
-        - Reload systemd units
-        - Restart machined
-
-    # In later versions of SystemD this is not needed. Referenced in
-    #  the following commit resolves the bug.
-    #  * https://cgit.freedesktop.org/systemd/systemd/commit/src/machine/org.freedesktop.machine1.conf?id=72c3897f77a7352618ea76b880a6764f52d6327b
-    - name: Move machine1 dbus config into place
-      copy:
-        src: org.freedesktop.machine1.conf
-        dest: /etc/dbus-1/system.d/org.freedesktop.machine1.conf
-      register: machine1_conf
-      notify:
-        - Reload systemd units
-        - Restart dbus
-  when:
-    - machinectl_mount.rc != 0
+# In later versions of systemd this is not needed. Referenced in
+#  the following commit resolves the bug.
+#  * https://cgit.freedesktop.org/systemd/systemd/commit/src/machine/org.freedesktop.machine1.conf?id=72c3897f77a7352618ea76b880a6764f52d6327b
+- name: Move machine1 dbus config into place
+  copy:
+    src: org.freedesktop.machine1.conf
+    dest: /etc/dbus-1/system.d/org.freedesktop.machine1.conf
+  register: machine1_conf
+  notify:
+    - Reload systemd units
+    - Restart dbus
 
 # Ensure lxc networks are running as they're supposed to
 - meta: flush_handlers
-
-# NOTE(cloudnull): Because the machines mount may be a manually created sparse
-#                  file we run an online resize to ensure the machines mount is
-#                  the size we expect.
-- name: Ensure the machines fs is sized correctly
-  command: "btrfs filesystem resize max /var/lib/machines"
-  changed_when: false
-
-- name: Disable the machinectl quota system
-  command: "btrfs quota {{ lxc_host_machine_quota_disabled | bool | ternary('disable', 'enable') }} /var/lib/machines"
-  changed_when: false
 
 # Because of this post and it's related bug(s) this is adding the container
 #  volumes the old way. The new way would simply be calling `machinectl`.
