@@ -37,12 +37,26 @@
     name: "systemd-machined.service"
     state: "restarted"
 
-- name: Start machines mount
+- name: Enable machines mount
   systemd:
     daemon_reload: yes
     name: "var-lib-machines.mount"
     enabled: "yes"
-    state: "started"
+  listen: Start machines mount
+
+# NOTE(cloudnull): The systemd module is not used to start the
+#                  mount because we dont want to "restart" the
+#                  mount unnecessarily. To ensure we're able to
+#                  load new options without requiring a mount
+#                  restart the systemctl command is used with
+#                  the "reload-or-restart" argument.
+- name: Start or reload the machines mount
+  command: "systemctl reload-or-restart var-lib-machines.mount"
+  args:
+    warn: no
+  listen: Start machines mount
+  tags:
+    - skip_ansible_lint
 
 - name: Restart irqbalance
   service:

@@ -46,6 +46,8 @@
   when:
     - (deployment_environment_variables | default({})).keys() | length > 0
 
+- include_tasks: lxc_volume.yml
+
 - include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 
 - block:
