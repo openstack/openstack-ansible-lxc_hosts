@@ -95,7 +95,7 @@ function add_rules {
     if [ -n "$LXC_IPV6_ADDR" ] && [ -n "$LXC_IPV6_MASK" ] && [ -n "$LXC_IPV6_NETWORK" ]; then
         echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
         echo 0 > /proc/sys/net/ipv6/conf/${LXC_BRIDGE}/autoconf
-        ip -6 addr add dev ${LXC_BRIDGE} ${LXC_IPV6_ADDR}/${LXC_IPV6_MASK}
+        ip -6 addr add dev ${LXC_BRIDGE} ${LXC_IPV6_ADDR}/${LXC_IPV6_MASK} || true
         if [ "$LXC_IPV6_NAT" = "true" ]; then
             ip6tables $USE_IPTABLES_LOCK -t nat -A POSTROUTING -s ${LXC_IPV6_NETWORK} ! -d ${LXC_IPV6_NETWORK} -j MASQUERADE
         fi
