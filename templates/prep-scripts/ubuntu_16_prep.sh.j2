@@ -35,6 +35,13 @@ for action in disable mask; do
   systemctl ${action} systemd-networkd-resolvconf-update.service || true
 done
 
+{% for locale in lxc_cache_locales %}
+locale-gen {{ locale }}
+{% if loop.first | bool %}
+update-locale LANG={{ locale }}
+{% endif %}
+{% endfor %}
+
 # Set the IP of the lxcbr0 interface as the DNS server
 echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
 systemctl enable systemd-networkd
