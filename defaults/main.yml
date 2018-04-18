@@ -16,10 +16,9 @@
 # Validate certificates when downloading LXC templates
 lxc_hosts_validate_certs: yes
 
-# Set the package install state for distribution and pip packages
+# Set the package install state for distribution packages
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
-lxc_hosts_pip_package_state: "latest"
 
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:
@@ -110,9 +109,6 @@ lxc_net6_nat: false
 # System control kernel tuning
 lxc_kernel_options:
   - { key: 'fs.inotify.max_user_instances', value: 1024 }
-
-lxc_pip_packages:
-  - lxc-python2
 
 lxc_cache_sshd_configuration:
     - { regexp: "^PermitRootLogin",         line: "PermitRootLogin prohibit-password" }
