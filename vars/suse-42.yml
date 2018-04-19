@@ -14,8 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+_lxc_hosts_container_image_url_base: "https://github.com/openSUSE/docker-containers-build/raw/openSUSE-Leap-{{ ansible_distribution_version }}/{{ ansible_architecture }}"
 
-_lxc_hosts_container_image_url: "https://github.com/openSUSE/docker-containers-build/raw/openSUSE-Leap-42.3/{{ ansible_architecture }}/openSUSE-Leap-42.3.base.{{ ansible_architecture }}.tar.xz"
+_lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base }}/openSUSE-Leap-{{ ansible_distribution_version}}-{{ ansible_architecture }}-{{ opensuse_image_build_info }}.tar.xz"
 
 _lxc_cache_map:
   distro: opensuse

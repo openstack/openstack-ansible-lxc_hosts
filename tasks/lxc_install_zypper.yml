@@ -61,3 +61,13 @@
     enabled: "yes"
   tags:
     - lxc_hosts-config
+
+- name: Determine latest openSUSE container build information
+  uri:
+    url: "{{ _lxc_hosts_container_image_url_base }}/Dockerfile"
+    return_content: true
+  register: _lxc_opensuse_image_build_info
+
+- name: Set fact for openSUSE container build information
+  set_fact:
+    opensuse_image_build_info: "{{ _lxc_opensuse_image_build_info.content|regex_search('Version: (.*)', '\\1')|join(' ') }}"
