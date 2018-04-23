@@ -13,16 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Ensure SELinux distro packages have finished installing
-  async_status:
-    jid: "{{ install_selinux_packages.ansible_job_id }}"
-  register: _install_selinux_packages
-  until: _install_selinux_packages.finished
-  retries: 30
-  when:
-    - install_selinux_packages is defined
-    - not install_selinux_packages | skipped
-
 - name: Create directory for compiling SELinux policy
   file:
     path: "/tmp/lxc-attach-selinux/"
