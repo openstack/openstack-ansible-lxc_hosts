@@ -14,16 +14,18 @@
 
 # NOTE(hwoarang) default dnsmasq profile is too restrictive so we
 # need to adjust it for neutron.
-- name: Relax dnsmasq apparmor profile
-  blockinfile:
+- name: Check for apparmor profile
+  stat:
     path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
-    block: |-
-      /etc/neutron/** r,
-      /openstack/log/** rw,
-      /var/log/neutron/** rw,
-      /var/lib/neutron/** rw,
-      capability chown,
-    marker: "# {mark} ANSIBLE MANAGED BLOCK"
+  register: sbin_dnsmasq
+
+- name: Relax dnsmasq apparmor profile
+  file:
+    src: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
+    dest: "/etc/apparmor.d/disable/usr.sbin.dnsmasq"
+    state: link
+  when:
+    - sbin_dnsmasq.stat.exists | bool
   notify:
     - Start apparmor
     - Reload apparmor
@@ -34,11 +36,18 @@
 
 # NOTE(hwoarang) add attach_disconnected to ping profile to allow it to
 # work on overlayfs
-- name: Relax ping apparmor profile
-  lineinfile:
-    line: /{usr/,}bin/ping flags=(attach_disconnected) {
+- name: Check for apparmor profile
+  stat:
     path: "/etc/apparmor.d/bin.ping"
-    regexp: '^/\{usr/,\}bin/ping.*\{'
+  register: bin_ping
+
+- name: Relax ping apparmor profile
+  file:
+    src: "/etc/apparmor.d/bin.ping"
+    dest: "/etc/apparmor.d/disable/usr.sbin.dnsmasq"
+    state: link
+  when:
+    - bin_ping.stat.exists | bool
   notify:
     - Start apparmor
     - Reload apparmor
@@ -61,4 +70,3 @@
     - lxc-files
     - lxc-apparmor
     - lxc_hosts-config
-

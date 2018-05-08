@@ -14,23 +14,23 @@
 # limitations under the License.
 
 - name: Start apparmor
-  service:
+  systemd:
     name: "apparmor"
     enabled: yes
     state: "started"
 
 - name: Reload apparmor
-  service:
+  systemd:
     name: "apparmor"
-    state: "reloaded"
+    state: "restarted"
 
 - name: Init reload
   command: "initctl reload-configuration"
 
 - name: Restart dbus
-  service:
+  systemd:
     name: "dbus"
-    state: "reloaded"
+    state: "restarted"
 
 - name: Restart machined
   systemd:
@@ -45,7 +45,7 @@
     state: "started"
 
 - name: Restart irqbalance
-  service:
+  systemd:
     name: "irqbalance"
     state: "restarted"
     enabled: "yes"
@@ -81,12 +81,12 @@
     state: "absent"
 
 - name: Restart dnsmasq
-  service:
+  systemd:
     name: "lxc-dnsmasq"
     state: "restarted"
     enabled: "yes"
     daemon_reload: yes
-  register: _lxc_dnsmasq_service
-  until: _lxc_dnsmasq_service | success
+  register: _lxc_dnsmasq_systemd
+  until: _lxc_dnsmasq_systemd | success
   retries: 5
   delay: 5
