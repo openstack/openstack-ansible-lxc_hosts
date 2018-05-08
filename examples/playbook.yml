@@ -1,3 +1,4 @@
+---
 - name: Basic LXC host setup
   hosts: "hosts"
   user: root
