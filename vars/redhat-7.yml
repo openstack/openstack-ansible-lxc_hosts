@@ -51,7 +51,9 @@ lxc_cache_map:
     [ ! -e /dev/random ] && mknod -m 0666 /dev/random c 1 8
     [ ! -e /dev/urandom ] && mknod -m 0666 /dev/urandom c 1 9
     mkdir -p /etc/ansible/facts.d/
-    rm /etc/resolv.conf || true
+    if [ -f /etc/resolv.conf ] || [ -L /etc/resolv.conf ]; then
+      mv /etc/resolv.conf /etc/resolv.conf.org
+    fi
     {% for resolver in lxc_cache_prep_dns %}
     echo "nameserver {{ resolver }}" >> /etc/resolv.conf
     {% endfor %}
@@ -65,7 +67,11 @@ lxc_cache_map:
     mkdir -p /var/backup
     echo -e '{{ lxc_container_default_interfaces }}' | tee /etc/sysconfig/network-scripts/ifcfg-eth0
     chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
-    echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+    if [ -f /etc/resolv.conf.org ] || [ -L /etc/resolv.conf.org ]; then
+      mv /etc/resolv.conf.org /etc/resolv.conf
+    else
+      rm -f /etc/resolv.conf
+    fi
     {{ lxc_cache_prep_post_commands }}
 
 lxc_cache_distro_packages:
