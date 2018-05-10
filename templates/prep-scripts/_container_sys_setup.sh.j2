@@ -4,12 +4,12 @@ mkdir -p /dev
 mkdir -p /proc
 mkdir -p /sys/fs/cgroup
 
-# In order for the package manager to function /dev/null must exist. This is
-# is being run here because some images do not create /dev/null by default.
-if [[ ! -e /dev/null ]]; then
-  mknod /dev/null c 1 3
-  chmod 0666 /dev/null
-fi
+# In order for the package manager to function /dev/null, /dev/random and
+# /dev/urandom must exist. This is is being run here because some images do not
+# create /dev/null by default.
+[ ! -e /dev/null ] && mknod -m 0666 /dev/null c 1 3
+[ ! -e /dev/random ] && mknod -m 0666 /dev/random c 1 8
+[ ! -e /dev/urandom ] && mknod -m 0666 /dev/urandom c 1 9
 
 # Create the directory where local facts will be stored
 mkdir -p /etc/ansible/facts.d
