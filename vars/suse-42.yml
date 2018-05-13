@@ -49,6 +49,11 @@ lxc_cache_map:
     - /etc/zypp/repos.d/repo-update.repo
   cache_prep_commands: |
     {{ lxc_cache_prep_pre_commands }}
+    # /dev/null, /dev/random and /dev/urandom are required for some
+    # package managers and package installs to work properly.
+    [ ! -e /dev/null ] && mknod -m 0666 /dev/null c 1 3
+    [ ! -e /dev/random ] && mknod -m 0666 /dev/random c 1 8
+    [ ! -e /dev/urandom ] && mknod -m 0666 /dev/urandom c 1 9
     mkdir -p /etc/ansible/facts.d/
     rm /etc/resolv.conf || true
     {% for resolver in lxc_cache_prep_dns %}
