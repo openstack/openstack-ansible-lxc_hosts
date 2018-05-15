@@ -24,3 +24,21 @@
   retries: 3
   delay: 10
   until: cache_download|success
+
+- name: Set the qgroup limits
+  block:
+    - name: Set the qgroup size|compression limits on machines
+      command: "btrfs qgroup limit {{ item }} /var/lib/lxc/{{ lxc_container_base_name }}"
+      changed_when: false
+      with_items:
+        - "-e {{ lxc_host_machine_qgroup_space_limit }}"
+        - "-c {{ lxc_host_machine_qgroup_compression_limit }}"
+      when:
+        - not lxc_host_machine_quota_disabled
+  rescue:
+    - name: Notice regarding quota system
+      debug:
+        msg: >-
+          There was an error processing the setup of qgroups. Check the system
+          to ensure they're available otherwise disable the quota system by
+          setting `lxc_host_machine_quota_disabled` to true.

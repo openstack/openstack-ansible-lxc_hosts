@@ -42,8 +42,17 @@ lxc_host_machine_volume_size: |-
     {%- endfor -%}
     {{ mounts[0] }}
 
-# Disable the machinctl quota system.
-lxc_host_machine_quota_disabled: true
+# Enable or Disable the BTRFS quota system for the "/var/lib/machines" mount
+# point. More information on the BTRFS quota system can be found here:
+#  * https://btrfs.wiki.kernel.org/index.php/Quota_support
+lxc_host_machine_quota_disabled: false
+
+# Set the default qgroup limits used for file system quotas. The default is
+# "none". See the following documentation for more information:
+#  * https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-qgroup
+lxc_host_machine_qgroup_space_limit: none
+lxc_host_machine_qgroup_compression_limit: none
+
 
 # DefaultTasksMax systemd value. It's not recommended to change this value as it
 # could prevent new processes from starting on busy containers.

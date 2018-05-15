@@ -50,6 +50,24 @@
 
 - include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
 
+- name: Set the qgroup limits
+  block:
+    - name: Set the qgroup size|compression limits on machines
+      command: "btrfs qgroup limit {{ item }} {{ lxc_image_cache_path }}"
+      changed_when: false
+      with_items:
+        - "-e {{ lxc_host_machine_qgroup_space_limit }}"
+        - "-c {{ lxc_host_machine_qgroup_compression_limit }}"
+      when:
+        - not lxc_host_machine_quota_disabled
+  rescue:
+    - name: Notice regarding quota system
+      debug:
+        msg: >-
+          There was an error processing the setup of qgroups. Check the system
+          to ensure they're available otherwise disable the quota system by
+          setting `lxc_host_machine_quota_disabled` to true.
+
 - block:
     - name: Generate apt keys from LXC host for the container cache
       shell: "apt-key exportall"

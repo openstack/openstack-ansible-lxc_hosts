@@ -61,22 +61,27 @@
 
 - meta: flush_handlers
 
-- name: Disable the machinectl quota system
-  command: "btrfs quota {{ lxc_host_machine_quota_disabled | bool | ternary('disable', 'enable') }} /var/lib/machines"
-  args:
-    executable: /bin/bash
-  failed_when: false
-  register: machines_create
-  tags:
-  - skip_ansible_lint
+- name: Update quota system and group limits
+  block:
+    - name: Disable|Enable the machinectl quota system
+      command: "btrfs quota {{ lxc_host_machine_quota_disabled | bool | ternary('disable', 'enable') }} /var/lib/machines"
+      changed_when: false
 
-- name: Notice quota system was not disabled
-  debug:
-    msg: >-
-      The machinectl quota system could not be disabled. This typically
-      means it is already off or not available on the system.
-  when:
-    - machines_create.rc != 0
+    - name: Set the qgroup size|compression limits on machines
+      command: "btrfs qgroup limit {{ item }} /var/lib/machines"
+      changed_when: false
+      with_items:
+        - "-e {{ lxc_host_machine_qgroup_space_limit }}"
+        - "-c {{ lxc_host_machine_qgroup_compression_limit }}"
+      when:
+        - not lxc_host_machine_quota_disabled | bool
+  rescue:
+    - name: Notice regarding quota system
+      debug:
+        msg: >-
+          The machinectl quota system could not be setup. Check the system for
+          quota system availability otherwise disable it by setting
+          `lxc_host_machine_quota_disabled` to true.
 
 # NOTE(cloudnull): Because the machines mount may be a manually created sparse
 #                  file we run an online resize to ensure the machines mount is
