@@ -96,3 +96,7 @@
   when:
     - compile_selinux_async is defined
     - not compile_selinux_async | skipped
+
+- name: (RE)Gather facts post setup
+  setup:
+    gather_subset: "network,hardware,virtual"
