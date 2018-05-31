@@ -58,7 +58,7 @@
   args:
     warn: no
   register: prestage_image
-  async: 300
+  async: "{{ lxc_cache_prep_timeout // 5 }}"
   poll: 0
   tags:
     - skip_ansible_lint
