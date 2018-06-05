@@ -2,8 +2,8 @@
 
 [Unit]
 Description=lxc dnsmasq service
-After=syslog.target
-After=network.target
+After=network-online.target
+Before=lxc.service
 
 [Service]
 Type=simple
