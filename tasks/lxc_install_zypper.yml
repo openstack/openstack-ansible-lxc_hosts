@@ -21,6 +21,7 @@
     repo: "{{ item.uri }}"
     runrefresh: yes
   with_items: "{{ lxc_hosts_external_repo }}"
+  when: lxc_hosts_external_repo is defined
   tags:
     - lxc_hosts-config
 
@@ -62,12 +63,25 @@
   tags:
     - lxc_hosts-config
 
-- name: Determine latest openSUSE container build information
-  uri:
-    url: "{{ _lxc_hosts_container_image_url_base }}/Dockerfile"
-    return_content: true
-  register: _lxc_opensuse_image_build_info
+- name: Determine latest openSUSE container build information (Leap 15)
+  # Leap 15.0
+  block:
+    # NOTE(hwoarang) The build ID changes all the time so we need to have a hack to determine the latest one
+    # TODO: Talk to openSUSE people to improve that and possibly use the same location for 42.3 as well.
+    - shell: |
+        curl -s {{ _lxc_hosts_container_image_url_base }} | grep -P -o '{{ ansible_architecture }}.*?lxc.*?Buildlp.*?xz' | head -n 1
+      register: _lxc_opensuse_image_build_info
+    - set_fact:
+        opensuse_image_build_info: "{{ _lxc_opensuse_image_build_info.stdout }}"
+  when: ansible_distribution_version is version ('42', '<')
 
-- name: Set fact for openSUSE container build information
-  set_fact:
-    opensuse_image_build_info: "{{ _lxc_opensuse_image_build_info.content|regex_search('Version: (.*)', '\\1')|join(' ') }}"
+- name: Determine latest openSUSE container build information (Leap 42)
+  # Leap 42
+  block:
+    - uri:
+        url: "{{ _lxc_hosts_container_image_url_base }}/Dockerfile"
+        return_content: true
+      register: _lxc_opensuse_image_build_info
+    - set_fact:
+        opensuse_image_build_info: "{{ _lxc_opensuse_image_build_info.content|regex_search('Version: (.*)', '\\1')|join(' ') }}"
+  when: ansible_distribution_version is version ('42', '>=')

@@ -1,0 +1,54 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+# Copyright 2017, SUSE LINUX GmbH.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+lxc_hosts_external_repo:
+  - name: "OBS:Virtualization:containers"
+    uri: "{{ lxc_hosts_opensuse_mirror_obs_url }}/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
+    # NOTE(hwoarang) Leap 15.X is newer than 42.X and it has all the necessary LXC packages so we don't need
+    # to use the OBS repository. As such we only add it if version is >= 42 so we can capture all the old Leap
+    # releases. Using the external repo can be removed once we drop support for 42.X
+    state: "{{ (ansible_distribution_version is version ('42', '>=')) | ternary ('present', 'absent') }}"
+
+system_config_dir: "/etc/sysconfig"
+systemd_utils_prefix: "/usr/lib/systemd"
+
+# Required rpm packages.
+lxc_hosts_distro_packages:
+  - apparmor-parser
+  - apparmor-profiles
+  - apparmor-utils
+  - aria2
+  - bridge-utils
+  - btrfsprogs
+  - dbus-1
+  - dnsmasq
+  - git-core
+  - libseccomp2
+  - lxc
+  - liblxc-devel
+  - python-lxc-python2
+  - systemd-container
+  - xz
+
+lxc_xz_bin: xz
+
+lxc_cached_network_interfaces:
+  - src: "lxc-net-suse-bridge.cfg.j2"
+    dest: "/etc/sysconfig/network/ifcfg-{{ lxc_net_bridge }}"
+  - src: "lxc-net-suseredhat-postdown.cfg.j2"
+    dest: "/etc/sysconfig/network/scripts/ifdown-post-{{ lxc_net_bridge }}"
+    mode: "0755"
+    interface: "${1}"
