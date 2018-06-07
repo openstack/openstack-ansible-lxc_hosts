@@ -34,7 +34,6 @@ _lxc_cache_prep_template: "prep-scripts/centos_7_prep.sh.j2"
 _lxc_cache_distro_packages:
   - ca-certificates
   - cronie
-  - epel-release
   - gcc
   - iproute
   - iputils
