@@ -75,6 +75,29 @@
     - "rsync -a --delete /tmp/thm-lxc2.0/ /opt/thm-lxc2.0/"
     - "yum-config-manager --enable thm-lxc2.0-local"
 
+- name: Install EPEL gpg keys
+  rpm_key:
+    key: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    state: present
+  register: _add_yum_keys
+  until: _add_yum_keys | success
+  retries: 5
+  delay: 2
+
+- name: Install the EPEL repository
+  yum_repository:
+    name: epel-lxc_hosts
+    baseurl: "{{ (centos_epel_mirror | default ('http://download.fedoraproject.org/pub/epel')) ~ '/' ~ ansible_distribution_major_version ~ '/' ~ ansible_architecture }}"
+    description: 'Extra Packages for Enterprise Linux 7 - $basearch'
+    gpgcheck: yes
+    enabled: yes
+    state: present
+    includepkgs: 'aria2 python2-lxc'
+  register: install_epel_repo
+  until: install_epel_repo|success
+  retries: 5
+  delay: 2
+
 - name: Install distro packages
   package:
     pkg: "{{ lxc_hosts_distro_packages }}"

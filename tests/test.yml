@@ -44,12 +44,7 @@
       set_fact:
         lxc_container_ssh_key: "{{ _root_ssh_key['content'] | b64decode }}"
 
-    # This is a temporary hack to override the LXC image source to
-    # the reverse proxy if the test is run in OpenStack-Infra.
-    - name: Check if this is an OpenStack-CI nodepool instance
-      stat:
-        path: /etc/nodepool/provider
-      register: nodepool
+    - include_tasks: "common/common-tasks/test-set-nodepool-vars.yml"
 
   roles:
     - role: "lxc_hosts"
