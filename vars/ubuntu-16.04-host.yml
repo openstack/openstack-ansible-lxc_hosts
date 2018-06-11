@@ -35,7 +35,9 @@ lxc_hosts_distro_packages:
   - language-pack-en
   - liblxc1
   - lxc
+  - lxc-dev
   - lxc-templates
+  - python-dev
   - python-lxc
   - python3-lxc
   - systemd-container

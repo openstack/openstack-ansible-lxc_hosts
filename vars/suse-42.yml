@@ -40,10 +40,13 @@ _lxc_cache_distro_packages:
   - gcc
   - iproute2
   - iputils
+  - libffi-devel
+  - libopenssl-devel
   - netcfg
   - openssh
   - openssl
   - python
+  - python-devel
   - python-xml
   - rsync
   - sudo

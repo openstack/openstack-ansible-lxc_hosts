@@ -39,11 +39,15 @@ _lxc_cache_distro_packages:
   - gcc
   - iproute2
   - iputils-ping
+  - libffi-dev
+  - libssl-dev
   - locales
   - netbase
   - openssh-server
   - openssl
   - python2.7
+  - python-dev
+  - python3-dev
   - rsync
   - sudo
   - systemd

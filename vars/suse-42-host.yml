@@ -34,6 +34,7 @@ lxc_hosts_distro_packages:
   - git-core
   - libseccomp2
   - lxc
+  - liblxc-devel
   - python-lxc-python2
   - xz
 
