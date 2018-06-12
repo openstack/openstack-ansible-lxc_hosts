@@ -26,9 +26,8 @@
 #  value properly during a major upgrade.
 - name: Set volume size
   shell: |
-    if ! machinectl set-limit {{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G; then
-      truncate -s '>{{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G' /var/lib/machines.raw
-    fi
+    machinectl set-limit {{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G
+    truncate -s '>{{ lxc_host_machine_volume_size | regex_replace("\D*$", "") }}G' /var/lib/machines.raw
   changed_when: false
   register: machines_create
   args:
