@@ -16,5 +16,8 @@ Ansible role that configures a host for running LXC containers.
 Documentation for the project can be found at:
   https://docs.openstack.org/openstack-ansible-lxc_hosts/latest
 
+Release notes for the project can be found at:
+  https://docs.openstack.org/releasenotes/openstack-ansible-lxc_hosts/
+
 The project home is at:
   https://launchpad.net/openstack-ansible
