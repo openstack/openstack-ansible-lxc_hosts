@@ -27,7 +27,7 @@
     gpgcheck: yes
     gpgkey: "{{ lxc_centos_package_key }}"
     repo_gpgcheck: no
-    priority: 50
+    priority: 99
     state: present
 
 - name: Deploy local COPR yum repo for LXC 2.0
@@ -39,13 +39,14 @@
     gpgcheck: yes
     gpgkey: "{{ lxc_centos_package_key }}"
     repo_gpgcheck: no
-    priority: 50
+    priority: 99
     state: present
   register: copr_repository_deploy
 
 # NOTE: Existing CentOS environments may not have the COPR repo priority set
 #       higher than the default. The following task ensures that existing
 #       deployments have their priority adjusted for the COPR repository.
+# NOTE: We need to remove priority settings in S cycle.
 # TODO(mhayden): The ini_file module is required here since the yum_repository
 #                module can only do add/remove operations, not edits.
 #                Ansible bug: https://github.com/ansible/ansible/issues/22362
@@ -54,7 +55,7 @@
     dest: /etc/yum.repos.d/thm-lxc2.0.repo
     section: thm-lxc2.0
     option: priority
-    value: 50
+    value: 99
   when:
     - not copr_repository_deploy | changed
 
