@@ -57,6 +57,32 @@
     - lxc-apparmor
     - lxc_hosts-config
 
+# NOTE(hwoarang) Revert this (or fix the actual profile)
+# once upstream bug https://bugzilla.opensuse.org/show_bug.cgi?id=1099239
+# is analysed.
+- name: Disable lxc-start apparmor profile on openSUSE
+  block:
+  - name: Check for apparmor profile
+    stat:
+      path: "/etc/apparmor.d/usr.bin.lxc-start"
+    register: usr_bin_lxc_start
+
+  - name: Relax lxc-start apparmor profile
+    file:
+      src: "/etc/apparmor.d/usr.bin.lxc-start"
+      dest: "/etc/apparmor.d/disable/usr.bin.lxc-start"
+      state: link
+    when:
+      - usr_bin_lxc_start.stat.exists | bool
+    notify:
+      - Start apparmor
+      - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
+  when: ansible_pkg_mgr == 'zypper'
+
 - name: Drop lxc-openstack apparmor profile
   template:
     src: "lxc-openstack.apparmor.j2"
