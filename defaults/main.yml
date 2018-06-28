@@ -237,5 +237,5 @@ lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2
 # Additionally, set 'lxc_hosts_opensuse_mirror_obs_url' to a mirror which also mirrors
 # the OBS repositories. If you want to use the same mirror in both cases, then leave the
 # 'lxc_hosts_opensuse_mirror_obs_url' to its default value.
-lxc_hosts_opensuse_mirror_url: 'http://download.opensuse.org'
+lxc_hosts_opensuse_mirror_url: "{{ opensuse_mirror | default('http://download.opensuse.org') }}"
 lxc_hosts_opensuse_mirror_obs_url: "{{ lxc_hosts_opensuse_mirror_url }}"
