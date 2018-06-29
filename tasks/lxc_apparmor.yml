@@ -13,16 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NOTE(hwoarang) default dnsmasq profile is too restrictive so we
-# need to adjust it for neutron.
 - name: Check for apparmor profile
   stat:
-    path: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
+    path: "/etc/apparmor.d/usr.sbin.dnsmasq"
   register: sbin_dnsmasq
 
 - name: Relax dnsmasq apparmor profile
   file:
-    src: "/etc/apparmor.d/local/usr.sbin.dnsmasq"
+    src: "/etc/apparmor.d/usr.sbin.dnsmasq"
     dest: "/etc/apparmor.d/disable/usr.sbin.dnsmasq"
     state: link
   when:
@@ -35,8 +33,6 @@
     - lxc-apparmor
     - lxc_hosts-config
 
-# NOTE(hwoarang) add attach_disconnected to ping profile to allow it to
-# work on overlayfs
 - name: Check for apparmor profile
   stat:
     path: "/etc/apparmor.d/bin.ping"
@@ -45,7 +41,7 @@
 - name: Relax ping apparmor profile
   file:
     src: "/etc/apparmor.d/bin.ping"
-    dest: "/etc/apparmor.d/disable/usr.sbin.dnsmasq"
+    dest: "/etc/apparmor.d/disable/bin.ping"
     state: link
   when:
     - bin_ping.stat.exists | bool
