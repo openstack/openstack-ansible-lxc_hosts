@@ -30,7 +30,7 @@
     name: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
   register: install_packages
-  until: install_packages|success
+  until: install_packages is success
   retries: 5
   delay: 2
   tags:

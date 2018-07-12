@@ -101,6 +101,6 @@
     enabled: "yes"
     daemon_reload: yes
   register: _lxc_dnsmasq_systemd
-  until: _lxc_dnsmasq_systemd | success
+  until: _lxc_dnsmasq_systemd  is success
   retries: 5
   delay: 5

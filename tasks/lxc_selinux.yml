@@ -61,4 +61,4 @@
   when:
     - openstack_log_dir.stat.exists
     - '"/openstack/log" not in fcontext_check.stdout'
-    - selinux_equivalence | changed
+    - selinux_equivalence  is changed

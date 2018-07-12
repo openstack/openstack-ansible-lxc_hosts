@@ -23,7 +23,7 @@
   register: cache_download
   retries: 3
   delay: 10
-  until: cache_download|success
+  until: cache_download is success
   when:
     - lxc_container_backing_method is defined
     - lxc_container_backing_method == 'copy-on-write'

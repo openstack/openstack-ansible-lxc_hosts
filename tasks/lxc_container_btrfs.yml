@@ -23,7 +23,7 @@
   register: cache_download
   retries: 3
   delay: 10
-  until: cache_download|success
+  until: cache_download is success
 
 - name: Set the qgroup limits
   block:

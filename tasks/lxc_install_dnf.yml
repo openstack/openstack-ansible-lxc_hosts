@@ -1,1 +1,127 @@
-lxc_install_yum.yml
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: Ensure createrepo package is installed
+  yum:
+    name: createrepo
+    state: latest
+
+- name: Deploy upstream COPR yum repo for LXC 2.0
+  yum_repository:
+    name: thm-lxc2.0
+    description: "COPR repository for LXC 2.0 packages on CentOS 7"
+    baseurl: "{{ lxc_centos_package_baseurl }}"
+    enabled: no
+    gpgcheck: yes
+    gpgkey: "{{ lxc_centos_package_key }}"
+    repo_gpgcheck: no
+    priority: 99
+    state: present
+
+- name: Deploy local COPR yum repo for LXC 2.0
+  yum_repository:
+    name: thm-lxc2.0-local
+    description: "Local repository for LXC 2.0 packages on CentOS 7"
+    baseurl: "file:///opt/thm-lxc2.0"
+    enabled: no
+    gpgcheck: yes
+    gpgkey: "{{ lxc_centos_package_key }}"
+    repo_gpgcheck: no
+    priority: 99
+    state: present
+  register: copr_repository_deploy
+
+# NOTE: Existing CentOS environments may not have the COPR repo priority set
+#       higher than the default. The following task ensures that existing
+#       deployments have their priority adjusted for the COPR repository.
+# NOTE: We need to remove priority settings in S cycle.
+# TODO(mhayden): The ini_file module is required here since the yum_repository
+#                module can only do add/remove operations, not edits.
+#                Ansible bug: https://github.com/ansible/ansible/issues/22362
+- name: Ensure COPR repository priority is set
+  ini_file:
+    dest: /etc/yum.repos.d/thm-lxc2.0.repo
+    section: thm-lxc2.0
+    option: priority
+    value: 99
+  when:
+    - not copr_repository_deploy  is changed
+
+- name: Add GPG key for COPR LXC repo
+  rpm_key:
+    key: "{{ lxc_centos_package_key }}"
+    state: present
+  register: add_keys
+  until: add_keys  is success
+  retries: 5
+  delay: 2
+
+- name: Create and enable local LXC package repository
+  command: "{{ item }}"
+  with_items:
+    - "reposync --repoid=thm-lxc2.0 --download_path=/tmp/"
+    - "createrepo /tmp/thm-lxc2.0"
+    - "rsync -a --delete /tmp/thm-lxc2.0/ /opt/thm-lxc2.0/"
+    - "yum-config-manager --enable thm-lxc2.0-local"
+
+- name: Install EPEL gpg keys
+  rpm_key:
+    key: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    state: present
+  register: _add_yum_keys
+  until: _add_yum_keys  is success
+  retries: 5
+  delay: 2
+
+- name: Install the EPEL repository
+  yum_repository:
+    name: epel-lxc_hosts
+    baseurl: "{{ (centos_epel_mirror | default ('http://download.fedoraproject.org/pub/epel')) ~ '/' ~ ansible_distribution_major_version ~ '/' ~ ansible_architecture }}"
+    description: 'Extra Packages for Enterprise Linux 7 - $basearch'
+    gpgcheck: yes
+    enabled: yes
+    state: present
+    includepkgs: 'aria2 python2-lxc'
+  register: install_epel_repo
+  until: install_epel_repo is success
+  retries: 5
+  delay: 2
+
+- name: Install distro packages
+  package:
+    pkg: "{{ lxc_hosts_distro_packages }}"
+    state: "{{ lxc_hosts_package_state }}"
+  register: install_packages
+  until: install_packages is success
+  retries: 5
+  delay: 2
+  tags:
+    - lxc-packages
+
+- name: Remove sub system lock if found
+  file:
+    path: "/var/lock/subsys/lxc"
+    state: "absent"
+    owner: "root"
+    group: "root"
+  tags:
+    - lxc-directories
+
+- name: Enable lxc service
+  service:
+    name: lxc
+    enabled: "yes"
+  tags:
+    - lxc_hosts-config
