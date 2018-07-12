@@ -33,7 +33,7 @@
       register: legacy_image_url
       retries: 3
       delay: 1
-      until: legacy_image_url  is success
+      until: legacy_image_url is success
 
     - name: Set LXC cache fact(s) (legacy)
       set_fact:

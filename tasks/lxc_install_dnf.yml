@@ -64,7 +64,7 @@
     key: "{{ lxc_centos_package_key }}"
     state: present
   register: add_keys
-  until: add_keys  is success
+  until: add_keys is success
   retries: 5
   delay: 2
 
@@ -81,7 +81,7 @@
     key: "http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
     state: present
   register: _add_yum_keys
-  until: _add_yum_keys  is success
+  until: _add_yum_keys is success
   retries: 5
   delay: 2
 

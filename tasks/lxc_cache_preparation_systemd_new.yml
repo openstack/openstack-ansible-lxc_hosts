@@ -38,7 +38,7 @@
     /tmp/{{ cache_basename }}
     {{ lxc_container_base_name }}
   register: pull_image
-  until: pull_image  is success
+  until: pull_image is success
   retries: 3
   delay: 1
   changed_when: pull_image.rc == 0
