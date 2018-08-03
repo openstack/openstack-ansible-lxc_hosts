@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url: "http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04-base-{{ lxc_cache_map.arch }}.tar.gz"
+_lxc_hosts_container_image_url: "http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release/ubuntu-base-18.04.1-base-{{ lxc_cache_map.arch }}.tar.gz"
 
 _lxc_cache_map:
   distro: ubuntu
