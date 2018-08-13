@@ -17,7 +17,7 @@ system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/lib/systemd"
 
 # Required rpm packages.
-lxc_hosts_distro_packages:
+_lxc_hosts_distro_packages:
   - aria2
   - bridge-utils
   - btrfs-progs
