@@ -20,6 +20,14 @@ lxc_hosts_validate_certs: yes
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
 
+# Define a list of extra distribuition packages to install onto the host
+# at the discretion of the deployer
+lxc_hosts_extra_distro_packages: []
+
+# Define the total list of packages which to install onto the host combining
+# distibution specific and deployers extra package lists
+lxc_hosts_distro_packages: "{{ _lxc_hosts_distro_packages + lxc_hosts_extra_distro_packages }}"
+
 # Mappings from Ansible reported architecture to distro release architecture
 lxc_architecture_mapping:
   x86_64: amd64
@@ -169,8 +177,13 @@ lxc_user_defined_container: null
 # which will be templated onto the deployment targets.
 lxc_cache_prep_template: "{{ _lxc_cache_prep_template }}"
 
+## Define a list of extra distribuition packages to install in the container
+# cache at the discretion of the deployer
+lxc_cache_extra_distro_packages: []
+
 # List of packages to be installed into the base container cache
-lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages }}"
+# Combines the distribution specific list with deployers extra list
+lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages + lxc_cache_extra_distro_packages }}"
 
 # The maximum amount of time (in seconds) to wait until failing the cache
 # preparation process. This is necessary to mitigate the issue that can

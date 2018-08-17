@@ -17,6 +17,9 @@
   hosts: localhost
   connection: local
   become: true
+  vars:
+    extra_host_package: iotop
+    extra_cache_package: lshw
   pre_tasks:
     - name: Show host facts
       debug:
@@ -44,6 +47,11 @@
       set_fact:
         lxc_container_ssh_key: "{{ _root_ssh_key['content'] | b64decode }}"
 
+    - name: Ensure extra host package is not installed
+      package:
+        name: "{{ extra_host_package }}"
+        state: absent
+
     - include_tasks: "common/common-tasks/test-set-nodepool-vars.yml"
 
   roles:
@@ -55,6 +63,10 @@
       lxc_container_cache_files:
         - src: files/container-file-copy-test.txt
           dest: /tmp/file-copied-from-deployment-host.txt
+      lxc_hosts_extra_distro_packages:
+        - "{{ extra_host_package }}"
+      lxc_cache_extra_distro_packages:
+        - "{{ extra_cache_package }}"
 
   post_tasks:
     - name: Get sysctl content
@@ -90,6 +102,19 @@
         filter: ansible_lxcbr0
       register: lxcbr0_facts
 
+    - name: Get installation state of extra host package
+      package:
+        name: "{{ extra_host_package }}"
+        state: present
+      register: extra_host_package_state
+
+    - name: Check for extra package installed in lxc cache
+      find:
+        paths: "{{ lxc_image_cache_path }}"
+        patterns: "{{ extra_cache_package }}"
+        recurse: yes
+      register: extra_cache_package_find
+
     - name: Check role functions
       assert:
         that:
@@ -99,3 +124,5 @@
           - sysctl_conf | search('fs.inotify.max_user_instances.*')
           - "lxc_bridge_file.stat.exists"
           - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"
+          - extra_host_package_state.changed == false
+          - extra_cache_package_find.matched > 0
