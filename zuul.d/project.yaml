@@ -1,4 +1,3 @@
----
 # Copyright 2017, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +15,9 @@
 - project:
     templates:
       - openstack-ansible-role-jobs
+      - check-requirements
+      - publish-openstack-sphinx-docs
+      - release-notes-jobs
     check:
       jobs:
         - openstack-ansible-lxc-dir-centos-7
