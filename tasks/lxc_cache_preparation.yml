@@ -20,6 +20,7 @@
   tags:
     # Avoid ANSIBLE0006 lint issue: systemctl used in place of systemd module
     - skip_ansible_lint
+    - always
 
 - block:
     - name: Create machined proxy override unit directories
