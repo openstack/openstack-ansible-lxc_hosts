@@ -68,23 +68,6 @@
           to ensure they're available otherwise disable the quota system by
           setting `lxc_host_machine_quota_disabled` to true.
 
-- block:
-    - name: Generate apt keys from LXC host for the container cache
-      shell: "apt-key exportall"
-      changed_when: false
-      register: _apt_exportall
-      tags:
-        - skip_ansible_lint
-
-    - name: Write exported keys to temporary file
-      copy:
-        content: "{{ _apt_exportall.stdout }}"
-        dest: "/root/repo.keys"
-      notify:
-        - Remove generated apt keys from LXC host
-  when:
-    - ansible_pkg_mgr == 'apt'
-
 # NOTE(cloudnull): We're using rsync  and an if block because we've no means
 #                  to loop over a block. Re-evaluate this task when/if this is
 #                  merged https://github.com/ansible/ansible/issues/13262
