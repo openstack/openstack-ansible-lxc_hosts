@@ -84,11 +84,6 @@
     name: it_does_not_matter
     daemon_reload: yes
 
-- name: Remove generated apt keys from LXC host
-  file:
-    path: /root/repo.keys
-    state: absent
-
 - name: Remove rootfs archive
   file:
     path: "/tmp/{{ cache_basename }}"
