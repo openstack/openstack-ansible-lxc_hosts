@@ -18,16 +18,38 @@
     path: "/etc/apparmor.d/usr.sbin.dnsmasq"
   register: sbin_dnsmasq
 
-- name: Relax dnsmasq apparmor profile
-  file:
-    src: "/etc/apparmor.d/usr.sbin.dnsmasq"
-    dest: "/etc/apparmor.d/disable/usr.sbin.dnsmasq"
-    state: link
+# NOTE(hwoarang) aa-disable will disable the profile and unload it immediately
+# See https://bugzilla.opensuse.org/show_bug.cgi?id=1108688. For aa-disable to
+# work we need apparmor app and running
+- name: Relax apparmor profile
+  block:
+    - name: Ensure apparmor service is running
+      systemd:
+        name: "apparmor"
+        enabled: yes
+        state: "started"
+
+    - name: Relax dnsmasq apparmor profile
+      shell: |
+        # empty line to workaround bug in EnvVarsInCommandRule.py lint test
+        # https://github.com/willthames/ansible-lint/issues/275
+        exit_code=0
+        if aa-status | grep -q dnsmasq ; then
+          aa-disable usr.sbin.dnsmasq
+          exit_code=$?
+          if [[ ${exit_code} == 0 ]]; then
+            exit_code=2
+          fi
+        fi
+        exit ${exit_code}
+      register: _apparmor_profile_disabled
+      changed_when: _apparmor_profile_disabled.rc == 2
+      failed_when: _apparmor_profile_disabled.rc not in [0,2]
+      args:
+        warn: no
+        executable: /bin/bash
   when:
     - sbin_dnsmasq.stat.exists | bool
-  notify:
-    - Start apparmor
-    - Reload apparmor
   tags:
     - lxc-files
     - lxc-apparmor
@@ -38,16 +60,38 @@
     path: "/etc/apparmor.d/bin.ping"
   register: bin_ping
 
-- name: Relax ping apparmor profile
-  file:
-    src: "/etc/apparmor.d/bin.ping"
-    dest: "/etc/apparmor.d/disable/bin.ping"
-    state: link
+# NOTE(hwoarang) aa-disable will disable the profile and unload it immediately
+# See https://bugzilla.opensuse.org/show_bug.cgi?id=1108688. For aa-disable to
+# work we need apparmor app and running
+- name: Relax apparmor profile
+  block:
+    - name: Ensure apparmor service is running
+      systemd:
+        name: "apparmor"
+        enabled: yes
+        state: "started"
+
+    - name: Relax ping apparmor profile
+      shell: |
+        # empty line to workaround bug in EnvVarsInCommandRule.py lint test
+        # https://github.com/willthames/ansible-lint/issues/275
+        exit_code=0
+        if aa-status | grep -q ping ; then
+          aa-disable usr.ping
+          exit_code=$?
+          if [[ ${exit_code} == 0 ]]; then
+            exit_code=2
+          fi
+        fi
+        exit ${exit_code}
+      register: _apparmor_profile_disabled
+      changed_when: _apparmor_profile_disabled.rc == 2
+      failed_when: _apparmor_profile_disabled.rc not in [0,2]
+      args:
+        warn: no
+        executable: /bin/bash
   when:
     - bin_ping.stat.exists | bool
-  notify:
-    - Start apparmor
-    - Reload apparmor
   tags:
     - lxc-files
     - lxc-apparmor
