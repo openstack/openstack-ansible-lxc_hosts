@@ -25,15 +25,12 @@ lxc_hosts_distro_packages:
   - dnsmasq
   - git
   - libseccomp
-  - libselinux
-  - libselinux-devel
   - lxc
   - lxc-devel
   - lxc-libs
   - lxc-templates
   - policycoreutils-python
   - python2-lxc
-  - selinux-policy-devel
   - unzip
   - xz
 

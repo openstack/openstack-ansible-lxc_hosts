@@ -87,16 +87,6 @@
 - name: Flush handlers
   meta: flush_handlers
 
-- name: Ensure SELinux module compile has finished
-  async_status:
-    jid: "{{ compile_selinux_async.ansible_job_id }}"
-  register: _compile_selinux_async
-  until: _compile_selinux_async.finished
-  retries: 30
-  when:
-    - compile_selinux_async is defined
-    - not compile_selinux_async | skipped
-
 - name: (RE)Gather facts post setup
   setup:
     gather_subset: "network,hardware,virtual"

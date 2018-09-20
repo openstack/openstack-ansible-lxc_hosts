@@ -137,7 +137,3 @@
 
 # Ensure apparmor reindex runs before other things that may fail
 - meta: flush_handlers
-
-- include_tasks: lxc_selinux.yml
-  when:
-    - ansible_selinux.status == "enabled"
