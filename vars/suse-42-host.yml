@@ -17,6 +17,7 @@
 lxc_hosts_external_repo:
   - name: "OBS:Virtualization:containers"
     uri: "{{ lxc_hosts_opensuse_mirror_obs_url }}/repositories/Virtualization:/containers/openSUSE_Leap_{{ ansible_distribution_version }}/"
+    state: present
 
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/usr/lib/systemd"

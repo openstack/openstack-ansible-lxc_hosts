@@ -20,6 +20,7 @@
     name: "{{ item.name }}"
     repo: "{{ item.uri }}"
     runrefresh: yes
+    state: "{{ item.state }}"
   with_items: "{{ lxc_hosts_external_repo }}"
   when: lxc_hosts_external_repo is defined
   tags:
