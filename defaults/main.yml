@@ -103,6 +103,7 @@ lxc_net_bridge: lxcbr0
 lxc_net_bridge_port: none
 lxc_net_address: 10.0.3.1
 lxc_net_netmask: 255.255.255.0
+lxc_net_cidr: 24
 lxc_net_gateway: null  ## if null, no gateway will be on the LXC bridge. lxc_net_nat must be "false" to use a gateway.
 #lxc_net_mtu: 1500 ##setting this variable will add mtu configuration for the lxc config and network bridge
 
@@ -193,7 +194,7 @@ lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages + lxc_cache_extra_dist
 # preparation process. This is necessary to mitigate the issue that can
 # arise where the cache prep hangs and never fails.
 # The value is specified in seconds, with the default being 20 minutes.
-lxc_cache_prep_timeout: 1200
+lxc_cache_prep_timeout: "{{ _lxc_cache_prep_timeout | default(1200) }}"
 
 # Set the server to download LXC images from.
 lxc_image_cache_server_mirrors:
@@ -241,8 +242,7 @@ lxc_cache_download_template_options: >-
   {{ lxc_cache_download_template_extra_options }}
 
 # Locales to populate in the LXC base cache
-lxc_cache_locales:
-  - en_US.UTF-8
+lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
 
 # LXC must be installed from a COPR repository on CentOS 7 since the version
 # provided in EPEL is much too old (1.x).

@@ -14,11 +14,14 @@ mkdir -p /root/.gnupg
 [ ! -e /dev/null ] && mknod -m 0666 /dev/null c 1 3
 [ ! -e /dev/random ] && mknod -m 0666 /dev/random c 1 8
 [ ! -e /dev/urandom ] && mknod -m 0666 /dev/urandom c 1 9
+ln -sf /proc/self/fd /dev/fd
 
 for i in {0..5}; do
   [ ! -e "/dev/pts/$i" ] && mknod -m 0666 "/dev/pts/$i" c 136 $i
 done
-[ ! -e /dev/pts/ptmx ] && mknod -m 0666 /dev/pts/ptmx c 5 2
+# file check does not seem to work at all times
+[ ! -e /dev/ptmx ] && mknod -m 0666 /dev/ptmx c 5 2 || true
+[ ! -e /dev/pts/ptmx ] && mknod -m 0000 /dev/pts/ptmx c 5 2
 
 # Create the directory where local facts will be stored
 mkdir -p /etc/ansible/facts.d
