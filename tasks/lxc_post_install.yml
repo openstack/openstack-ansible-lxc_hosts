@@ -38,8 +38,19 @@
     - lxc-files
     - lxc-config
 
+- name: Pull lxc version
+  command: "lxc-ls --version"
+  changed_when: false
+  register: lxc_version
+  tags:
+    - skip_ansible_lint
+
+- name: Enable or Disable lxc three syntax
+  set_fact:
+    lxc_major_version: "{{ lxc_version.stdout.split('.')[0] }}"
+
 - name: Create machinectl base template
-  copy:
+  template:
     src: "lxc-machinectl.j2"
     dest: "/usr/share/lxc/templates/lxc-machinectl"
     owner: "root"
