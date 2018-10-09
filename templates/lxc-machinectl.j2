@@ -157,7 +157,7 @@ echo -e "\n# Container specific configuration" >> "${LXC_PATH}/config"
 
 # If an older fstab file exists in the template, extend the lxc config.
 if [ -e "${LXC_CACHE_PATH}/fstab" ]; then
-    echo "lxc.mount.fstab = ${LXC_PATH}/fstab" >> "${LXC_PATH}/config"
+    echo "{{ lxc_config_key_mapping[lxc_major_version|int]['fstab'] }} = ${LXC_PATH}/fstab" >> "${LXC_PATH}/config"
 fi
 
 # Set the uts name
@@ -187,15 +187,15 @@ done
 IFS=${OLD_IFS}
 
 # Add the machinectl backend store for the new containe
-if grep -q '^lxc\.rootfs =' "${LXC_PATH}/config"; then
-  sed -i "s|^lxc\.rootfs =.*|lxc.rootfs = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
+if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =' "${LXC_PATH}/config"; then
+  sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
 else
-  echo "lxc.rootfs = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
+  echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
 fi
-if grep -q '^lxc\.rootfs\.backend =' "${LXC_PATH}/config"; then
-  sed -i "s|^lxc\.rootfs\.backend =.*|lxc.rootfs.backend = btrfs|" "${LXC_PATH}/config"
+if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =' "${LXC_PATH}/config"; then
+  sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs|" "${LXC_PATH}/config"
 else
-  echo "lxc.rootfs.backend = btrfs" >> "${LXC_PATH}/config"
+  echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs" >> "${LXC_PATH}/config"
 fi
 
 # Prevent mingetty from calling vhangup(2)
