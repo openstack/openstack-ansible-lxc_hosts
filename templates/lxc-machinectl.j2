@@ -161,7 +161,7 @@ if [ -e "${LXC_CACHE_PATH}/fstab" ]; then
 fi
 
 # Set the uts name
-echo "lxc.utsname = ${LXC_NAME}" >> "${LXC_PATH}/config"
+echo "{{ lxc_config_key_mapping[lxc_major_version|int]['uts_name'] }} = ${LXC_NAME}" >> "${LXC_PATH}/config"
 
 # Look for extra templates
 TEMPLATE_FILES="${LXC_PATH}/config"
