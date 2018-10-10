@@ -24,16 +24,21 @@
         - openstack-ansible-lxc-dir-opensuse-423
         - openstack-ansible-lxc-dir-opensuse-150
         - openstack-ansible-lxc-dir-ubuntu-xenial
+        - openstack-ansible-lxc-dir-ubuntu-bionic
         - openstack-ansible-lxc-btrfs-ubuntu-xenial
+        - openstack-ansible-lxc-btrfs-ubuntu-bionic
         - openstack-ansible-lxc-btrfs-centos-7
         - openstack-ansible-lxc-btrfs-opensuse-423
         - openstack-ansible-lxc-btrfs-opensuse-150
         - openstack-ansible-lxc-machinectl-ubuntu-xenial
+        - openstack-ansible-lxc-machinectl-ubuntu-bionic
         - openstack-ansible-lxc-machinectl-centos-7
         - openstack-ansible-lxc-machinectl-opensuse-423
         - openstack-ansible-lxc-machinectl-opensuse-150
         - openstack-ansible-lxc-overlayfs-ubuntu-xenial
+        - openstack-ansible-lxc-overlayfs-ubuntu-bionic
         - openstack-ansible-lxc-overlayfs-centos-7
         - openstack-ansible-lxc-overlayfs-opensuse-423
         - openstack-ansible-lxc-overlayfs-opensuse-150
         - openstack-ansible-lxc-zfs-ubuntu-xenial
+        - openstack-ansible-lxc-zfs-ubuntu-bionic
