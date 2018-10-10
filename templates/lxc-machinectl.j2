@@ -186,17 +186,20 @@ for file in ${TEMPLATE_FILES}; do
 done
 IFS=${OLD_IFS}
 
-# Add the machinectl backend store for the new containe
+# Add the machinectl backend store for the new container
 if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =' "${LXC_PATH}/config"; then
   sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
 else
   echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
 fi
+
+{% if (lxc_major_version | int) < 3 %}
 if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =' "${LXC_PATH}/config"; then
   sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs|" "${LXC_PATH}/config"
 else
   echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs" >> "${LXC_PATH}/config"
 fi
+{% endif %}
 
 # Prevent mingetty from calling vhangup(2)
 if [ -f "${LXC_ROOTFS}/etc/init/tty.conf" ]; then
