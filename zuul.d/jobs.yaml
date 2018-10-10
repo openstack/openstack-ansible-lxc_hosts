@@ -20,8 +20,9 @@
       osa_test_repo: "openstack/openstack-ansible-lxc_container_create"
 
 - job:
-    name: openstack-ansible-lxc-dir-ubuntu-xenial
+    name: openstack-ansible-lxc-dir-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
+    nodeset: ubuntu-bionic
     vars:
       tox_env: dir
 
@@ -46,9 +47,13 @@
     vars:
       tox_env: dir
 
+# NOTE(cloudnull): Job set to non-voting due to regression in bionic
+#                  https://github.com/lxc/lxc/issues/2612
 - job:
-    name: openstack-ansible-lxc-btrfs-ubuntu-xenial
+    name: openstack-ansible-lxc-btrfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
+    nodeset: ubuntu-bionic
+    voting: false
     vars:
       tox_env: btrfs
 
@@ -74,8 +79,10 @@
       tox_env: btrfs
 
 - job:
-    name: openstack-ansible-lxc-machinectl-ubuntu-xenial
+    name: openstack-ansible-lxc-machinectl-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
+    nodeset: ubuntu-bionic
+    voting: false
     vars:
       tox_env: mnctl
 
@@ -101,8 +108,9 @@
       tox_env: mnctl
 
 - job:
-    name: openstack-ansible-lxc-overlayfs-ubuntu-xenial
+    name: openstack-ansible-lxc-overlayfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
+    nodeset: ubuntu-bionic
     vars:
       tox_env: ofs
 
@@ -128,7 +136,9 @@
       tox_env: ofs
 
 - job:
-    name: openstack-ansible-lxc-zfs-ubuntu-xenial
+    name: openstack-ansible-lxc-zfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
+    nodeset: ubuntu-bionic
     vars:
       tox_env: zfs
+
