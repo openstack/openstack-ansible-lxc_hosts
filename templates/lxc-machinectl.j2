@@ -157,11 +157,11 @@ echo -e "\n# Container specific configuration" >> "${LXC_PATH}/config"
 
 # If an older fstab file exists in the template, extend the lxc config.
 if [ -e "${LXC_CACHE_PATH}/fstab" ]; then
-    echo "{{ lxc_config_key_mapping[lxc_major_version|int]['fstab'] }} = ${LXC_PATH}/fstab" >> "${LXC_PATH}/config"
+    echo "{{ lxc_template_config_key_mapping[lxc_major_version|int]['fstab'] }} = ${LXC_PATH}/fstab" >> "${LXC_PATH}/config"
 fi
 
 # Set the uts name
-echo "{{ lxc_config_key_mapping[lxc_major_version|int]['uts_name'] }} = ${LXC_NAME}" >> "${LXC_PATH}/config"
+echo "{{ lxc_template_config_key_mapping[lxc_major_version|int]['uts_name'] }} = ${LXC_NAME}" >> "${LXC_PATH}/config"
 
 # Look for extra templates
 TEMPLATE_FILES="${LXC_PATH}/config"
@@ -187,17 +187,17 @@ done
 IFS=${OLD_IFS}
 
 # Add the machinectl backend store for the new container
-if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =' "${LXC_PATH}/config"; then
-  sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
+if grep -q '^{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs'] }} =' "${LXC_PATH}/config"; then
+  sed -i "s|^{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs'] }} =.*|{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}|" "${LXC_PATH}/config"
 else
-  echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
+  echo "{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs'] }} = ${LXC_ROOTFS}" >> "${LXC_PATH}/config"
 fi
 
 {% if (lxc_major_version | int) < 3 %}
-if grep -q '^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =' "${LXC_PATH}/config"; then
-  sed -i "s|^{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =.*|{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs|" "${LXC_PATH}/config"
+if grep -q '^{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =' "${LXC_PATH}/config"; then
+  sed -i "s|^{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} =.*|{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs|" "${LXC_PATH}/config"
 else
-  echo "{{ lxc_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs" >> "${LXC_PATH}/config"
+  echo "{{ lxc_template_config_key_mapping[lxc_major_version|int]['rootfs_backend'] }} = btrfs" >> "${LXC_PATH}/config"
 fi
 {% endif %}
 
