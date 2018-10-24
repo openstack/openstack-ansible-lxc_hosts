@@ -36,25 +36,13 @@ _lxc_cache_map:
 
 _lxc_cache_prep_template: "prep-scripts/opensuse_leap_prep.sh.j2"
 
+# This list should contain a minimum set of packages. Add extra packages via roles that require them.
 _lxc_cache_distro_packages:
   - ca-certificates-mozilla
-  - cronie
-  - dbus-1
-  - gcc
-  - iproute2
   - iputils
-  - libffi-devel
-  - libopenssl-devel
-  - netcfg
   - openssh
-  - openssl
   - python
-  - python-devel
-  - python-xml
-  - rsync
   - sudo
   - systemd
   - systemd-sysvinit
-  - tar
-  - wget
-  - which
+  - timezone

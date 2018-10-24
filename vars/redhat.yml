@@ -33,19 +33,12 @@ _lxc_cache_prep_template: "prep-scripts/centos_8_prep.sh.j2"
 
 _lxc_cache_distro_packages:
   - ca-certificates
-  - cronie
-  - gcc
-  - iproute
   - iputils
   - openssh-server
-  - openssl
-  - policycoreutils
-  - rsync
-  - setup
+  - python3
   - sudo
   - systemd
   - systemd-networkd
+  - systemd-resolvd
   - systemd-sysv
-  - tar
-  - wget
-  - which
+  - tzdata
