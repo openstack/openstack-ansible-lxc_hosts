@@ -14,7 +14,7 @@ apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
 apt-get update
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes gnupg
 
-apt-get upgrade -y
+apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes {{ lxc_cache_distro_packages | join(' ') }}
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
 rm -f /usr/bin/python
