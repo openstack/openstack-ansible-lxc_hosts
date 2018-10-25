@@ -20,7 +20,7 @@ lxc_hosts_external_repo:
     # NOTE(hwoarang) Leap 15.X is newer than 42.X and it has all the necessary LXC packages so we don't need
     # to use the OBS repository. As such we only add it if version is >= 42 so we can capture all the old Leap
     # releases. Using the external repo can be removed once we drop support for 42.X
-    state: "{{ (ansible_distribution_major_version >= 42) | ternary ('present', 'absent') }}"
+    state: "{{ (ansible_distribution_version is version ('42.1', '>=')) | ternary ('present', 'absent') }}"
 
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/usr/lib/systemd"
