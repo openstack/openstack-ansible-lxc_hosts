@@ -77,7 +77,7 @@ When submitting an issue, or working on an issue please ensure the following cri
     * The description clearly states or describes the original problem or root cause of the problem.
     * Include historical information on how the problem was identified.
     * Any relevant logs are included.
-    * If the issue is a bug that needs fixing in a branch other than Master, add the ‘backport potential’ tag TO THE ISSUE (not the PR).
+    * If the issue is a bug that needs fixing in a branch other than Master, add the 'backport potential' tag TO THE ISSUE (not the PR).
     * The provided information should be totally self-contained. External access to web services/sites should not be needed.
     * If the issue is needed for a hotfix release, add the 'expedite' label.
     * Steps to reproduce the problem if possible.
