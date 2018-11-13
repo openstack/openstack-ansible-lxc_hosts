@@ -14,3 +14,6 @@ What=/var/lib/machines.raw
 Where=/var/lib/machines
 Type=btrfs
 Options=loop,defaults,noatime,nodiratime,compress=lzo,commit=120,{{ (ansible_kernel is version_compare('4.5', '>=')) | ternary('space_cache=v2', 'space_cache') }}
+
+[Install]
+WantedBy=multi-user.target
