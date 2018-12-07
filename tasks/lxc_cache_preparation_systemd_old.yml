@@ -13,33 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# In later versions of systemd this is not needed. Referenced in
-#  the following ML post resolves the bug.
-#  * https://lists.freedesktop.org/archives/systemd-devel/2015-March/029151.html
-- name: Move machined service into place
-  template:
-    src: systemd-machined.service.j2
-    dest: /etc/systemd/system/systemd-machined.service
-  register: machined_unit
-  notify:
-    - Reload systemd units
-    - Restart machined
-
-# In later versions of systemd this is not needed. Referenced in
-#  the following commit resolves the bug.
-#  * https://cgit.freedesktop.org/systemd/systemd/commit/src/machine/org.freedesktop.machine1.conf?id=72c3897f77a7352618ea76b880a6764f52d6327b
-- name: Move machine1 dbus config into place
-  copy:
-    src: org.freedesktop.machine1.conf
-    dest: /etc/dbus-1/system.d/org.freedesktop.machine1.conf
-  register: machine1_conf
-  notify:
-    - Reload systemd units
-    - Restart dbus
-
-# Ensure lxc networks are running as they're supposed to
-- meta: flush_handlers
-
 # Because of this post and it's related bug(s) this is adding the container
 #  volumes the old way. The new way would simply be calling `machinectl`.
 #  * https://www.mail-archive.com/systemd-devel@lists.freedesktop.org/msg28255.html
