@@ -27,16 +27,6 @@
 - name: Init reload
   command: "initctl reload-configuration"
 
-- name: Restart dbus
-  systemd:
-    name: "dbus"
-    state: "restarted"
-
-- name: Restart machined
-  systemd:
-    name: "systemd-machined.service"
-    state: "restarted"
-
 - name: Enable machines mount
   systemd:
     daemon_reload: yes
