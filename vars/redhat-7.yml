@@ -50,6 +50,7 @@ _lxc_cache_distro_packages:
   - systemd
   - systemd-sysv
   - systemd-networkd
+  - systemd-resolved
   - tar
   - wget
   - which
