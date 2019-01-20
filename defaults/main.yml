@@ -153,6 +153,9 @@ lxc_container_cache_files: []
 #     - "/etc/apt/sources.list.d/myrepo.list"
 lxc_container_cache_files_from_host: []
 
+# LXC container shutdown delay before force-killing running container
+lxc_container_shutdown_delay: 60
+
 # DNS servers to use during cache preparation
 lxc_cache_prep_dns:
   - "{{ lxc_net_address }}"
