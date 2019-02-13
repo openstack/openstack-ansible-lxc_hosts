@@ -24,5 +24,6 @@ profile lxc-openstack flags=(attach_disconnected,mediate_deleted) {
   mount fstype=cgroup2 -> /sys/fs/cgroup/**,
   mount fstype=proc -> {{ lxc_container_cache_path }}/**,
   mount fstype=sysfs -> {{ lxc_container_cache_path }}/**,
+  mount options=(rw,remount),
   mount options=(rw,bind) {{ lxc_container_cache_path }}/**/dev/shm/ -> {{ lxc_container_cache_path }}/**/run/shm/,
 }
