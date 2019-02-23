@@ -30,6 +30,15 @@
   until: job_result.finished
   retries: 60
 
+- name: Ensure systemd-importd is enabled
+  systemd:
+    name: "systemd-importd"
+    state: "started"
+    enabled: "yes"
+    daemon_reload: "yes"
+  notify:
+    - Restart importd
+
 - name: Retrieve base image
   command: >-
     machinectl

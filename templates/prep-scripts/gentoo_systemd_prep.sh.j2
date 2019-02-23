@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -e -x
+
+{{ lxc_cache_prep_pre_commands }}
+
+{% include 'templates/prep-scripts/_container_sys_setup.sh.j2' %}
+
+mount -t proc proc /proc
+mkdir /dev/shm
+mount -t tmpfs none /dev/shm
+chmod 1777 /dev/shm
+
+mkdir -p /etc/portage/repos.conf
+echo -n '[DEFAULT]
+main-repo = gentoo
+
+[gentoo]
+sync-type = webrsync
+sync-webrsync-verify-signature = true
+sync-openpgp-key-refresh-retry-count = 0
+sync-openpgp-key-path = /usr/share/openpgp-keys/gentoo-release.asc
+location = /usr/portage
+auto-sync = true' > /etc/portage/repos.conf/repos.conf
+emerge --sync
+emerge -C app-emulation/lxc app-emulation/lxc-templates sys-fs/lxcfs || true
+
+## Update base distribution
+# make world consistant
+USE="-build" emerge -q --complete-graph=y --jobs=4 --update --newuse --deep --with-bdeps=y @world
+# rebuild packages that might need it
+USE="-build" emerge -q --jobs=4 --usepkg=n @preserved-rebuild
+# remove unneeded packages
+USE="-build" emerge --verbose=n --ask=n --depclean
+# rebuild packages that might have somehow depended on the unneeded packages
+USE="-build" emerge -q --jobs=4 --usepkg=n @preserved-rebuild
+# update config files
+etc-update --automode -5
+
+emerge --jobs=4 {{ lxc_cache_distro_packages | join(' ') }}
+eselect python set python2.7
+rm /etc/machine-id || true
+rm /var/lib/dbus/machine-id || true
+touch /etc/machine-id
+rm /etc/sysctl.d/* || true
+echo '' > /etc/sysctl.conf
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+eclean-dist
+mkdir -p /var/backup
+chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
+systemctl disable systemd-resolved.service || true
+#systemctl mask systemd-resolved.service || true
+
+{% for locale in lxc_cache_locales %}
+echo "{{ locale }}" >> /etc/locale.gen
+{% if loop.first | bool %}
+{% endif %}
+{% endfor %}
+locale-gen
+
+# Set the IP of the lxcbr0 interface as the DNS server
+echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+systemctl enable systemd-networkd
+umount -f /dev/shm
+rmdir /dev/shm
+umount -f /proc
+{{ lxc_cache_prep_post_commands }}

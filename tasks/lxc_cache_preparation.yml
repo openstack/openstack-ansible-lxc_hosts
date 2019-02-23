@@ -112,7 +112,7 @@
 - name: Prepare cached image setup commands
   shell: "chroot {{ lxc_image_cache_path }} /opt/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
   changed_when: false
-  async: "{{ lxc_cache_prep_timeout }}"
+  async: "{{ lxc_cache_prep_timeout | int }}"
   poll: 0
   register: _lxc_cache_prepare_commands
 
@@ -135,7 +135,7 @@
   register: _lxc_cache_prepare_commands_result
   until: _lxc_cache_prepare_commands_result.finished
   delay: 10
-  retries: "{{ lxc_cache_prep_timeout // 10 }}"
+  retries: "{{ lxc_cache_prep_timeout | int // 10 }}"
 
 - name: Remove requiretty for sudo on centos
   template:

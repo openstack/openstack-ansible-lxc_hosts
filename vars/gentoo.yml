@@ -1,0 +1,47 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+_lxc_cache_map:
+  distro: gentoo
+  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
+  release: 17.0-systemd
+  copy_from_host:
+    - /etc/portage/make.conf
+    - /etc/portage/package.keywords/*
+    - /etc/portage/package.use/*
+    - /etc/environment
+    - /etc/localtime
+    - /etc/protocols
+
+_lxc_cache_prep_template: "prep-scripts/gentoo_systemd_prep.sh.j2"
+
+_lxc_cache_prep_timeout: 1800
+_lxc_cache_locales:
+  - "en_US.UTF-8 UTF-8"
+
+_lxc_cache_distro_packages:
+  - app-portage/gentoolkit
+  - app-misc/ca-certificates
+  - sys-process/cronie
+  - sys-apps/dbus
+  - sys-apps/iproute2
+  - net-misc/iputils
+  - virtual/libffi
+  - dev-libs/openssl
+  - net-misc/openssh
+  - net-misc/rsync
+  - app-admin/sudo
+  - app-arch/tar
+  - net-misc/wget
