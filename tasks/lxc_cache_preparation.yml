@@ -101,6 +101,11 @@
     mode: "{{ item.mode | default('0644') }}"
   with_items: "{{ lxc_container_cache_files }}"
 
+- name: Ensure opt directory exists in container
+  file:
+    dest: "{{ lxc_image_cache_path }}/opt"
+    state: directory
+
 - name: Cached image preparation script
   template:
     src: "{{ lxc_cache_prep_template }}"
