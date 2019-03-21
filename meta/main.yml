@@ -29,9 +29,6 @@ galaxy_info:
         - 7
     - name: opensuse
       versions:
-        - 42.1
-        - 42.2
-        - 42.3
         - 15.0
   categories:
     - cloud
