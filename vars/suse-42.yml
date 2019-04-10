@@ -34,6 +34,7 @@ lxc_hosts_distro_packages:
   - libseccomp2
   - lxc
   - liblxc-devel
+  - procps
   - xz
 
 lxc_xz_bin: xz
