@@ -13,7 +13,7 @@ User=root
 ExecStartPre=/usr/local/bin/lxc-system-manage iptables-create
 {% endif %}
 
-ExecStartPre=-/usr/bin/killall -u lxc-dnsmasq --regexp "^dnsmasq"
+ExecStartPre=-/usr/bin/pkill -u {{ lxc_net_dnsmasq_user }} "^dnsmasq"
 
 ExecStart=/usr/local/bin/lxc-system-manage dnsmasq-start
 

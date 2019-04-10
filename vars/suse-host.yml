@@ -33,6 +33,7 @@ _lxc_hosts_distro_packages:
   - libseccomp2
   - lxc
   - liblxc-devel
+  - procps
   - python-lxc-python2
   - systemd-container
   - xz
