@@ -32,6 +32,7 @@ lxc_hosts_distro_packages:
   - dev-python/python3-lxc
   - app-arch/xz-utils
   - sys-apps/ethtool
+  - sys-process/procps
 
 # Package to remove from the host
 lxc_hosts_remove_distro_packages:
