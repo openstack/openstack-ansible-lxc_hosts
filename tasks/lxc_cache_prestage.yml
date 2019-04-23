@@ -45,6 +45,14 @@
   set_fact:
     cache_basename: "{{ lxc_hosts_container_image_url | basename }}"
 
+- name: Create aria2c output script
+  template:
+    src: aria2c-download-helper.sh.j2
+    dest: /usr/local/bin/aria2c-download-helper.sh
+    owner: "root"
+    group: "root"
+    mode: "0755"
+
 - name: Pre-stage the LXC image on the system
   shell: >
     aria2c
@@ -53,6 +61,8 @@
     --dir=/tmp
     --out={{ cache_basename }}
     --check-certificate={{ (lxc_hosts_validate_certs | bool) | lower }}
+    --follow-metalink=mem
+    --on-download-complete=/usr/local/bin/aria2c-download-helper.sh
     {{ lxc_hosts_container_image_url }}
     > /var/log/aria2c-image-prestage.log 2>&1
   args:
