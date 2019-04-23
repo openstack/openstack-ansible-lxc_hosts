@@ -63,3 +63,12 @@
     enabled: "yes"
   tags:
     - lxc_hosts-config
+
+- name: Determine latest openSUSE container build information (Leap 15)
+  # NOTE(hwoarang) The build ID changes all the time so we need to have a hack to determine the latest one
+  # NOTE(evrardjp) You can still build using your own image by setting lxc_hosts_container_image_url in user_variables.
+  # NOTE(noonedeadpunk) While suse has static metalink which allows to get to the most recent build,
+  # aria2c do not save files provided by metalinks under expected names, as --out do not work for them.
+  shell: |
+      curl -s {{ _lxc_hosts_container_image_url_base }} | grep -P -o '{{ ansible_architecture }}.*?lxc.*?Build.*?xz' | head -n 1
+  register: _lxc_opensuse_image_build_info
