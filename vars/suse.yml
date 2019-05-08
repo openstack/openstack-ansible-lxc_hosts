@@ -15,7 +15,7 @@
 # limitations under the License.
 
 _lxc_hosts_container_image_url_base: "https://download.opensuse.org/repositories/Virtualization:/containers:/images:/openSUSE-Leap-{{ ansible_distribution_version }}/containers/"
-_lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base }}opensuse-leap-image.x86_64-{{ ansible_distribution_version }}.0.tar.xz"
+_lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base }}opensuse-leap-image-lxcBuild30.1.tar.xz"
 
 _lxc_cache_map:
   distro: opensuse
