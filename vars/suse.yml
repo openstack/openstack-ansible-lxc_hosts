@@ -15,7 +15,11 @@
 # limitations under the License.
 
 _lxc_hosts_container_image_url_base: "https://download.opensuse.org/repositories/Virtualization:/containers:/images:/openSUSE-Leap-{{ ansible_distribution_version }}/containers/"
-_lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base }}opensuse-leap-image-lxcBuild30.1.tar.xz"
+# NOTE(evrardjp): This is now a versionless image name and should stay that way.
+# If this has changed, ping a openSUSE community member or a SUSE employee.
+# In download.opensuse.org mirrors, this url should be redirected to a metalink file.
+# In any mirror it's more likely this url would be redirected to the .tar.xz file (application/octet-stream)
+_lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base }}opensuse-leap-image.x86_64-lxc.tar.xz"
 
 _lxc_cache_map:
   distro: opensuse
