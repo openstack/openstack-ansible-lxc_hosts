@@ -45,7 +45,7 @@
 - name: Gather container variables
   include_vars: "{{ item }}"
   with_first_found:
-    - "{{ lxc_user_defined_container }}"
+    - "{{ lxc_user_defined_container | default([]) }}"
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_version | lower }}.yml"
     - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version | lower }}.yml"
     - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version | lower }}.yml"

@@ -173,7 +173,7 @@ lxc_cache_prep_post_commands: '## post command skipped ##'
 # or by providing the full path to a local file containing all of the variables
 # needed to prepare a container. built-in supported values are:
 #   [redhat-7.yml, suse-42.yml, ubuntu-16.04.yml, ubuntu-18.04.yml]
-lxc_user_defined_container: null
+#lxc_user_defined_container: null
 
 # Full path to the base image prep script. By default this will use the
 # named script for a given OS within the "templates/prep-scripts" directory.
