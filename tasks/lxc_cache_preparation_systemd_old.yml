@@ -46,6 +46,11 @@
     dest: "/tmp/{{ cache_basename }}"
     validate_certs: "{{ (lxc_hosts_validate_certs | bool) | lower }}"
     force: true
+    timeout: 15
+  register: image_download
+  until: image_download is success
+  retries: 3
+  delay: 2
   when: job_result.failed
 
 - name: Place container rootfs
