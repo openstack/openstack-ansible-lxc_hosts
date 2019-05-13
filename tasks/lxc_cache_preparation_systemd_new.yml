@@ -23,12 +23,25 @@
   when:
     - lxc_image_cache_refresh | bool
 
-- name: Ensure image has been pre-staged
-  async_status:
-    jid: "{{ prestage_image.ansible_job_id }}"
-  register: job_result
-  until: job_result.finished
-  retries: 60
+- block:
+    - name: Ensure image has been pre-staged
+      async_status:
+        jid: "{{ prestage_image.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 60
+  rescue:
+    - name: Trying to download image with alternate method
+      get_url:
+        url: "{{ lxc_hosts_container_image_url }}"
+        dest: "/tmp/{{ cache_basename }}"
+        validate_certs: "{{ (lxc_hosts_validate_certs | bool) | lower }}"
+        force: true
+        timeout: 15
+      register: image_download
+      until: image_download is success
+      retries: 3
+      delay: 2
 
 - name: Retrieve base image
   command: >-
