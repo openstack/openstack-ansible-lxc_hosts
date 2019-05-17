@@ -140,12 +140,11 @@
 
 # Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists
-  file:
-    state: "file"
+  stat:
     path: "/sys/class/net/{{ lxc_net_bridge }}/bridge/bridge_id"
   register: bridge_check
   failed_when: false
-  changed_when: bridge_check.state == 'absent'
+  changed_when: not bridge_check.stat.exists
   notify:
     - Bring bridge up
     - Reload networkd
