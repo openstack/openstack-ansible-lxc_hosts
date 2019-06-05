@@ -24,7 +24,6 @@
         - openstack-ansible-functional-opensuse-423
         - openstack-ansible-functional-ubuntu-xenial
         - openstack-ansible-lxc-dir-centos-7
-        - openstack-ansible-lxc-dir-opensuse-423
         - openstack-ansible-lxc-dir-ubuntu-xenial
         - openstack-ansible-lxc-btrfs-ubuntu-xenial
         - openstack-ansible-lxc-machinectl-ubuntu-xenial

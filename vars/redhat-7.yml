@@ -30,6 +30,7 @@ lxc_hosts_distro_packages:
   - lxc-devel
   - lxc-libs
   - lxc-templates
+  - procps
   - unzip
   - xz
 
