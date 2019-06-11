@@ -19,6 +19,17 @@
     - install-yum
     - install-zypper
 
+- name: Pull lxc version
+  command: "lxc-ls --version"
+  changed_when: false
+  register: lxc_version
+  tags:
+    - skip_ansible_lint
+
+- name: Enable or Disable lxc three syntax
+  set_fact:
+    lxc_three_syntax: "{{ (lxc_version.stdout.split('.')[0] | int) is version_compare('3', '>=') }}"
+
 - name: Install pip packages
   pip:
     name: "{{ lxc_pip_packages }}"
