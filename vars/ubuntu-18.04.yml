@@ -22,7 +22,7 @@ _lxc_cache_map:
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
-    - /etc/apt/trusted.gpg.d
+    - /etc/apt/trusted.gpg.d/
     - /etc/apt/preferences.d/
     - /etc/environment
     - /etc/localtime
