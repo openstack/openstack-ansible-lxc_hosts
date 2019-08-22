@@ -40,14 +40,6 @@
       tox_env: dir
 
 - job:
-    name: openstack-ansible-lxc-dir-opensuse-423
-    parent: openstack-ansible-lxc-container-create
-    nodeset: opensuse-423
-    voting: false
-    vars:
-      tox_env: dir
-
-- job:
     name: openstack-ansible-lxc-dir-opensuse-150
     parent: openstack-ansible-lxc-container-create
     nodeset: opensuse-150
@@ -67,14 +59,6 @@
     name: openstack-ansible-lxc-btrfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
     nodeset: ubuntu-bionic
-    voting: false
-    vars:
-      tox_env: btrfs
-
-- job:
-    name: openstack-ansible-lxc-btrfs-opensuse-423
-    parent: openstack-ansible-lxc-container-create
-    nodeset: opensuse-423
     voting: false
     vars:
       tox_env: btrfs
@@ -111,14 +95,6 @@
       tox_env: mnctl
 
 - job:
-    name: openstack-ansible-lxc-machinectl-opensuse-423
-    parent: openstack-ansible-lxc-container-create
-    nodeset: opensuse-423
-    voting: false
-    vars:
-      tox_env: mnctl
-
-- job:
     name: openstack-ansible-lxc-machinectl-opensuse-150
     parent: openstack-ansible-lxc-container-create
     nodeset: opensuse-150
@@ -143,14 +119,6 @@
     name: openstack-ansible-lxc-overlayfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
     nodeset: ubuntu-bionic
-    vars:
-      tox_env: ofs
-
-- job:
-    name: openstack-ansible-lxc-overlayfs-opensuse-423
-    parent: openstack-ansible-lxc-container-create
-    nodeset: opensuse-423
-    voting: false
     vars:
       tox_env: ofs
 
