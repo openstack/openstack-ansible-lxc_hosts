@@ -39,13 +39,13 @@ _lxc_hosts_distro_packages:
   - python-lxc
   - python3-lxc
   - systemd-container
-  - pxz
+  - xz-utils
 
 # Package to remove from the host
 lxc_hosts_remove_distro_packages:
   - dnsmasq
 
-lxc_xz_bin: pxz
+lxc_xz_bin: xz
 
 system_config_dir: "/etc/default"
 systemd_utils_prefix: "/lib/systemd"
