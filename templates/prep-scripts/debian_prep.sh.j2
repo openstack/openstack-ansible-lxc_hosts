@@ -19,6 +19,8 @@ apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes {{ lxc_cache_distro_packages | join(' ') }}
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
+apt-get remove -y --purge mariadb* || true
+
 rm -f /usr/bin/python
 rm /etc/machine-id || true
 rm /var/lib/dbus/machine-id || true
