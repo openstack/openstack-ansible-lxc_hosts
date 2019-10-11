@@ -36,7 +36,7 @@
 
 - name: Install EPEL gpg keys
   rpm_key:
-    key: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    key: "{{ lxc_centos_epel_gpg_key | default ('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7') }}"
     state: present
   register: _add_yum_keys
   until: _add_yum_keys is success
@@ -46,7 +46,7 @@
 - name: Install the EPEL repository
   yum_repository:
     name: epel-lxc_hosts
-    baseurl: "{{ (centos_epel_mirror | default ('http://download.fedoraproject.org/pub/epel')) ~ '/' ~ ansible_distribution_major_version ~ '/' ~ ansible_architecture }}"
+    baseurl: "{{ (lxc_centos_epel_mirror | default ('http://download.fedoraproject.org/pub/epel')) ~ '/' ~ ansible_distribution_major_version ~ '/' ~ ansible_architecture }}"
     description: 'Extra Packages for Enterprise Linux 7 - $basearch'
     gpgcheck: yes
     enabled: yes
