@@ -21,17 +21,9 @@
     check:
       jobs:
         - openstack-ansible-lxc-dir-centos-7
-        - openstack-ansible-lxc-dir-opensuse-150:
-            voting: false
         - openstack-ansible-lxc-dir-ubuntu-bionic
         - openstack-ansible-lxc-btrfs-ubuntu-bionic
-        - openstack-ansible-lxc-btrfs-opensuse-150:
-            voting: false
         - openstack-ansible-lxc-machinectl-ubuntu-bionic
         - openstack-ansible-lxc-machinectl-centos-7
-        - openstack-ansible-lxc-machinectl-opensuse-150:
-            voting: false
         - openstack-ansible-lxc-overlayfs-ubuntu-bionic
-        - openstack-ansible-lxc-overlayfs-opensuse-150:
-            voting: false
         - openstack-ansible-lxc-zfs-ubuntu-bionic
