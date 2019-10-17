@@ -91,12 +91,6 @@ lxc_container_cache_path: "/var/cache/lxc/download"
 #       copy_from_host: []  # List of files to copy into the container
 lxc_cache_map: "{{ _lxc_cache_map }}"
 
-
-## If you want to use a custom epel repo
-# lxc_centos_epel_mirror: http://mirror.myconpany/epel/
-# lxc_centos_epel_gpg_key: http://mirror.myconpany/epel-key/RPM-GPG-KEY-EPEL-7
-
-
 # When using a base container to snapshot from for the overlayfs or LVM
 # copy-on-write backing stored, the base container can be set.
 lxc_container_base_name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}-{{ lxc_cache_map.arch }}"
@@ -249,6 +243,10 @@ lxc_cache_download_template_options: >-
 
 # Locales to populate in the LXC base cache
 lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
+
+# Centos EPEL repository options
+lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
+lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7') }}"
 
 # LXC must be installed from a COPR repository on CentOS 7 since the version
 # provided in EPEL is much too old (1.x).
