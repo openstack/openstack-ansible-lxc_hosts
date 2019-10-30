@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url: "https://github.com/CentOS/sig-cloud-instance-images/raw/CentOS-7/docker/centos-7-docker.tar.xz"
+_lxc_hosts_container_image_url: "http://artifacts.ci.centos.org/sig-cloudinstance/centos-7-191001/x86_64/centos-7-x86_64-docker.tar.xz"
 
 _lxc_cache_map:
   distro: centos
