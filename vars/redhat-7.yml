@@ -44,6 +44,7 @@ _lxc_cache_distro_packages:
   - policycoreutils
   - python2
   - python-devel
+  - python3-devel
   - rsync
   - setup
   - sudo
