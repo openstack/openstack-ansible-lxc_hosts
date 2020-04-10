@@ -22,6 +22,7 @@ apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 apt-get remove -y --purge mariadb* || true
 
 rm -f /usr/bin/python
+rm -f /etc/apt/apt.conf.d/20listchanges
 rm /etc/machine-id || true
 rm /var/lib/dbus/machine-id || true
 touch /etc/machine-id
