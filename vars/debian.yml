@@ -23,6 +23,7 @@ _lxc_cache_map:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
     - /etc/apt/trusted.gpg.d
+    - /etc/apt/trusted.gpg
     - /etc/apt/preferences.d/
     - /etc/environment
     - /etc/localtime
