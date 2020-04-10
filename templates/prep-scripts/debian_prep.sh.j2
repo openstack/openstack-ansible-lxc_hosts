@@ -6,6 +6,9 @@ set -e -x
 
 {% include 'templates/prep-scripts/_container_sys_setup.sh.j2' %}
 
+# remove configs that break containers (listchanges is missing)
+rm -f /etc/apt/apt.conf.d/20listchanges
+
 export DEBIAN_FRONTEND=noninteractive
 apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
 
