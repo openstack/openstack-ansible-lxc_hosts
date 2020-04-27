@@ -118,11 +118,11 @@
     - name: Check role functions
       assert:
         that:
-          - interface_file | search('.*lxcbr0.*')
-          - interface_file | search('.*10.100.100.1.*')
-          - interface_file | search('.*255.255.255.0.*')
-          - sysctl_conf | search('fs.inotify.max_user_instances.*')
+          - interface_file is search('.*lxcbr0.*')
+          - interface_file is search('.*10.100.100.1.*')
+          - interface_file is search('.*255.255.255.0.*')
+          - sysctl_conf is search('fs.inotify.max_user_instances.*')
           - "lxc_bridge_file.stat.exists"
-          - "lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address | match('10.100.100.1')"
+          - lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address is match('10.100.100.1')
           - extra_host_package_state.changed == false
           - extra_cache_package_find.matched > 0
