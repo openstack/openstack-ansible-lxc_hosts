@@ -1,0 +1,55 @@
+---
+# Copyright 2016, Rackspace US, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+_lxc_hosts_container_image_url: "http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04-base-{{ lxc_cache_map.arch }}.tar.gz"
+
+_lxc_cache_map:
+  distro: ubuntu
+  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
+  release: bionic
+  copy_from_host:
+    - /etc/apt/sources.list
+    - /etc/apt/apt.conf.d/
+    - /etc/apt/trusted.gpg.d/
+    - /etc/apt/preferences.d/
+    - /etc/environment
+    - /etc/localtime
+    - /etc/protocols
+
+_lxc_cache_prep_template: "prep-scripts/ubuntu_20_prep.sh.j2"
+
+_lxc_cache_distro_packages:
+  - apt-transport-https
+  - ca-certificates
+  - cron # bionic doesn't have cronie
+  - dbus
+  - debianutils # for 'which' executable
+  - gcc
+  - iproute2
+  - iputils-ping
+  - libffi-dev
+  - libssl-dev
+  - locales
+  - netbase
+  - openssh-server
+  - openssl
+  - python2.7
+  - python3-dev
+  - rsync
+  - sudo
+  - systemd
+  - systemd-sysv
+  - tar
+  - wget
