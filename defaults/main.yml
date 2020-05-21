@@ -264,6 +264,11 @@ lxc_hosts_opensuse_mirror_obs_url: "{{ lxc_hosts_opensuse_mirror_url }}"
 ## A list of 'legacy' lxc configuration keys and their corresponding new
 ## keys. Use this map to substitute keys suitable for other/newer lxc versions
 lxc_template_config_key_mapping:
+  4:
+    fstab: lxc.mount.fstab
+    rootfs: lxc.rootfs.path
+    rootfs_backend: lxc.rootfs.backend
+    uts_name: lxc.uts.name
   3:
     fstab: lxc.mount.fstab
     rootfs: lxc.rootfs.path
