@@ -49,7 +49,7 @@
 
 - include_tasks: lxc_volume.yml
 
-- include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[-1] | int > 219) | ternary('new', 'old') }}.yml"
+- include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[1] | int > 219) | ternary('new', 'old') }}.yml"
 
 - name: Set the qgroup limits
   block:
