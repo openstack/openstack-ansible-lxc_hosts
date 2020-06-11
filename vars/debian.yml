@@ -46,8 +46,7 @@ _lxc_cache_distro_packages:
   - openssh-server
   - openssl
   - procps
-  - python2.7
-  - python-dev
+  - python3-lxc
   - python3-dev
   - rsync
   - sudo

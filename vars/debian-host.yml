@@ -35,8 +35,7 @@ _lxc_hosts_distro_packages:
   - lxc
   - lxc-dev
   - procps
-  - python-dev
-  - python-lxc
+  - python3-dev
   - python3-lxc
   - systemd-container
   - xz-utils

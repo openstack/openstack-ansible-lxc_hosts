@@ -20,13 +20,11 @@ apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes {{ lxc_cache_distro_packages | join(' ') }}
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
-rm -f /usr/bin/python
 rm /etc/machine-id || true
 rm /var/lib/dbus/machine-id || true
 touch /etc/machine-id
 rm /etc/sysctl.d/* || true
 echo '' > /etc/sysctl.conf
-ln -s /usr/bin/python2.7 /usr/bin/python
 mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 userdel --force --remove ubuntu || true

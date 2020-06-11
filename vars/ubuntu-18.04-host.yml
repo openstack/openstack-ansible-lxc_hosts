@@ -38,9 +38,10 @@ _lxc_hosts_distro_packages:
   - lxc-dev
   - lxc-templates
   - procps
-  - python-dev
-  - python-lxc
+  - python-dev         # py2 is needed here becasue the CI image has py2 at /usr/bin/python
+  - python-lxc         #
   - python3-lxc
+  - python3-dev
   - systemd-container
   - xz-utils
 
