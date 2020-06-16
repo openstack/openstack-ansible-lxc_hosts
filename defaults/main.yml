@@ -246,12 +246,13 @@ lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
 
 # Centos EPEL repository options
 lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
-lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7') }}"
+lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_distribution_major_version) }}"
 
-# LXC must be installed from a COPR repository on CentOS 7 since the version
+# LXC must be installed from a COPR repository on CentOS since the version
 # provided in EPEL is much too old (1.x).
 lxc_centos_package_baseurl: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/epel-7-x86_64/
 lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/pubkey.gpg
+
 
 ## Set default mirror for openSUSE repositories
 # NOTE(hwoarang): Ensure that the full path to the 'opensuse' directory is used.
