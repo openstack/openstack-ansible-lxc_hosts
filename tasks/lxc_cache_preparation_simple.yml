@@ -1,5 +1,5 @@
 ---
-# Copyright 2017, Rackspace US, Inc.
+# Copyright 2020, BBC R&D
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,3 +50,22 @@
   failed_when: mount_machines.rc not in [0, 3]
   tags:
     - skip_ansible_lint
+
+- name: Remove the old image cache
+  file:
+    path: "/var/lib/machines/{{ lxc_container_base_name }}"
+    state: absent
+  when:
+    - lxc_image_cache_refresh | bool
+
+- name: Create new image cache directory
+  file:
+    path: "/var/lib/machines/{{ lxc_container_base_name }}"
+    state: directory
+  register: create_new_dir
+
+- name: Unpack base image
+  unarchive:
+    src: "/tmp/{{ cache_basename }}"
+    dest: "/var/lib/machines/{{ lxc_container_base_name }}"
+  when: create_new_dir is changed
