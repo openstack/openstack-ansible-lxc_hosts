@@ -50,14 +50,6 @@
   set_fact:
     lxc_major_version: "{{ lxc_version.stdout.split('.')[0] }}"
 
-- name: Create machinectl base template
-  template:
-    src: "lxc-machinectl.j2"
-    dest: "/usr/share/lxc/templates/lxc-machinectl"
-    owner: "root"
-    group: "root"
-    mode: "0755"
-
 - name: Drop lxc veth check script
   copy:
     src: "lxc-veth-check.sh"

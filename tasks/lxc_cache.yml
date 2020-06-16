@@ -13,14 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Check cached image status
-  command: "machinectl image-status {{ lxc_container_base_name }}"
-  register: cache_check
-  changed_when: false
-  failed_when: false
-  tags:
-    - always
-
 - name: Retrieve the expiry object
   slurp:
     src: "{{ cache_path_fact }}/expiry"
@@ -34,8 +26,7 @@
 - name: Set cache refresh fact
   set_fact:
     lxc_image_cache_refresh: true
-  when: >
-    (cache_check.rc != 0) or
+  when:
     cache_time >= (expiry.content|default('MQo=') | b64decode)
   tags:
     - always
