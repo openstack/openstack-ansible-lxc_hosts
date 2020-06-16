@@ -34,14 +34,19 @@
   retries: 5
   delay: 2
 
-- name: Install EPEL gpg keys
-  rpm_key:
-    key: "{{ lxc_centos_epel_key }}"
-    state: present
-  register: _add_yum_keys
-  until: _add_yum_keys is success
+- name: Download EPEL gpg keys
+  get_url:
+     url: "{{ lxc_centos_epel_key }}"
+     dest: /etc/pki/rpm-gpg
+  register: _get_yum_keys
+  until: _get_yum_keys is success
   retries: 5
   delay: 2
+
+- name: Install EPEL gpg keys
+  rpm_key:
+    key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
+    state: present
 
 - name: Install the EPEL repository
   yum_repository:
