@@ -250,8 +250,8 @@ lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraprojec
 
 # LXC must be installed from a COPR repository on CentOS since the version
 # provided in EPEL is much too old (1.x).
-lxc_centos_package_baseurl: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/epel-7-x86_64/
-lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/pubkey.gpg
+lxc_centos_package_baseurl: "{{ _lxc_centos_package_baseurl }}"
+lxc_centos_package_key: "{{ _lxc_centos_package_key }}"
 
 
 ## Set default mirror for openSUSE repositories

@@ -16,25 +16,25 @@
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/lib/systemd"
 
-_lxc_centos_package_baseurl: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/epel-7-x86_64/
-_lxc_centos_package_key: https://copr-be.cloud.fedoraproject.org/results/thm/lxc2.0/pubkey.gpg
+_lxc_centos_package_baseurl: "https://download.copr.fedorainfracloud.org/results/thm/lxc3.0/epel-8-$basearch/"
+_lxc_centos_package_key: "https://download.copr.fedorainfracloud.org/results/thm/lxc3.0/pubkey.gpg"
 
 # Required rpm packages.
 _lxc_hosts_distro_packages:
   - aria2
-  - bridge-utils
-  - btrfs-progs
   - dbus
   - dnsmasq
   - git
+  - iptables
   - libseccomp
   - lxc
   - lxc-devel
   - lxc-libs
   - lxc-templates
-  - policycoreutils-python
+  - policycoreutils-python-utils
   - procps
-  - python2-lxc
+  - python3-lxc
+  - systemd-container
   - unzip
   - xz
 
