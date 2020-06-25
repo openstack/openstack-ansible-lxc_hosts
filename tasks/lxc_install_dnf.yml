@@ -76,9 +76,18 @@
     - "rsync -a --delete /tmp/thm-lxc2.0/ /opt/thm-lxc2.0/"
     - "yum-config-manager --enable thm-lxc2.0-local"
 
+- name: Download EPEL gpg keys
+  get_url:
+     url: "{{ lxc_centos_epel_key }}"
+     dest: /etc/pki/rpm-gpg
+  register: _get_yum_keys
+  until: _get_yum_keys is success
+  retries: 5
+  delay: 2
+
 - name: Install EPEL gpg keys
   rpm_key:
-    key: "http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7"
+    key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     state: present
   register: _add_yum_keys
   until: _add_yum_keys is success
