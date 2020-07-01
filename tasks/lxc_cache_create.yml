@@ -27,23 +27,17 @@
   file:
     path: "{{ cache_path_fact }}/rootfs.tar.xz"
     state: "absent"
-  when:
-    - container_backing_store != 'machinectl'
 
 # This is using a shell command because the ansible archive module does not
 # provide for the options needed to properly create an LXC image archive.
 # Ansible will print a warning since this task calls 'tar' directly and we
-# suppress this warning with 'warn: no'. This task is not run when the backend
-# is set to "machinectl" because the "machinectl" backend directly clones the
-# base image instead of unpacking a container tarball.
+# suppress this warning with 'warn: no'.
 - name: Create lxc image
   shell: |
     tar -Opc -C {{ lxc_image_cache_path }} . | {{ lxc_xz_bin }} -T 0 -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ cache_path_fact }}/"
     warn: no
-  when:
-    - container_backing_store != 'machinectl'
   tags:
     - skip_ansible_lint
 
@@ -77,8 +71,6 @@
   copy:
     content: "{{ cache_time }}"
     dest: "{{ cache_path_fact }}/build_id"
-  when:
-    - container_backing_store != 'machinectl'
 
 - include_tasks: "{{ item }}"
   with_first_found:

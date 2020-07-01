@@ -13,61 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Pull systemd version
-  command: "systemctl --version"
-  changed_when: false
-  register: systemd_version
-  tags:
-    # Avoid ANSIBLE0006 lint issue: systemctl used in place of systemd module
-    - skip_ansible_lint
-    - always
-
-- block:
-    - name: Create machined proxy override unit directories
-      file:
-        path: "/etc/systemd/system/{{ item }}"
-        owner: root
-        group: root
-        mode: '0755'
-        state: directory
-      with_items:
-        - systemd-machined.service.d
-        - systemd-importd.service.d
-
-    - name: Drop the machined proxy override units
-      template:
-        src: systemd-proxy-unit.conf.j2
-        dest: /etc/systemd/system/{{ item }}/proxy.conf
-        owner: root
-        group: root
-        mode: '0644'
-      with_items:
-        - systemd-machined.service.d
-        - systemd-importd.service.d
-  when:
-    - (deployment_environment_variables | default({})).keys() | length > 0
-
 - include_tasks: lxc_volume.yml
 
-- include_tasks: "lxc_cache_preparation_systemd_{{ (systemd_version.stdout_lines[0].split()[1] | int > 219) | ternary('new', 'old') }}.yml"
-
-- name: Set the qgroup limits
-  block:
-    - name: Set the qgroup size|compression limits on machines
-      command: "btrfs qgroup limit {{ item }} {{ lxc_image_cache_path }}"
-      changed_when: false
-      with_items:
-        - "-e {{ lxc_host_machine_qgroup_space_limit }}"
-        - "-c {{ lxc_host_machine_qgroup_compression_limit }}"
-      when:
-        - not lxc_host_machine_quota_disabled
-  rescue:
-    - name: Notice regarding quota system
-      debug:
-        msg: >-
-          There was an error processing the setup of qgroups. Check the system
-          to ensure they're available otherwise disable the quota system by
-          setting `lxc_host_machine_quota_disabled` to true.
+- include_tasks: lxc_cache_preparation_simple.yml
 
 # NOTE(cloudnull): We're using rsync  and an if block because we've no means
 #                  to loop over a block. Re-evaluate this task when/if this is
