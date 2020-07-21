@@ -74,21 +74,6 @@
     - lxc-bridge
     - lxc-interfaces
 
-- name: Create networking post-up and post-down data for Red Hat
-  lineinfile:
-    dest: "/etc/sysconfig/network-scripts/ifdown-post"
-    line: ". /etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
-    insertbefore: "^exit\ 0$"
-  when:
-    - ansible_os_family | lower == "redhat"
-    - ansible_distribution_major_version == "7"
-  notify:
-    - Restart bridge
-  tags:
-    - lxc-post-up
-    - lxc-post-down
-    - lxc_hosts-config
-
 # NOTE(mhayden): There are ifup hooks that handle the customized LXC container
 # networking. Starting lxc-net will trample over these hooks and cause
 # networking issues for containers.
