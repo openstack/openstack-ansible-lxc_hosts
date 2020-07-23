@@ -68,4 +68,5 @@
   unarchive:
     src: "/tmp/{{ cache_basename }}"
     dest: "/var/lib/machines/{{ lxc_container_base_name }}"
+    remote_src: yes
   when: create_new_dir is changed
