@@ -29,6 +29,7 @@ _lxc_hosts_distro_packages:
   - debootstrap
   - dnsmasq-base
   - git
+  - gzip
   - ifupdown
   - iptables
   - irqbalance
