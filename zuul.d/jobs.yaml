@@ -34,9 +34,9 @@
       tox_env: dir
 
 - job:
-    name: openstack-ansible-lxc-dir-centos-7
+    name: openstack-ansible-lxc-dir-centos-8
     parent: openstack-ansible-lxc-container-create
-    nodeset: centos-7
+    nodeset: centos-8
     vars:
       tox_env: dir
 
