@@ -14,11 +14,11 @@
 # limitations under the License.
 
 - name: Check for the presence of a public key file on the deployment host
-  local_action:
-    module: stat
+  stat:
     path: /root/.ssh/id_rsa.pub
   register: _ssh_key
   when: lxc_container_ssh_key is undefined
+  delegate_to: localhost
   tags:
     - always
 

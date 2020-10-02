@@ -16,7 +16,7 @@
 - name: Ensure createrepo package is installed
   yum:
     name: createrepo
-    state: latest
+    state: present
 
 - name: Deploy upstream COPR yum repo for lxc 3
   yum_repository:
