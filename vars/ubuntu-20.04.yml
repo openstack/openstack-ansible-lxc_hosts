@@ -30,25 +30,15 @@ _lxc_cache_map:
 
 _lxc_cache_prep_template: "prep-scripts/ubuntu_20_prep.sh.j2"
 
+# This list should contain a minimum set of packages. Add extra packages via roles that require them.
 _lxc_cache_distro_packages:
-  - apt-transport-https
   - ca-certificates
-  - cron # bionic doesn't have cronie
   - dbus
-  - debianutils # for 'which' executable
-  - gcc
-  - iproute2
   - iputils-ping
-  - libffi-dev
-  - libssl-dev
   - locales
-  - netbase
   - openssh-server
-  - openssl
-  - python3-dev
-  - rsync
+  - python3
   - sudo
   - systemd
   - systemd-sysv
-  - tar
-  - wget
+  - tzdata
