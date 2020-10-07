@@ -35,7 +35,9 @@ _lxc_cache_distro_packages:
   - ca-certificates
   - dbus
   - iputils-ping
+  - iproute2
   - locales
+  - netbase
   - openssh-server
   - python3
   - sudo

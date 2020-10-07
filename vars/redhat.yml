@@ -35,7 +35,9 @@ _lxc_cache_distro_packages:
   - ca-certificates
   - iputils
   - openssh-server
+  - policycoreutils
   - python3
+  - setup
   - sudo
   - systemd
   - systemd-networkd

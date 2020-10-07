@@ -35,8 +35,10 @@ _lxc_cache_prep_template: "prep-scripts/debian_prep.sh.j2"
 _lxc_cache_distro_packages:
   - ca-certificates
   - dbus
+  - iproute2
   - iputils-ping
   - locales
+  - netbase
   - openssh-server
   - python3
   - sudo
