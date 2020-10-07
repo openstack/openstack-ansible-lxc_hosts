@@ -37,6 +37,8 @@ _lxc_cache_distro_packages:
   - openssh-server
   - policycoreutils
   - python3
+  - python3-libs
+  - rsync
   - setup
   - sudo
   - systemd

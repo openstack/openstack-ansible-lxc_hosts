@@ -41,6 +41,7 @@ _lxc_cache_distro_packages:
   - netbase
   - openssh-server
   - python3
+  - libpython3.6
   - sudo
   - systemd
   - systemd-sysv
