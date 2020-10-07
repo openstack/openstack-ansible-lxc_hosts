@@ -19,6 +19,7 @@
       - check-requirements
       - publish-openstack-docs-pti
       - release-notes-jobs-python3
+      - openstack-ansible-deploy-infra_lxc-jobs
     check:
       jobs:
         - openstack-ansible-lxc-dir-centos-8
