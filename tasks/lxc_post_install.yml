@@ -63,6 +63,17 @@
   tags:
     - lxc-config
 
+- name: Set sshd MaxSessions
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "^#?MaxSessions.*$"
+    line: "MaxSessions 50"
+  notify:
+    - Restart sshd
+  tags:
+    - lxc-config
+
 # NOTE(hwoarang): The previous task only affected newly created services.
 # However, for particular systemd versions like v228 the default one for
 # started scopes is 512

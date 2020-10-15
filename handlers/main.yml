@@ -93,6 +93,12 @@
     name: it_does_not_matter
     daemon_reload: yes
 
+- name: Restart sshd
+  service:
+    name: sshd
+    state: "restarted"
+    enabled: yes
+
 - name: Remove rootfs archive
   file:
     path: "/tmp/{{ cache_basename }}"
