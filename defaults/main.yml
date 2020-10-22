@@ -201,7 +201,7 @@ lxc_image_cache_server_mirrors:
   - https://images.linuxcontainers.org
 
 # URL for the image to build our containers
-lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url }}"
+lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url | default('') }}"
 
 # If enabled the image will be fetched from the legacy [images.linuxcontainers.org].
 lxc_hosts_container_image_download_legacy: false

@@ -41,6 +41,19 @@
   when:
     - lxc_hosts_container_image_download_legacy | bool
 
+- name: Determine lxc_hosts_container_image_url when it is not explicitly set
+  set_fact:
+    lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url_base ~ '/' ~ lookup('url', _lxc_hosts_container_image_url_base ~ '/' ~ _lxc_hosts_container_image_checksum_file) | regex_findall(_lxc_hosts_container_image_checksum_regexp) | max }}"
+  register: image_url
+  retries: 3
+  delay: 1
+  until: image_url is success
+  when:
+    - not lxc_hosts_container_image_url | bool
+    - _lxc_hosts_container_image_url_base is defined
+    - _lxc_hosts_container_image_checksum_file is defined
+    - _lxc_hosts_container_image_checksum_regexp is defined
+
 - name: Set LXC cache basename
   set_fact:
     cache_basename: "{{ lxc_hosts_container_image_url | basename }}"
