@@ -49,7 +49,7 @@
   delay: 1
   until: image_url is success
   when:
-    - not lxc_hosts_container_image_url | bool
+    - lxc_hosts_container_image_url | length == 0
     - _lxc_hosts_container_image_url_base is defined
     - _lxc_hosts_container_image_checksum_file is defined
     - _lxc_hosts_container_image_checksum_regexp is defined
