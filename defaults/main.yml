@@ -172,7 +172,7 @@ lxc_cache_prep_post_commands: '## post command skipped ##'
 # "{{ ansible_distribution }}-{{ ansible_distribution_version }}-container.yml"
 # or by providing the full path to a local file containing all of the variables
 # needed to prepare a container. built-in supported values are:
-#   [redhat-7.yml, suse-42.yml, ubuntu-16.04.yml, ubuntu-18.04.yml]
+#   [redhat-7.yml, ubuntu-16.04.yml, ubuntu-18.04.yml]
 #lxc_user_defined_container: null
 
 # Full path to the base image prep script. By default this will use the
@@ -253,11 +253,3 @@ lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraprojec
 lxc_centos_package_baseurl: "{{ _lxc_centos_package_baseurl }}"
 lxc_centos_package_key: "{{ _lxc_centos_package_key }}"
 
-
-## Set default mirror for openSUSE repositories
-# NOTE(hwoarang): Ensure that the full path to the 'opensuse' directory is used.
-# Additionally, set 'lxc_hosts_opensuse_mirror_obs_url' to a mirror which also mirrors
-# the OBS repositories. If you want to use the same mirror in both cases, then leave the
-# 'lxc_hosts_opensuse_mirror_obs_url' to its default value.
-lxc_hosts_opensuse_mirror_url: "{{ opensuse_mirror | default('http://download.opensuse.org') }}"
-lxc_hosts_opensuse_mirror_obs_url: "{{ lxc_hosts_opensuse_mirror_url }}"

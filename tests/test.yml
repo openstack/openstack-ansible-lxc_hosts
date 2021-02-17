@@ -92,11 +92,6 @@
         interface_file: "{{ lookup('pipe', 'cat /etc/sysconfig/network-scripts/ifcfg-lxcbr0 | tail -n +3') }}"
       when: ansible_os_family | lower == "redhat"
 
-    - name: SUSE - Get deployed interface file contents, without Ansible managed line
-      set_fact:
-        interface_file: "{{ lookup('pipe', 'cat /etc/sysconfig/network/ifcfg-lxcbr0 | tail -n +3') }}"
-      when: ansible_os_family | lower == "suse"
-
     - name: Get bridge interface facts
       setup:
         filter: ansible_lxcbr0
