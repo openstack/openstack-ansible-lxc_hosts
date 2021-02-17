@@ -32,18 +32,3 @@
     - "{{ lxc_container_cache_path }}"
   tags:
     - lxc-directories
-
-# NOTE(prometheanfire): only set the var on gentoo
-- name: fetch latest Gentoo systemd image metadata
-  uri:
-    url: "http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage4-amd64-systemd.txt"
-    return_content: yes
-  register: _gentoo_latest_stage4_systemd_metadata
-  when:
-    - ansible_distribution | lower == 'gentoo'
-
-- name: set _lxc_hosts_container_image_url fact for gentoo
-  set_fact:
-    _lxc_hosts_container_image_url: "http://distfiles.gentoo.org/releases/amd64/autobuilds/{{ _gentoo_latest_stage4_systemd_metadata.content.split('\n')[-2].split()[0] }}"
-  when:
-    - ansible_distribution | lower == 'gentoo'
