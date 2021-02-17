@@ -129,3 +129,13 @@
 
 # Ensure apparmor reindex runs before other things that may fail
 - meta: flush_handlers
+
+- name: Tuning kernel for lxc
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_set: "{{ item.set|default('yes') }}"
+    state: "{{ item.state|default('present') }}"
+    reload: "{{ item.reload|default('yes') }}"
+  failed_when: false
+  with_items: "{{ lxc_kernel_options }}"
