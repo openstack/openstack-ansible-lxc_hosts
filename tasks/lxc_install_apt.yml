@@ -49,7 +49,20 @@
     - lxc-irqbalance
     - lxc_hosts-config
 
-- include_tasks: lxc_apparmor.yml
+- name: Drop lxc-openstack apparmor profile
+  template:
+    src: "lxc-openstack.apparmor.j2"
+    dest: "/etc/apparmor.d/lxc/lxc-openstack"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  notify:
+    - Start apparmor
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+    - lxc_hosts-config
 
 - name: Flush handler to reload apparmor profiles
   meta: flush_handlers
