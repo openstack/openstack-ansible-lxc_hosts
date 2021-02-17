@@ -36,6 +36,7 @@ _lxc_cache_distro_packages:
   - iputils
   - openssh-server
   - policycoreutils
+  - procps
   - python3
   - python3-libs
   - rsync              # os_keystone runs serial=1 and uses rsync before the distro packages have been installed on all keystone targets
