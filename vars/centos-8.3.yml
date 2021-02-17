@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_build_command: "dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf centos-stream-release centos-stream-repos --releasever=8"
+# NOTE(jrosser) this file is for temporary support of Centos-8 (NOT stream) during the transition to stream
+
+_lxc_hosts_container_build_command: "dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf centos-linux-repos --releasever=8"
 
 _lxc_cache_map:
   distro: centos

@@ -32,4 +32,8 @@ echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
 
+# Fully disable systemd-logind
+systemctl disable systemd-logind
+systemctl mask systemd-logind
+
 {{ lxc_cache_prep_post_commands }}
