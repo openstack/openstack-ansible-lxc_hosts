@@ -74,7 +74,7 @@ lxc_container_cache_path: "/var/cache/lxc/download"
 # The container backing store can be set to 'overlayfs' to use overlayfs
 # This should only be done for production use with a linux kernel > 3.14
 # which is when overlayfs was merged into the mainline kernel
-# lxc_container_backing_store: overlayfs
+lxc_container_backing_store: dir
 
 # The container backing method can be set to 'copy-on-write' to use LVM
 # snapshot-backed containers when the container backing store is set to

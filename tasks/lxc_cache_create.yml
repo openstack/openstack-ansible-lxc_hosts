@@ -13,10 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Set backingstore fact
-  set_fact:
-    container_backing_store: "{{ lxc_container_backing_store | default('None') }}"
-
 - name: Create LXC cache dir
   file:
     path: "{{ cache_path_fact }}"
@@ -72,8 +68,35 @@
     content: "{{ cache_time }}"
     dest: "{{ cache_path_fact }}/build_id"
 
-- include_tasks: "{{ item }}"
-  with_first_found:
-    - files:
-        - "lxc_container_{{ container_backing_store }}.yml"
-      skip: true
+- name: Create base container to use for {{ lxc_container_backing_store }}-backed containers
+  lxc_container:
+    name: "{{ lxc_container_base_name }}"
+    template: "download"
+    state: stopped
+    backing_store: "{{ (lxc_container_backing_store == 'overlayfs') | ternary('dir', lxc_container_backing_store) }}"
+    zfs_root: "{{ (lxc_container_backing_store == 'zfs') | ternary(lxc_container_zfs_root_name, omit) }}"
+    template_options: "{{ lxc_cache_download_template_options }}"
+  register: cache_download
+  retries: 3
+  delay: 10
+  until: cache_download is success
+
+- name: Set the qgroup limits for btrfs
+  when:
+    - lxc_container_backing_store == 'btrfs'
+  block:
+    - name: Set the qgroup size|compression limits on machines
+      command: "btrfs qgroup limit {{ item }} /var/lib/lxc/{{ lxc_container_base_name }}"
+      changed_when: false
+      with_items:
+        - "-e {{ lxc_host_machine_qgroup_space_limit }}"
+        - "-c {{ lxc_host_machine_qgroup_compression_limit }}"
+      when:
+        - not lxc_host_machine_quota_disabled
+  rescue:
+    - name: Notice regarding quota system
+      debug:
+        msg: >-
+          There was an error processing the setup of qgroups. Check the system
+          to ensure they're available otherwise disable the quota system by
+          setting `lxc_host_machine_quota_disabled` to true.
