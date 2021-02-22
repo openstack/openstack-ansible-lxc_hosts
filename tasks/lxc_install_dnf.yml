@@ -58,8 +58,8 @@
 - name: Install the EPEL repository - Centos-8
   yum_repository:
     name: epel-lxc_hosts
-    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_distribution_major_version ~ '/Everything/' ~ ansible_architecture }}"
-    description: 'Extra Packages for Enterprise Linux {{ ansible_distribution_major_version }} - $basearch'
+    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
+    description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
     gpgcheck: yes
     gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     enabled: yes

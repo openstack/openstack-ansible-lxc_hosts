@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url: "https://github.com/debuerreotype/docker-debian-artifacts/raw/dist-{{ lxc_cache_map.arch }}/{{ ansible_distribution_release }}/rootfs.tar.xz"
+_lxc_hosts_container_image_url: "https://github.com/debuerreotype/docker-debian-artifacts/raw/dist-{{ lxc_cache_map.arch }}/{{ ansible_facts['distribution_release'] }}/rootfs.tar.xz"
 
 _lxc_cache_map:
   distro: debian
-  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
-  release: "{{ ansible_distribution_major_version }}"
+  arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
+  release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/

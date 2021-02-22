@@ -28,7 +28,7 @@ _lxc_hosts_unarchive_extra_opts:
 
 _lxc_cache_map:
   distro: centos
-  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
+  arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
   release: 8
   copy_from_host:
     - /etc/default/locale

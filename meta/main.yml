@@ -35,4 +35,4 @@ galaxy_info:
 dependencies:
   - role: apt_package_pinning
     when:
-      - ansible_pkg_mgr == 'apt'
+      - ansible_facts['pkg_mgr'] == 'apt'

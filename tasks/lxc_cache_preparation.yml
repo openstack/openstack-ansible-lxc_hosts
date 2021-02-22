@@ -96,7 +96,7 @@
     mode: "0440"
     src: sudoers.j2
   when:
-    - ansible_pkg_mgr == 'yum'
+    - ansible_facts['pkg_mgr'] == 'yum'
 
 - name: Adjust sshd configuration in container
   lineinfile:

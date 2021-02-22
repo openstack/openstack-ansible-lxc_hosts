@@ -16,7 +16,7 @@
 - name: Set LXC cache fact(s)
   set_fact:
     cache_path_fact: "{{ lxc_container_cache_path }}/{{ lxc_cache_map.distro }}/{{ lxc_cache_map.release }}/{{ lxc_cache_map.arch }}/{{ lxc_cache_default_variant }}"
-    cache_time: "{{ ansible_date_time.epoch }}"
+    cache_time: "{{ ansible_facts['date_time']['epoch'] }}"
 
 - name: Retrieve the expiry object
   slurp:

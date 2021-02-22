@@ -57,7 +57,7 @@
     regexp: "^.*DefaultTasksMax.*$"
     line: "DefaultTasksMax={{ lxc_default_tasks_max }}"
   when:
-    - ansible_service_mgr == 'systemd'
+    - ansible_facts['service_mgr'] == 'systemd'
   notify:
     - Reload systemd units
   tags:

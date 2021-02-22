@@ -43,7 +43,7 @@ lxc_host_machine_volume_size: |-
     {%- set mounts = [] -%}
     {%- set mount_points = ['/var/lib/machines', '/var/lib/', '/var', '/'] -%}
     {%- for mount in mount_points -%}
-    {%-   for dev in ansible_mounts -%}
+    {%-   for dev in ansible_facts['mounts'] -%}
     {%-     if mount == dev.mount -%}
     {%-       set _ = mounts.append(dev.size_total // (1024 ** 3)) -%}
     {%-     endif -%}
@@ -246,7 +246,7 @@ lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
 
 # Centos EPEL repository options
 lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
-lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_distribution_major_version) }}"
+lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}"
 
 # LXC must be installed from a COPR repository on CentOS since the version
 # provided in EPEL is much too old (1.x).
