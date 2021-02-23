@@ -41,9 +41,6 @@ openssl-devel     [platform:rpm]
 python3-dnf       [platform:fedora]
 python3-devel     [platform:rpm]
 
-# Base requirements for Gentoo
-git               [platform:gentoo]
-
 # For SELinux
 libselinux-python3  [platform:redhat]
 libsemanage-python3 [platform:redhat]

@@ -64,24 +64,10 @@
   shell: "ifdown {{ lxc_net_bridge }} || true"
   notify:
     - Bring bridge up
-    - Reload networkd
     - Veth check
 
 - name: Bring bridge up
   command: "ifup {{ lxc_net_bridge }}"
-  when:
-    - "ansible_distribution | lower != 'gentoo'"
-
-- name: Reload networkd
-  systemd:
-    name: "systemd-networkd"
-    state: "restarted"
-    enabled: "yes"
-    daemon_reload: "yes"
-  retries: 5
-  delay: 5
-  when:
-    - "ansible_distribution | lower == 'gentoo'"
 
 - name: Veth check
   command: "/usr/local/bin/lxc-veth-check"
