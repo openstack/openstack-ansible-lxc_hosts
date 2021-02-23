@@ -71,10 +71,6 @@
   tags:
     - lxc_hosts-config
 
-- include_tasks: lxc_kernel_tuning.yml
-  tags:
-    - lxc_hosts-config
-
 - include_tasks: lxc_net.yml
   tags:
     - lxc_hosts-config
