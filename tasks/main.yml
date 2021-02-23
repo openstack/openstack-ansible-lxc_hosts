@@ -58,7 +58,7 @@
   tags:
     - lxc_hosts-install
 
-- include_tasks: lxc_install.yml
+- include_tasks: "lxc_install_{{ ansible_pkg_mgr }}.yml"
   tags:
     - lxc_hosts-install
 
