@@ -55,25 +55,6 @@
     path: "/etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
     state: "absent"
 
-- name: Drop lxc net bridge routes (SUSE)
-  template:
-    src: "lxc-net-suse-routes.cfg.j2"
-    dest: "/etc/sysconfig/network/ifroute-{{ lxc_net_bridge }}"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  when:
-    - lxc_net_gateway is not none
-    - ansible_pkg_mgr == "zypper"
-  notify:
-    - Bring bridge up
-    - Reload networkd
-  tags:
-    - lxc-files
-    - lxc-net
-    - lxc-bridge
-    - lxc-interfaces
-
 # NOTE(mhayden): There are ifup hooks that handle the customized LXC container
 # networking. Starting lxc-net will trample over these hooks and cause
 # networking issues for containers.
