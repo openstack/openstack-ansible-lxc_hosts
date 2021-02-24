@@ -77,4 +77,24 @@
     src: "/tmp/{{ cache_basename }}"
     dest: "/var/lib/machines/{{ lxc_container_base_name }}"
     remote_src: yes
+    extra_opts: "{{ _lxc_hosts_unarchive_extra_opts | default(omit) }}"
   when: create_new_dir is changed
+
+# NOTE(jrosser) Centos 8.3 images ships as a nested tar file, these tasks unpack and remove
+# the inner tar file
+- name: Unpack nested tar file
+  unarchive:
+    src: "/var/lib/machines/{{ lxc_container_base_name }}/{{ _lxc_hosts_nested_tar_file }}"
+    dest: "/var/lib/machines/{{ lxc_container_base_name }}"
+    remote_src: yes
+  when:
+    - create_new_dir is changed
+    - _lxc_hosts_nested_tar_file is defined
+
+- name: Remove nested tar file
+  file:
+    path: "/var/lib/machines/{{ lxc_container_base_name }}/{{ _lxc_hosts_nested_tar_file }}"
+    state: absent
+  when:
+    - create_new_dir is changed
+    - _lxc_hosts_nested_tar_file is defined

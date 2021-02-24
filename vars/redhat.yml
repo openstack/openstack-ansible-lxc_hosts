@@ -13,7 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url: "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-Container-8.1.1911-20200113.3-layer.x86_64.tar.xz"
+_lxc_hosts_container_image_url: "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-Container-8.3.2011-20201204.2.x86_64.tar.xz"
+
+# the Centos 8.3 image contains a tar file inside the downloaded tar
+_lxc_hosts_nested_tar_file: "layer.tar"
+
+# layer.tar is in a subdirectory named with a numerical hash, we must descend
+# into that directory without knowing it's name, and extract just the inner
+# tar file
+_lxc_hosts_unarchive_extra_opts:
+  - --strip-components=1
+  - --no-anchored
+  - "{{ _lxc_hosts_nested_tar_file }}"
 
 _lxc_cache_map:
   distro: centos
