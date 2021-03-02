@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- include_tasks: lxc_volume.yml
-
 - include_tasks: lxc_cache_preparation_simple.yml
 
 # NOTE(cloudnull): We're using rsync  and an if block because we've no means
