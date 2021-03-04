@@ -36,6 +36,12 @@
   tags:
     - always
 
+- include_tasks: lxc_cache_rootfs.yml
+  when:
+    - lxc_image_cache_refresh | bool
+  tags:
+    - lxc_hosts-config
+
 - include_tasks: lxc_cache_preparation.yml
   when:
     - lxc_image_cache_refresh | bool

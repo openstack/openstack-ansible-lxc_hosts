@@ -13,9 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Validate certificates when downloading LXC templates
-lxc_hosts_validate_certs: yes
-
 # Set the package install state for distribution packages
 # Options are 'present' and 'latest'
 lxc_hosts_package_state: "latest"
@@ -196,33 +193,14 @@ lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages + lxc_cache_extra_dist
 # The value is specified in seconds, with the default being 20 minutes.
 lxc_cache_prep_timeout: "{{ _lxc_cache_prep_timeout | default(1200) }}"
 
-# Set the server to download LXC images from.
-lxc_image_cache_server_mirrors:
-  - https://images.linuxcontainers.org
-
-# URL for the image to build our containers
-lxc_hosts_container_image_url: "{{ _lxc_hosts_container_image_url | default('') }}"
-
-# Command to build a chroot for the container rootfs rather than download
-# Takes precedence over downloading a container image even if the download URLs are configured
+# Command to build a chroot for the container rootfs
 lxc_hosts_container_build_command: "{{ _lxc_hosts_container_build_command | default ('') }}"
-
-# If enabled the image will be fetched from the legacy [images.linuxcontainers.org].
-lxc_hosts_container_image_download_legacy: false
 
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
 
-# Mode to pull image. This is used to pull the image from a remote source.
-#  Valid options are [import-tar, import-raw]
-lxc_image_cache_pull_mode: "import-tar"
-
 # Set this option to true to pull a new cached image.
 lxc_image_cache_refresh: false
-
-# The keyservers to use when validating GPG keys for the downloaded cache
-lxc_image_cache_primary_keyserver: hkp://p80.pool.sks-keyservers.net:80
-lxc_image_cache_secondary_keyserver: hkp://keyserver.ubuntu.com:80
 
 ## Default download template options
 ##  This can be customized to use a local build server and options.
@@ -257,3 +235,4 @@ lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraprojec
 lxc_centos_package_baseurl: "{{ _lxc_centos_package_baseurl }}"
 lxc_centos_package_key: "{{ _lxc_centos_package_key }}"
 
+lxc_apt_mirror: "{{ ansible_facts['distribution'] == 'Ubuntu') | ternary('http://archive.ubuntu.com/ubuntu', 'http://deb.debian.org/debian') }}"

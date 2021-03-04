@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url_base: "http://cdimage.ubuntu.com/ubuntu-base/releases/18.04/release"
-_lxc_hosts_container_image_checksum_file: SHA256SUMS
-_lxc_hosts_container_image_checksum_regexp: "ubuntu-base-18.04.[0-9]-base-{{ lxc_cache_map.arch }}.tar.gz"
+_lxc_hosts_container_build_command: "debootstrap --variant minbase {{ ansible_facts['distribution_release'] }} /var/lib/machines/{{ lxc_container_base_name }} "
 
 _lxc_cache_map:
   distro: ubuntu

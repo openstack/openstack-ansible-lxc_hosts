@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_image_url: "https://github.com/debuerreotype/docker-debian-artifacts/raw/dist-{{ lxc_cache_map.arch }}/{{ ansible_facts['distribution_release'] }}/rootfs.tar.xz"
+_lxc_hosts_container_build_command: "debootstrap --variant minbase {{ ansible_facts['distribution_release'] }} /var/lib/machines/{{ lxc_container_base_name }} "
 
 _lxc_cache_map:
   distro: debian

@@ -62,14 +62,6 @@
   tags:
     - lxc_hosts-install
 
-# only prestage a downloaded image when not using a local command to build a chroot
-- include_tasks: lxc_cache_prestage.yml
-  when:
-    - lxc_hosts_container_build_command | length == 0
-  tags:
-    - always
-    - lxc_hosts-config
-
 - include_tasks: lxc_post_install.yml
   tags:
     - lxc_hosts-config
