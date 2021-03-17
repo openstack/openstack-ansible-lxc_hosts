@@ -118,6 +118,6 @@
           - interface_file is search('.*255.255.255.0.*')
           - sysctl_conf is search('fs.inotify.max_user_instances.*')
           - "lxc_bridge_file.stat.exists"
-          - lxcbr0_facts.ansible_facts.ansible_lxcbr0.ipv4.address is match('10.100.100.1')
+          - ansible_facts['lxcbr0']['ipv4']['address'] is match('10.100.100.1')
           - extra_host_package_state is not changed
           - extra_cache_package_find.matched > 0

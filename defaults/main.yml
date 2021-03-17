@@ -169,7 +169,7 @@ lxc_cache_prep_post_commands: '## post command skipped ##'
 # User defined variable pointing to a specific variable file used when setting
 # up the base container image. Deployers can use the provided container variable
 # files by simply inputting the file name
-# "{{ ansible_distribution }}-{{ ansible_distribution_version }}-container.yml"
+# "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}-container.yml"
 # or by providing the full path to a local file containing all of the variables
 # needed to prepare a container. built-in supported values are:
 #   [redhat-7.yml, ubuntu-16.04.yml, ubuntu-18.04.yml]
