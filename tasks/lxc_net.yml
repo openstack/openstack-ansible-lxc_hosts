@@ -83,7 +83,7 @@
     line: "source /etc/network/interfaces.d/*.cfg"
     backup: "yes"
   when:
-    - ansible_os_family == "Debian"
+    - ansible_facts['os_family'] == "Debian"
   tags:
     - lxc-net
     - lxc-interfaces

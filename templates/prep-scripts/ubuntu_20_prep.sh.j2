@@ -14,7 +14,7 @@ apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
 apt-get update
 
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes eatmydata
-export LD_PRELOAD=/usr/lib/{{ ansible_architecture }}-linux-gnu/libeatmydata.so
+export LD_PRELOAD=/usr/lib/{{ ansible_facts['architecture'] }}-linux-gnu/libeatmydata.so
 
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes gnupg
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes

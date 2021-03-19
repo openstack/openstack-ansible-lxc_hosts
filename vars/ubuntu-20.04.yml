@@ -19,7 +19,7 @@ _lxc_hosts_container_image_checksum_regexp: "ubuntu-base-20.04.[0-9]-base-{{ lxc
 
 _lxc_cache_map:
   distro: ubuntu
-  arch: "{{ lxc_architecture_mapping.get( ansible_architecture ) }}"
+  arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
   release: focal
   copy_from_host:
     - /etc/apt/sources.list

@@ -29,11 +29,11 @@
       apt:
         update_cache: yes
       when:
-        - ansible_pkg_mgr == 'apt'
+        - ansible_facts['pkg_mgr'] == 'apt'
 
     - name: Ensure root ssh key
       user:
-        name: "{{ ansible_env.USER | default('root') }}"
+        name: "{{ ansible_facts['env']['USER'] | default('root') }}"
         generate_ssh_key: "yes"
         ssh_key_bits: 2048
         ssh_key_file: ".ssh/id_rsa"
@@ -85,12 +85,12 @@
     - name: DEBIAN - Get deployed interface file contents, without Ansible managed line
       set_fact:
         interface_file: "{{ lookup('pipe', 'cat /etc/network/interfaces.d/lxc-net-bridge.cfg | tail -n +3') }}"
-      when: ansible_os_family | lower == "debian"
+      when: ansible_facts['os_family'] | lower == "debian"
 
     - name: RHEL - Get deployed interface file contents, without Ansible managed line
       set_fact:
         interface_file: "{{ lookup('pipe', 'cat /etc/sysconfig/network-scripts/ifcfg-lxcbr0 | tail -n +3') }}"
-      when: ansible_os_family | lower == "redhat"
+      when: ansible_facts['os_family'] | lower == "redhat"
 
     - name: Get bridge interface facts
       setup:
