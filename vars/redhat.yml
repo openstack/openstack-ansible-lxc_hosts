@@ -34,6 +34,7 @@ _lxc_cache_prep_template: "prep-scripts/centos_8_prep.sh.j2"
 _lxc_cache_distro_packages:
   - ca-certificates
   - iputils
+  - iproute
   - openssh-server
   - policycoreutils
   - procps
