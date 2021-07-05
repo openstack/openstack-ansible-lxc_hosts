@@ -7,3 +7,7 @@
   src: https://opendev.org/openstack/openstack-ansible-pip_install
   scm: git
   version: master
+- name: pki
+  src: https://opendev.org/openstack/ansible-role-pki
+  scm: git
+  version: master
