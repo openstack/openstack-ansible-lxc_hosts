@@ -13,7 +13,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
 
 # Update base distribution
-apt-get update
+apt-get update --allow-releaseinfo-change
 
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes eatmydata
 export LD_PRELOAD=/usr/lib/{{ ansible_facts['architecture'] }}-linux-gnu/libeatmydata.so
