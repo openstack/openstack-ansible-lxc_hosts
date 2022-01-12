@@ -20,13 +20,6 @@
       osa_test_repo: "openstack/openstack-ansible-lxc_container_create"
 
 - job:
-    name: openstack-ansible-lxc-dir-ubuntu-bionic
-    parent: openstack-ansible-lxc-container-create
-    nodeset: ubuntu-bionic
-    vars:
-      tox_env: dir
-
-- job:
     name: openstack-ansible-lxc-dir-ubuntu-focal
     parent: openstack-ansible-lxc-container-create
     nodeset: ubuntu-focal
@@ -34,18 +27,11 @@
       tox_env: dir
 
 - job:
-    name: openstack-ansible-lxc-dir-centos-8
+    name: openstack-ansible-lxc-dir-centos-8-stream
     parent: openstack-ansible-lxc-container-create
-    nodeset: centos-8
+    nodeset: centos-8-stream
     vars:
       tox_env: dir
-
-- job:
-    name: openstack-ansible-lxc-btrfs-ubuntu-bionic
-    parent: openstack-ansible-lxc-container-create
-    nodeset: ubuntu-bionic
-    vars:
-      tox_env: btrfs
 
 - job:
     name: openstack-ansible-lxc-btrfs-ubuntu-focal
@@ -53,27 +39,12 @@
     nodeset: ubuntu-focal
     vars:
       tox_env: btrfs
-
-- job:
-    name: openstack-ansible-lxc-overlayfs-ubuntu-bionic
-    parent: openstack-ansible-lxc-container-create
-    nodeset: ubuntu-bionic
-    vars:
-      tox_env: ofs
-
 - job:
     name: openstack-ansible-lxc-overlayfs-ubuntu-focal
     parent: openstack-ansible-lxc-container-create
     nodeset: ubuntu-focal
     vars:
       tox_env: ofs
-
-- job:
-    name: openstack-ansible-lxc-zfs-ubuntu-bionic
-    parent: openstack-ansible-lxc-container-create
-    nodeset: ubuntu-bionic
-    vars:
-      tox_env: zfs
 
 - job:
     name: openstack-ansible-lxc-zfs-ubuntu-focal
