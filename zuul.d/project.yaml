@@ -23,12 +23,8 @@
       - openstack-ansible-upgrade-infra_lxc-jobs
     check:
       jobs:
-        - openstack-ansible-lxc-dir-centos-8
-        - openstack-ansible-lxc-dir-ubuntu-bionic
+        - openstack-ansible-lxc-dir-centos-8-stream
         - openstack-ansible-lxc-dir-ubuntu-focal
-        - openstack-ansible-lxc-btrfs-ubuntu-bionic
         - openstack-ansible-lxc-btrfs-ubuntu-focal
-        - openstack-ansible-lxc-overlayfs-ubuntu-bionic
         - openstack-ansible-lxc-overlayfs-ubuntu-focal
-        - openstack-ansible-lxc-zfs-ubuntu-bionic
         - openstack-ansible-lxc-zfs-ubuntu-focal
