@@ -48,13 +48,6 @@
     - lxc-bridge
     - lxc-interfaces
 
-# NOTE(cloudnull): This task cleans up an old post up script that is no longer
-#                  used. Remove this task in "R".
-- name: Remove old post up script
-  file:
-    path: "/etc/sysconfig/network-scripts/ifup-post-{{ lxc_net_bridge }}"
-    state: "absent"
-
 # NOTE(mhayden): There are ifup hooks that handle the customized LXC container
 # networking. Starting lxc-net will trample over these hooks and cause
 # networking issues for containers.
