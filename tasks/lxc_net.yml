@@ -32,67 +32,84 @@
     enabled: yes
   when: networkmanager_check.rc == 0
 
-- name: Drop lxc net bridge
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: "root"
-    group: "root"
-    mode: "{{ item.mode | default('0644') }}"
-  with_items: "{{ lxc_cached_network_interfaces }}"
-  notify:
-    - Restart bridge
-  tags:
-    - lxc-files
-    - lxc-net
-    - lxc-bridge
-    - lxc-interfaces
+# NOTE(noonedeadpunk): Drop after AA release as this task is needed to cleanup older config
+- name: Delete previously provisioned lxc-net configuration
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/network/interfaces.d/lxc-net-bridge.cfg
+    - "/etc/sysconfig/network-scripts/ifcfg-{{ lxc_net_bridge }}"
+    - "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
 
-# NOTE(mhayden): There are ifup hooks that handle the customized LXC container
-# networking. Starting lxc-net will trample over these hooks and cause
-# networking issues for containers.
+# NOTE(mhayden): There are systemd services that act like ifup/ifdown hooks
+# and handle the customized LXC container networking. Starting lxc-net will
+# trample over these hooks and cause networking issues for containers.
 - name: Disable and stop lxc-net
   service:
     name: lxc-net
     enabled: no
     state: stopped
+    masked: true
   tags:
     - lxc-net
 
-- name: Mask lxc-net systemd service
-  file:
-    src: /dev/null
-    path: /etc/systemd/system/lxc-net.service
-    state: link
-  tags:
-    - lxc-files
-    - lxc-net
+- name: Run the systemd-networkd role
+  include_role:
+    name: systemd_networkd
+  vars:
+    systemd_networkd_prefix: "lxc-net"
+    systemd_run_networkd: true
+    systemd_netdevs:
+      - NetDev:
+          Name: "{{ lxc_net_bridge }}"
+          Kind: bridge
+        Bridge:
+          ForwardDelaySec: 0
+          HelloTimeSec: 2
+          MaxAgeSec: 12
+          STP: off
+    systemd_networks:
+      - interface: "{{ lxc_net_bridge }}"
+        address: "{{ lxc_net_address }}"
+        netmask: "{{ lxc_net_netmask }}"
+        config_overrides:
+          Network:
+            ConfigureWithoutCarrier: yes
+            Gateway: "{{ lxc_net_gateway is not none | ternary(lxc_net_gateway, {}) }}"
 
-# All Debian based systems use the interfaces.d directory for extra network configs
-#  this check ensures the needed source line is in the base config file
-- name: Ensure networking includes interfaces.d
-  lineinfile:
-    dest: "/etc/network/interfaces"
-    line: "source /etc/network/interfaces.d/*.cfg"
-    backup: "yes"
-  when:
-    - ansible_facts['os_family'] == "Debian"
-  tags:
-    - lxc-net
-    - lxc-interfaces
-
-- name: Create systemd unit for dnsmasq
-  template:
-    src: lxc-dnsmasq-systemd-init.j2
-    dest: "/etc/systemd/system/lxc-dnsmasq.service"
-    owner: root
-    group: root
-    mode: '0644'
-  when:
-    - lxc_net_nat | bool
-  notify:
-    - Reload systemd units
-    - Restart dnsmasq
+- name: Run the systemd-service role
+  include_role:
+    name: systemd_service
+  vars:
+    systemd_service_enabled: true
+    systemd_slice_name: lxc-dnsmasq
+    systemd_services:
+      - service_name: lxc-dnsmasq
+        state: started
+        enabled: yes
+        execstartpres: |
+          {% set pres = ['-/usr/bin/pkill -u {{ lxc_net_dnsmasq_user }} "^dnsmasq"'] %}
+          {% if lxc_net_manage_iptables | bool %}
+          {%   set _ = pres.append('/usr/local/bin/lxc-system-manage iptables-create') %}
+          {% endif%}
+          {{ pres }}
+        execstarts:
+          - /usr/local/bin/lxc-system-manage dnsmasq-start
+        execstops:
+          - -/usr/local/bin/lxc-system-manage dnsmasq-stop
+        execstopposts: |
+          {% set posts = [] %}
+          {% if lxc_net_manage_iptables | bool %}
+          {%   set _ = posts.append('-/usr/local/bin/lxc-system-manage iptables-remove') %}
+          {% endif %}
+          {{ posts }}
+        config_overrides:
+          Unit:
+            Before: lxc.service
+          Service:
+            PIDFile: /run/lxc/dnsmasq.pid
+  when: lxc_net_nat | bool
 
 # Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists

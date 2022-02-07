@@ -28,7 +28,6 @@ _lxc_hosts_distro_packages:
   - dnsmasq-base
   - git
   - gzip
-  - ifupdown
   - iptables
   - irqbalance
   - liblxc1
@@ -49,7 +48,3 @@ lxc_xz_bin: xz
 
 system_config_dir: "/etc/default"
 systemd_utils_prefix: "/lib/systemd"
-
-lxc_cached_network_interfaces:
-  - src: "lxc-net-bridge.cfg.j2"
-    dest: "/etc/network/interfaces.d/lxc-net-bridge.cfg"

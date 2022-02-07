@@ -30,7 +30,6 @@ _lxc_hosts_distro_packages:
   - lxc-devel
   - lxc-libs
   - lxc-templates-extra # requires lxc-templates
-  - network-scripts
   - policycoreutils-python-utils
   - procps
   - python3-lxc
@@ -39,11 +38,3 @@ _lxc_hosts_distro_packages:
   - xz
 
 lxc_xz_bin: xz
-
-lxc_cached_network_interfaces:
-  - src: "lxc-net-redhat-bridge.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifcfg-{{ lxc_net_bridge }}"
-  - src: "lxc-net-redhat-postdown.cfg.j2"
-    dest: "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
-    mode: "0755"
-    interface: "${DEVICE}"

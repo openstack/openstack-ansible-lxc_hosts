@@ -195,7 +195,7 @@ function start_networks {
     if [ -f "/sys/class/net/${LXC_BRIDGE}/bridge/bridge_id" ];then
         success "LXC container network is already online."
     else
-        if [ ! "$(ifup ${LXC_BRIDGE})" ];then
+        if [ ! "$(ip link set ${LXC_BRIDGE} up)" ];then
             info "Building the LXC container network."
 
             # Create lxc bridge
