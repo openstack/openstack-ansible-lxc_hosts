@@ -13,12 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_build_command: "dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf centos-stream-release centos-stream-repos --releasever=8"
+_lxc_cache_core_repos_list:
+  centos: "centos-stream-release centos-stream-repos"
+  rocky: "rocky-release rocky-repos"
+
+_lxc_cache_core_repos: "{{ _lxc_cache_core_repos_list.get( ansible_facts['distribution'] | lower ) }}"
+
+_lxc_hosts_container_build_command: "dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf {{ _lxc_cache_core_repos }} --releasever={{ ansible_facts['distribution_major_version'] }}"
 
 _lxc_cache_map:
-  distro: centos
+  distro: "{{ ansible_facts['distribution'] | lower }}"
   arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
-  release: 8
+  release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/default/locale
     - /etc/environment
@@ -29,7 +35,7 @@ _lxc_cache_map:
     - /etc/yum/pluginconf.d/fastestmirror.conf
     - /etc/yum.repos.d/
 
-_lxc_cache_prep_template: "prep-scripts/centos_8_prep.sh.j2"
+_lxc_cache_prep_template: "prep-scripts/redhat_prep.sh.j2"
 
 _lxc_cache_distro_packages:
   - ca-certificates
