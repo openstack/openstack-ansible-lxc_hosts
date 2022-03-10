@@ -3,7 +3,7 @@
 Name={{ lxc_net_bridge }}
 
 [Network]
-Address={{ (lxc_net_address ~ '/' ~ lxc_net_netmask) | ipaddr('cidr') }}
+Address={{ (lxc_net_address ~ '/' ~ lxc_net_netmask) | ansible.utils.ipaddr('cidr') }}
 {% if lxc_net_gateway is not none %}
 Gateway={{ lxc_net_gateway }}
 {% endif %}
