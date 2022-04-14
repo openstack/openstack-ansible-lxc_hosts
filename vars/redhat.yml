@@ -53,4 +53,5 @@ _lxc_cache_distro_packages:
   - systemd-networkd
   - systemd-resolvd
   - systemd-sysv
+  - systemd-udev
   - tzdata
