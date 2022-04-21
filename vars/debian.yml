@@ -16,13 +16,13 @@
 _lxc_hosts_container_build_command: "debootstrap --variant minbase {{ ansible_facts['distribution_release'] }} /var/lib/machines/{{ lxc_container_base_name }} "
 
 _lxc_cache_map:
-  distro: debian
+  distro: "{{ ansible_facts['distribution'] | lower }}"
   arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
   release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/apt/sources.list
     - /etc/apt/apt.conf.d/
-    - /etc/apt/trusted.gpg.d
+    - /etc/apt/trusted.gpg.d/
     - /etc/apt/trusted.gpg
     - /etc/apt/preferences.d/
     - /etc/environment
@@ -31,18 +31,23 @@ _lxc_cache_map:
 
 _lxc_cache_prep_template: "prep-scripts/debian_prep.sh.j2"
 
+_lxc_cache_distro_libpython:
+  buster: libpython3.7
+  bullseye: libpython3.9
+  focal: libpython3.8
+  jammy: libpython3.10
+
 # This list should contain a minimum set of packages. Add extra packages via roles that require them.
 _lxc_cache_distro_packages:
   - ca-certificates
   - dbus
-  - iproute2
   - iputils-ping
+  - iproute2
   - locales
   - netbase
   - openssh-server
-  - procps             # provides sysctl which is a requirement
   - python3
-  - libpython3.9
+  -  "{{ _lxc_cache_distro_libpython[ansible_facts['distribution_release'] | lower] }}"
   - rsync              # os_keystone runs serial=1 and uses rsync before the distro packages have been installed on all keystone targets
   - sudo
   - systemd
