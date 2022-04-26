@@ -51,7 +51,6 @@ _lxc_cache_distro_packages:
   - sudo
   - systemd
   - systemd-networkd
-  - systemd-resolvd
   - systemd-sysv
   - systemd-udev
   - tzdata
