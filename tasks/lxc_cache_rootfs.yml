@@ -26,30 +26,20 @@
   when:
     - machines_create is changed
 
-- name: Create machines mount point
-  file:
-    path: "/var/lib/machines"
-    state: "directory"
-    recurse: true
-
-- name: Move machines mount into place
-  copy:
-    src: var-lib-machines.mount
-    dest: /lib/systemd/system/var-lib-machines.mount
-  register: mount_unit
-
-- name: Reload the System daemon
-  systemd:
-    daemon_reload: yes
-  when: mount_unit is changed
-
-- name: Mount all
-  shell: "mount | grep '/var/lib/machines' || (systemctl start var-lib-machines.mount && exit 3)"
-  register: mount_machines
-  changed_when: mount_machines.rc == 3
-  failed_when: mount_machines.rc not in [0, 3]
-  tags:
-    - skip_ansible_lint
+- name: Create systemd mount
+  import_role:
+    name: systemd_mount
+  vars:
+    systemd_mounts:
+      - what: '/var/lib/machines.raw'
+        where: '/var/lib/machines'
+        type: 'ext4'
+        options: 'loop'
+        unit:
+          ConditionPathExists:
+            - '/var/lib/machines.raw'
+        state: 'started'
+        enabled: true
 
 - name: Remove the old image cache
   file:
