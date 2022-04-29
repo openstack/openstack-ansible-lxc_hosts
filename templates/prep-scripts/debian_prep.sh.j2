@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e -x
 
 {{ lxc_cache_prep_pre_commands }}
@@ -13,7 +12,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
 
 # Update base distribution
-apt-get update --allow-releaseinfo-change
+apt-get update
 
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes eatmydata
 export LD_PRELOAD=/usr/lib/{{ ansible_facts['architecture'] }}-linux-gnu/libeatmydata.so
@@ -22,8 +21,6 @@ apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--fo
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes {{ lxc_cache_distro_packages | join(' ') }}
 apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" --force-yes
-apt-get remove -y --purge mariadb* || true
-
 rm /etc/machine-id || true
 rm /var/lib/dbus/machine-id || true
 touch /etc/machine-id

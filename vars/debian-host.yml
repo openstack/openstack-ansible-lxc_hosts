@@ -28,6 +28,7 @@ _lxc_hosts_distro_packages:
   - debootstrap
   - dnsmasq-base
   - git
+  - gzip
   - ifupdown
   - iptables
   - irqbalance
@@ -36,8 +37,8 @@ _lxc_hosts_distro_packages:
   - lxc-dev
   - lxc-templates
   - procps
-  - python3-dev
   - python3-lxc
+  - python3-dev
   - systemd-container
   - xz-utils
 
