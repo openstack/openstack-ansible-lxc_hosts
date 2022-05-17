@@ -11,6 +11,8 @@ fi
 
 # The containers do not need the LXC repository (only hosts need it).
 rm -f /etc/yum.repos.d/thm-lxc3.0*
+# This repo should be installed from package, so requires extra vars to work properly
+rm -f /etc/yum.repos.d/CentOS-NFV-OpenvSwitch.repo
 
 # Create dnf transaction file and run it all at once
 echo "update" > /tmp/package-transaction.txt
