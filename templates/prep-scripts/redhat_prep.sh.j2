@@ -33,9 +33,6 @@ chage -I -1 -d -1 -m 0 -M 99999 -E -1 root
 echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
-systemctl enable systemd-tmpfiles-setup
-systemctl enable systemd-tmpfiles-setup-dev
-systemctl enable systemd-tmpfiles-clean
 
 # Fully disable systemd-logind
 systemctl disable systemd-logind

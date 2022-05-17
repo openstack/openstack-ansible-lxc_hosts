@@ -64,7 +64,7 @@
     gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     enabled: yes
     state: present
-    includepkgs: "aria2 systemd-networkd"
+    includepkgs: "systemd-networkd"
   register: install_epel_repo
   until: install_epel_repo is success
   retries: 5

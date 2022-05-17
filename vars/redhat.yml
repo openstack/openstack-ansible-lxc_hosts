@@ -50,6 +50,7 @@ _lxc_cache_distro_packages:
   - setup
   - sudo
   - systemd
+  - systemd-resolved
   - systemd-networkd
   - systemd-sysv
   - systemd-udev
