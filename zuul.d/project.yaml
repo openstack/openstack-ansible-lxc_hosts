@@ -21,10 +21,4 @@
       - build-release-notes-jobs-python3
       - openstack-ansible-deploy-infra_lxc-jobs
       - openstack-ansible-upgrade-infra_lxc-jobs
-    check:
-      jobs:
-        - openstack-ansible-lxc-dir-centos-8-stream
-        - openstack-ansible-lxc-dir-ubuntu-focal
-        - openstack-ansible-lxc-btrfs-ubuntu-focal
-        - openstack-ansible-lxc-overlayfs-ubuntu-focal
-        - openstack-ansible-lxc-zfs-ubuntu-focal
+      - openstack-ansible-lxc-backingstore-jobs
