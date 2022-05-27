@@ -16,8 +16,9 @@
 system_config_dir: "/etc/sysconfig"
 systemd_utils_prefix: "/lib/systemd"
 
-_lxc_centos_package_baseurl: "https://download.copr.fedorainfracloud.org/results/neil/lxc4.0/centos-stream-9-$basearch/"
-_lxc_centos_package_key: "https://download.copr.fedorainfracloud.org/results/neil/lxc4.0/pubkey.gpg"
+_lxc_hosts_epel_packages:
+  - lxc*
+  - python3-lxc
 
 # Required rpm packages.
 _lxc_hosts_distro_packages:
@@ -30,7 +31,7 @@ _lxc_hosts_distro_packages:
   - lxc
   - lxc-devel
   - lxc-libs
-  - lxc-templates-extra # requires lxc-templates
+  - lxc-templates
   - policycoreutils-python-utils
   - procps
   - python3-lxc
