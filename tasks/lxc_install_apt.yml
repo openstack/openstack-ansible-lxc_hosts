@@ -21,6 +21,16 @@
   tags:
     - lxc-apt-packages
 
+- name: Prevent lxc from starting on install
+  copy:
+    content: |
+      #!/bin/bash
+      exit 101
+    dest: "/usr/sbin/policy-rc.d"
+    mode: "0755"
+    backup: yes
+  changed_when: false
+
 - name: Install apt packages
   apt:
     pkg: "{{ lxc_hosts_distro_packages }}"
@@ -34,6 +44,12 @@
   delay: 2
   tags:
     - lxc-apt-packages
+
+- name: Remove policy-rc now that the package install/upgrade is complete
+  file:
+    path: "/usr/sbin/policy-rc.d"
+    state: absent
+  changed_when: false
 
 - name: Drop irqbalance config
   template:
