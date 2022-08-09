@@ -15,7 +15,7 @@
 
 # Set the package install state for distribution packages
 # Options are 'present' and 'latest'
-lxc_hosts_package_state: "latest"
+lxc_hosts_package_state: "{{ package_state | default('present') }}"
 
 # Define a list of extra distribuition packages to install onto the host
 # at the discretion of the deployer
