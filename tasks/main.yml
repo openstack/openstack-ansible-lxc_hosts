@@ -40,7 +40,6 @@
         - "{{ ansible_facts['distribution'] | lower }}-{{ ansible_facts['distribution_major_version'] | lower }}-host.yml"
         - "{{ ansible_facts['os_family'] | lower }}-{{ ansible_facts['distribution_major_version'] | lower }}-host.yml"
         - "{{ ansible_facts['distribution'] | lower }}-host.yml"
-        - "{{ ansible_facts['os_family'] | lower }}-{{ ansible_facts['distribution_version'].split('.')[0] }}-host.yml"
         - "{{ ansible_facts['os_family'] | lower }}-host.yml"
       paths:
         - "{{ role_path }}/vars"
