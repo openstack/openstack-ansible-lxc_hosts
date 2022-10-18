@@ -21,7 +21,10 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-lxc-dir-centos-7
+        - openstack-ansible-functional-centos-7:
+            voting: false
+        - openstack-ansible-lxc-dir-centos-7:
+            voting: false
         - openstack-ansible-lxc-dir-ubuntu-bionic
         - openstack-ansible-lxc-dir-ubuntu-focal
         - openstack-ansible-lxc-btrfs-ubuntu-bionic
@@ -30,3 +33,7 @@
         - openstack-ansible-lxc-overlayfs-ubuntu-focal
         - openstack-ansible-lxc-zfs-ubuntu-bionic
         - openstack-ansible-lxc-zfs-ubuntu-focal
+    gate:
+      jobs:
+        - openstack-ansible-functional-centos-7:
+            voting: false
