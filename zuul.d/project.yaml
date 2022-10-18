@@ -21,10 +21,8 @@
       - release-notes-jobs-python3
     check:
       jobs:
-        - openstack-ansible-lxc-dir-centos-7
         - openstack-ansible-lxc-dir-ubuntu-bionic
         - openstack-ansible-lxc-btrfs-ubuntu-bionic
         - openstack-ansible-lxc-machinectl-ubuntu-bionic
-        - openstack-ansible-lxc-machinectl-centos-7
         - openstack-ansible-lxc-overlayfs-ubuntu-bionic
         - openstack-ansible-lxc-zfs-ubuntu-bionic
