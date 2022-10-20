@@ -107,13 +107,11 @@ def main():
             'No Image found with image hint "{0}"'.format(image_hint)
         )
 
-    container_url = urlparse.urljoin(
-        urlparse.urljoin(
-            LXC_CACHE_SERVER,
-            images[0].split(';')[-1]
-        ),
+    container_url = "/".join([
+        LXC_CACHE_SERVER,
+        images[0].split(';')[-1],
         'rootfs.tar.xz'
-    )
+    ])
     print(container_url)
 
 if __name__ == '__main__':
