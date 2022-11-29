@@ -75,6 +75,8 @@
     - lxc_hosts-config
 
 - include_tasks: lxc_net.yml
+  when:
+    - lxc_net_managed | bool
   tags:
     - lxc_hosts-config
 

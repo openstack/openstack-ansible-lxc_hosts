@@ -95,6 +95,9 @@ lxc_container_base_name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}
 # Set the default zfs root name
 lxc_container_zfs_root_name: "pool/lxc"
 
+# Allow OSA to generate the LXC network configuration and manage the interface state.
+lxc_net_managed: true
+
 # lxc container net network
 lxc_net_bridge: lxcbr0
 lxc_net_bridge_port: none
