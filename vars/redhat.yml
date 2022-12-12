@@ -39,8 +39,10 @@ _lxc_cache_prep_template: "prep-scripts/redhat_prep.sh.j2"
 
 _lxc_cache_distro_packages:
   - ca-certificates
+  - git-core           # needed everywhere when wheel_build=false
   - iputils
   - iproute
+  - libxml2
   - openssh-server
   - policycoreutils
   - procps

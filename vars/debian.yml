@@ -41,8 +41,10 @@ _lxc_cache_distro_libpython:
 _lxc_cache_distro_packages:
   - ca-certificates
   - dbus
+  - git                # needed everywhere when wheel_build=false
   - iputils-ping
   - iproute2
+  - libxml2
   - locales
   - netbase
   - openssh-server
