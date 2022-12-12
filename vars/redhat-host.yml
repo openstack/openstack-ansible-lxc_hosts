@@ -35,6 +35,7 @@ _lxc_hosts_distro_packages:
   - procps
   - python3-lxc
   - systemd-container
+  - tar
   - unzip
   - xz
 
