@@ -54,13 +54,18 @@
   tags:
     - lxc-net
 
+- name: Setup LXC OVS Bridge
+  openvswitch_bridge:
+    bridge: "{{ lxc_net_bridge }}"
+    fail_mode: standalone
+    state: present
+  when: lxc_net_bridge_type == 'openvswitch'
+
 - name: Run the systemd-networkd role
   include_role:
     name: systemd_networkd
   vars:
-    systemd_networkd_prefix: "lxc-net"
-    systemd_run_networkd: true
-    systemd_netdevs:
+    _lxc_net_bridge_devices:
       - NetDev:
           Name: "{{ lxc_net_bridge }}"
           Kind: bridge
@@ -69,6 +74,9 @@
           HelloTimeSec: 2
           MaxAgeSec: 12
           STP: off
+    systemd_networkd_prefix: "lxc-net"
+    systemd_run_networkd: true
+    systemd_netdevs: "{{ (lxc_net_bridge_type == 'openvswitch') | ternary([], _lxc_net_bridge_devices) }}"
     systemd_networks:
       - interface: "{{ lxc_net_bridge }}"
         address: "{{ lxc_net_address }}"
