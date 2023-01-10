@@ -38,6 +38,7 @@ _lxc_hosts_distro_packages:
   - python3-lxc
   - python3-dev
   - systemd-container
+  - tar
   - xz-utils
 
 # Package to remove from the host
