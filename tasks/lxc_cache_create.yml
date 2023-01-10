@@ -26,14 +26,11 @@
 
 # This is using a shell command because the ansible archive module does not
 # provide for the options needed to properly create an LXC image archive.
-# Ansible will print a warning since this task calls 'tar' directly and we
-# suppress this warning with 'warn: no'.
 - name: Create lxc image
   shell: |
     tar -Opc -C {{ lxc_image_cache_path }} . | {{ lxc_xz_bin }} -T 0 -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ cache_path_fact }}/"
-    warn: no
   tags:
     - skip_ansible_lint
 
