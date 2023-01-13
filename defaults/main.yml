@@ -100,7 +100,8 @@ lxc_net_managed: true
 
 # lxc container net network
 lxc_net_bridge: lxcbr0
-lxc_net_bridge_port: none
+# Can be 'linuxbridge' or 'openvswitch'
+lxc_net_bridge_type: linuxbridge
 lxc_net_address: 10.0.3.1
 lxc_net_netmask: 255.255.255.0
 lxc_net_cidr: 24
