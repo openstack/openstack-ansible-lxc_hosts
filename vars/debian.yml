@@ -32,9 +32,7 @@ _lxc_cache_map:
 _lxc_cache_prep_template: "prep-scripts/debian_prep.sh.j2"
 
 _lxc_cache_distro_libpython:
-  buster: libpython3.7
   bullseye: libpython3.9
-  focal: libpython3.8
   jammy: libpython3.10
 
 # This list should contain a minimum set of packages. Add extra packages via roles that require them.
