@@ -18,7 +18,9 @@ galaxy_info:
   description: Deployment of LXC hosts for use in Rackspace Private Cloud
   company: Rackspace
   license: Apache2
-  min_ansible_version: 2.9
+  role_name: lxc_hosts
+  namespace: openstack
+  min_ansible_version: "2.10"
   platforms:
     - name: Debian
       versions:
@@ -28,8 +30,8 @@ galaxy_info:
         - jammy
     - name: EL
       versions:
-        - 9
-  categories:
+        - "9"
+  galaxy_tags:
     - cloud
     - lxc
     - development

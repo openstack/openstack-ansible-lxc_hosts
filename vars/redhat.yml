@@ -17,13 +17,16 @@ _lxc_cache_core_repos_list:
   centos: "centos-stream-release centos-stream-repos"
   rocky: "rocky-release rocky-repos"
 
-_lxc_cache_core_repos: "{{ _lxc_cache_core_repos_list.get( ansible_facts['distribution'] | lower ) }}"
+_lxc_cache_core_repos: "{{ _lxc_cache_core_repos_list.get(ansible_facts['distribution'] | lower) }}"
 
-_lxc_hosts_container_build_command: "dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf {{ _lxc_cache_core_repos }} --releasever={{ ansible_facts['distribution_major_version'] }}"
+_lxc_hosts_container_build_command: >-
+  dnf --assumeyes --installroot=/var/lib/machines/{{ lxc_container_base_name }} install
+  --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf {{ _lxc_cache_core_repos }}
+  --releasever={{ ansible_facts['distribution_major_version'] }}
 
 _lxc_cache_map:
   distro: "{{ ansible_facts['distribution'] | lower }}"
-  arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
+  arch: "{{ lxc_architecture_mapping.get(ansible_facts['architecture']) }}"
   release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/default/locale

@@ -62,25 +62,30 @@
   tags:
     - always
 
-- include_tasks: lxc_pre_install.yml
+- name: Including lxc_pre_install tasks
+  include_tasks: lxc_pre_install.yml
   tags:
     - lxc_hosts-install
 
-- include_tasks: "lxc_install_{{ ansible_facts['pkg_mgr'] }}.yml"
+- name: Including lxc_install tasks"
+  include_tasks: "lxc_install_{{ ansible_facts['pkg_mgr'] }}.yml"
   tags:
     - lxc_hosts-install
 
-- include_tasks: lxc_post_install.yml
+- name: Including lxc_post_install tasks
+  include_tasks: lxc_post_install.yml
   tags:
     - lxc_hosts-config
 
-- include_tasks: lxc_net.yml
+- name: Including lxc_net tasks
+  include_tasks: lxc_net.yml
   when:
     - lxc_net_managed | bool
   tags:
     - lxc_hosts-config
 
-- include_tasks: lxc_cache.yml
+- name: Including lxc_cache tasks
+  include_tasks: lxc_cache.yml
   tags:
     - lxc_hosts-install
     - lxc_hosts-config

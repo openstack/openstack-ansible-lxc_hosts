@@ -27,9 +27,9 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ item.owner|default('root') }}"
-    group: "{{ item.group|default('root') }}"
-    mode: "{{ item.mode|default('0644') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
   with_items:
     - { src: lxc-openstack.conf.j2, dest: "/etc/lxc/lxc-openstack.conf" }
     - { src: lxc-net.default.j2, dest: "{{ system_config_dir }}/lxc-net", mode: "0644" }
@@ -78,8 +78,8 @@
   sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
-    sysctl_set: "{{ item.set|default('yes') }}"
-    state: "{{ item.state|default('present') }}"
-    reload: "{{ item.reload|default('yes') }}"
+    sysctl_set: "{{ item.set | default('yes') }}"
+    state: "{{ item.state | default('present') }}"
+    reload: "{{ item.reload | default('yes') }}"
   failed_when: false
   with_items: "{{ lxc_kernel_options }}"

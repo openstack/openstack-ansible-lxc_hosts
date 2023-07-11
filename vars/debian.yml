@@ -13,11 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-_lxc_hosts_container_build_command: "debootstrap --variant minbase {{ ansible_facts['distribution_release'] }} /var/lib/machines/{{ lxc_container_base_name }} {{ lxc_apt_mirror }}"
+_lxc_hosts_container_build_command: >-
+  debootstrap --variant minbase {{ ansible_facts['distribution_release'] }} /var/lib/machines/{{ lxc_container_base_name }} {{ lxc_apt_mirror }}
 
 _lxc_cache_map:
   distro: "{{ ansible_facts['distribution'] | lower }}"
-  arch: "{{ lxc_architecture_mapping.get( ansible_facts['architecture'] ) }}"
+  arch: "{{ lxc_architecture_mapping.get(ansible_facts['architecture']) }}"
   release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/apt/sources.list
@@ -47,7 +48,7 @@ _lxc_cache_distro_packages:
   - netbase
   - openssh-server
   - python3
-  -  "{{ _lxc_cache_distro_libpython[ansible_facts['distribution_release'] | lower] }}"
+  - "{{ _lxc_cache_distro_libpython[ansible_facts['distribution_release'] | lower] }}"
   - rsync              # os_keystone runs serial=1 and uses rsync before the distro packages have been installed on all keystone targets
   - sudo
   - systemd

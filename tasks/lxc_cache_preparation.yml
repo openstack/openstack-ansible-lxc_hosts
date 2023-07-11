@@ -34,6 +34,7 @@
   file:
     dest: "{{ lxc_image_cache_path }}{{ item.dest | default(item.src) | dirname }}"
     state: directory
+    mode: "0755"
   with_items: "{{ lxc_container_cache_files }}"
 
 - name: Copy files from deployment host to the container cache
@@ -49,6 +50,7 @@
   file:
     dest: "{{ lxc_image_cache_path }}/opt"
     state: directory
+    mode: "0755"
 
 - name: Cached image preparation script
   template:
@@ -75,6 +77,7 @@
     dest: "{{ lxc_image_cache_path }}/root/.ssh/authorized_keys"
     line: "{{ lxc_container_ssh_key }}"
     create: true
+    mode: "0600"
 
 # NOTE(cloudnull): Wait for the cache preparation script has completed before
 #                  building the new RootFS

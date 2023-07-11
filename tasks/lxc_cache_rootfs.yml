@@ -52,6 +52,7 @@
   file:
     path: "/var/lib/machines/{{ lxc_container_base_name }}"
     state: directory
+    mode: "0755"
   register: create_new_dir
 
 - name: Tasks for image download
@@ -76,4 +77,4 @@
 - name: Build the base image using a CLI tool
   command: "{{ lxc_hosts_container_build_command }}"
   when: lxc_hosts_container_build_command | length > 0
-
+  changed_when: false

@@ -46,7 +46,7 @@
 # and handle the customized LXC container networking. Starting lxc-net will
 # trample over these hooks and cause networking issues for containers.
 - name: Disable and stop lxc-net
-  service:
+  systemd:
     name: lxc-net
     enabled: no
     state: stopped
@@ -100,7 +100,7 @@
           {% set pres = ['-/usr/bin/pkill -u {{ lxc_net_dnsmasq_user }} "^dnsmasq"'] %}
           {% if lxc_net_manage_iptables | bool %}
           {%   set _ = pres.append('/usr/local/bin/lxc-system-manage iptables-create') %}
-          {% endif%}
+          {% endif %}
           {{ pres }}
         execstarts:
           - /usr/local/bin/lxc-system-manage dnsmasq-start
@@ -132,4 +132,5 @@
     - lxc-bridge
 
 # Ensure lxc networks are running as they're supposed to
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers

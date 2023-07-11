@@ -30,7 +30,6 @@
     state: present
 
 
-
 - name: Add GPG key for COPR LXC repo
   rpm_key:
     key: "{{ lxc_centos_package_key }}"
@@ -43,8 +42,9 @@
 
 - name: Download EPEL gpg keys
   get_url:
-     url: "{{ lxc_centos_epel_key }}"
-     dest: /etc/pki/rpm-gpg
+    url: "{{ lxc_centos_epel_key }}"
+    dest: /etc/pki/rpm-gpg
+    mode: "0640"
   register: _get_yum_keys
   until: _get_yum_keys is success
   retries: 5

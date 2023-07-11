@@ -52,13 +52,15 @@
   copy:
     content: "{{ cache_time | int + lxc_image_cache_expiration | community.general.to_seconds | int }}"
     dest: "{{ cache_path_fact }}/expiry"
+    mode: "0644"
 
 - name: Set build ID
   copy:
     content: "{{ cache_time | int }}"
     dest: "{{ cache_path_fact }}/build_id"
+    mode: "0644"
 
-- name: Create base container to use for {{ lxc_container_backing_store }}-backed containers
+- name: Create base container to use for containers with {{ lxc_container_backing_store }}
   lxc_container:
     name: "{{ lxc_container_base_name }}"
     template: "download"
