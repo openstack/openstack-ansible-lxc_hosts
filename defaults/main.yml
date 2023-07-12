@@ -199,6 +199,10 @@ lxc_hosts_container_build_command: "{{ _lxc_hosts_container_build_command | defa
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
 
+# Expiration timeout for the cached image
+# Should be in format supported by the to_time_unit filter
+lxc_image_cache_expiration: "1year"
+
 # Set this option to true to pull a new cached image.
 lxc_image_cache_refresh: false
 
