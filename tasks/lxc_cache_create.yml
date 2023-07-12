@@ -48,21 +48,14 @@
     - expiry
     - templates
 
-- name: Set cache expiry
-  shell: "date -d @{{ (cache_time | int) + 31536000 }}"
-  changed_when: false
-  register: _cache_expiry
-  tags:
-    - skip_ansible_lint
-
 - name: Set expiry
   copy:
-    content: "{{ _cache_expiry.stdout }}"
+    content: "{{ cache_time | int + lxc_image_cache_expiration | community.general.to_seconds | int }}"
     dest: "{{ cache_path_fact }}/expiry"
 
 - name: Set build ID
   copy:
-    content: "{{ cache_time }}"
+    content: "{{ cache_time | int }}"
     dest: "{{ cache_path_fact }}/build_id"
 
 - name: Create base container to use for {{ lxc_container_backing_store }}-backed containers
