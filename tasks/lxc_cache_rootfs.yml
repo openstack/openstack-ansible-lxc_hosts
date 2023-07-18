@@ -78,3 +78,7 @@
   command: "{{ lxc_hosts_container_build_command }}"
   when: lxc_hosts_container_build_command | length > 0
   changed_when: false
+  register: _build_container_base_image
+  until: _build_container_base_image is success
+  retries: 5
+  delay: 2
