@@ -67,18 +67,6 @@
   poll: 0
   register: _lxc_cache_prepare_commands
 
-- name: Obtain the deploy system's ssh public key
-  set_fact:
-    lxc_container_ssh_key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
-  when: lxc_container_ssh_key is not defined
-
-- name: Deploy ssh public key into the cached image
-  lineinfile:
-    dest: "{{ lxc_image_cache_path }}/root/.ssh/authorized_keys"
-    line: "{{ lxc_container_ssh_key }}"
-    create: true
-    mode: "0600"
-
 # NOTE(cloudnull): Wait for the cache preparation script has completed before
 #                  building the new RootFS
 - name: Ensure that the LXC cache has been prepared
@@ -98,11 +86,3 @@
     src: sudoers.j2
   when:
     - ansible_facts['pkg_mgr'] == 'dnf'
-
-- name: Adjust sshd configuration in container
-  lineinfile:
-    dest: "{{ lxc_image_cache_path }}/etc/ssh/sshd_config"
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-  with_items: "{{ lxc_cache_sshd_configuration }}"
