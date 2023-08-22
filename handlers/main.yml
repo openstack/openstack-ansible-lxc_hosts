@@ -24,9 +24,6 @@
     name: "apparmor"
     state: "restarted"
 
-- name: Init reload
-  command: "initctl reload-configuration"
-
 - name: Restart importd
   systemd:
     name: "systemd-importd.service"
@@ -40,7 +37,7 @@
     daemon_reload: yes
 
 - name: Bring bridge up
-  command: "ip link set {{ lxc_net_bridge }} up"
+  command: "ip link set {{ lxc_net_bridge }} up" # noqa: no-changed-when
 
 - name: Reload systemd units
   systemd:

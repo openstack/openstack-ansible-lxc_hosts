@@ -37,16 +37,16 @@ lxc_architecture_mapping:
 # most specific mountpoint from the hierarchy.
 # NOTE: Size is set in Gigabytes.
 lxc_host_machine_volume_size: |-
-    {%- set mounts = [] -%}
-    {%- set mount_points = ['/var/lib/machines', '/var/lib/', '/var', '/'] -%}
-    {%- for mount in mount_points -%}
-    {%-   for dev in ansible_facts['mounts'] -%}
-    {%-     if mount == dev.mount -%}
-    {%-       set _ = mounts.append(dev.size_total // (1024 ** 3)) -%}
-    {%-     endif -%}
-    {%-   endfor -%}
-    {%- endfor -%}
-    {{ mounts[0] }}
+  {%- set mounts = [] -%}
+  {%- set mount_points = ['/var/lib/machines', '/var/lib/', '/var', '/'] -%}
+  {%- for mount in mount_points -%}
+  {%-   for dev in ansible_facts['mounts'] -%}
+  {%-     if mount == dev.mount -%}
+  {%-       set _ = mounts.append(dev.size_total // (1024**3)) -%}
+  {%-     endif -%}
+  {%-   endfor -%}
+  {%- endfor -%}
+  {{ mounts[0] }}
 
 # Enable or Disable the BTRFS quota system for the "/var/lib/machines" mount
 # point. More information on the BTRFS quota system can be found here:
@@ -106,7 +106,7 @@ lxc_net_address: 10.0.3.1
 lxc_net_netmask: 255.255.255.0
 lxc_net_cidr: 24
 lxc_net_gateway: null  ## if null, no gateway will be on the LXC bridge. lxc_net_nat must be "false" to use a gateway.
-#lxc_net_mtu: 1500 ##setting this variable will add mtu configuration for the lxc config and network bridge
+# lxc_net_mtu: 1500 ##setting this variable will add mtu configuration for the lxc config and network bridge
 
 # lxc container nat enabled
 lxc_net_nat: true  ## If "true", nat rules will be created with the lxc network.
@@ -131,11 +131,16 @@ lxc_kernel_options:
   - { key: 'fs.inotify.max_user_instances', value: 1024 }
 
 lxc_cache_sshd_configuration:
-    - { regexp: "^PermitRootLogin",         line: "PermitRootLogin prohibit-password" }
-    - { regexp: "^TCPKeepAlive",            line: "TCPKeepAlive yes" }
-    - { regexp: "^UseDNS",                  line: "UseDNS no" }
-    - { regexp: "^X11Forwarding",           line: "X11Forwarding no" }
-    - { regexp: "^PasswordAuthentication",  line: "PasswordAuthentication no" }
+  - regexp: "^PermitRootLogin"
+    line: "PermitRootLogin prohibit-password"
+  - regexp: "^TCPKeepAlive"
+    line: "TCPKeepAlive yes"
+  - regexp: "^UseDNS"
+    line: "UseDNS no"
+  - regexp: "^X11Forwarding"
+    line: "X11Forwarding no"
+  - regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
 
 # The compression ratio used when creating the container cache rootfs archive
 lxc_image_compression_ratio: 0
@@ -174,7 +179,7 @@ lxc_cache_prep_post_commands: '## post command skipped ##'
 # or by providing the full path to a local file containing all of the variables
 # needed to prepare a container. built-in supported values are:
 #   [redhat-7.yml, ubuntu-16.04.yml, ubuntu-18.04.yml]
-#lxc_user_defined_container: null
+# lxc_user_defined_container: null
 
 # Full path to the base image prep script. By default this will use the
 # named script for a given OS within the "templates/prep-scripts" directory.
@@ -198,7 +203,7 @@ lxc_cache_distro_packages: "{{ _lxc_cache_distro_packages + lxc_cache_extra_dist
 lxc_cache_prep_timeout: "{{ _lxc_cache_prep_timeout | default(1200) }}"
 
 # Command to build a chroot for the container rootfs
-lxc_hosts_container_build_command: "{{ _lxc_hosts_container_build_command | default ('') }}"
+lxc_hosts_container_build_command: "{{ _lxc_hosts_container_build_command | default('') }}"
 
 # Local path to cached image
 lxc_image_cache_path: "/var/lib/machines/{{ lxc_container_base_name }}"
@@ -236,7 +241,8 @@ lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
 
 # Centos EPEL repository options
 lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
-lxc_centos_epel_key: "{{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}"
+lxc_centos_epel_key: >-
+  {{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}
 
 # LXC must be installed from a COPR repository on CentOS since the version
 # provided in EPEL is much too old (1.x).
