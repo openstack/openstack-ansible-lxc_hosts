@@ -15,6 +15,7 @@
 
 _lxc_hosts_container_build_command: >-
   debootstrap --variant minbase
+  --include ca-certificates
   {{ ansible_facts['distribution_release'] }}
   /var/lib/machines/{{ lxc_container_base_name }}
   {{ lxc_apt_mirror }}
