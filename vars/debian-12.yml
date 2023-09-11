@@ -22,10 +22,12 @@ _lxc_cache_map:
   release: "{{ ansible_facts['distribution_major_version'] }}"
   copy_from_host:
     - /etc/apt/sources.list
+    - /etc/apt/sources.list.d/
     - /etc/apt/apt.conf.d/
     - /etc/apt/trusted.gpg.d/
     - /etc/apt/trusted.gpg
     - /etc/apt/preferences.d/
+    - /etc/apt/mirrors/
     - /etc/environment
     - /etc/localtime
     - /etc/protocols
