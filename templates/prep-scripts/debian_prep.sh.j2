@@ -50,6 +50,8 @@ update-locale LANG={{ locale }}
 {% endfor %}
 
 # Set the IP of the lxcbr0 interface as the DNS server
-echo "nameserver {{ lxc_net_address }}" > /etc/resolv.conf
+mkdir -p /etc/systemd/resolved.conf.d
+echo "[Resolve]" > /etc/systemd/resolved.conf.d/openstack-ansible.conf
+echo "{{ lxc_net_address }}" >> /etc/systemd/resolved.conf.d/openstack-ansible.conf
 systemctl enable systemd-networkd
 {{ lxc_cache_prep_post_commands }}
