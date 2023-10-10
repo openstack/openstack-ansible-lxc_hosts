@@ -32,16 +32,6 @@
     enabled: yes
   when: networkmanager_check.rc == 0
 
-# NOTE(noonedeadpunk): Drop after AA release as this task is needed to cleanup older config
-- name: Delete previously provisioned lxc-net configuration
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - /etc/network/interfaces.d/lxc-net-bridge.cfg
-    - "/etc/sysconfig/network-scripts/ifcfg-{{ lxc_net_bridge }}"
-    - "/etc/sysconfig/network-scripts/ifdown-post-{{ lxc_net_bridge }}"
-
 # NOTE(mhayden): There are systemd services that act like ifup/ifdown hooks
 # and handle the customized LXC container networking. Starting lxc-net will
 # trample over these hooks and cause networking issues for containers.
