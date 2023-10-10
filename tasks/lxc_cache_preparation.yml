@@ -28,7 +28,7 @@
   register: _rsync_container_cache
   args:
     executable: "/bin/bash"
-  with_items: "{{ (lxc_cache_map.copy_from_host | union(lxc_container_cache_files_from_host)) | list }}"
+  with_items: "{{ (_lxc_copy_from_host | union(lxc_container_cache_files_from_host)) | list }}"
 
 - name: Ensure directories exist for lxc_container_cache_files
   file:

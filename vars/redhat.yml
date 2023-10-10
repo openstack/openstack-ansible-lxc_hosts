@@ -24,19 +24,15 @@ _lxc_hosts_container_build_command: >-
   --setopt=install_weak_deps=False --nodocs rootfiles coreutils dnf {{ _lxc_cache_core_repos }}
   --releasever={{ ansible_facts['distribution_major_version'] }}
 
-_lxc_cache_map:
-  distro: "{{ ansible_facts['distribution'] | lower }}"
-  arch: "{{ lxc_architecture_mapping.get(ansible_facts['architecture']) }}"
-  release: "{{ ansible_facts['distribution_major_version'] }}"
-  copy_from_host:
-    - /etc/default/locale
-    - /etc/environment
-    - /etc/localtime
-    - /etc/locale.conf
-    - /etc/protocols
-    - /etc/pki/rpm-gpg/
-    - /etc/yum/pluginconf.d/fastestmirror.conf
-    - /etc/yum.repos.d/
+_lxc_copy_from_host:
+  - /etc/default/locale
+  - /etc/environment
+  - /etc/localtime
+  - /etc/locale.conf
+  - /etc/protocols
+  - /etc/pki/rpm-gpg/
+  - /etc/yum/pluginconf.d/fastestmirror.conf
+  - /etc/yum.repos.d/
 
 _lxc_cache_prep_template: "prep-scripts/redhat_prep.sh.j2"
 

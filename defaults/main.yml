@@ -78,19 +78,12 @@ lxc_container_backing_store: dir
 # 'lvm'.
 # lxc_container_backing_method: copy-on-write
 
-# The cache map is used as a basic instruction set when prep'ing the base
-# container image. If the cache map is overridden, the following fields are
-# required:
-#     lxc_cache_map:
-#       distro: name of the distro
-#       arch: "CPU architecture"
-#       release: version of the release
-#       copy_from_host: []  # List of files to copy into the container
-lxc_cache_map: "{{ _lxc_cache_map }}"
-
 # When using a base container to snapshot from for the overlayfs or LVM
 # copy-on-write backing stored, the base container can be set.
-lxc_container_base_name: "{{ lxc_cache_map.distro }}-{{ lxc_cache_map.release }}-{{ lxc_cache_map.arch }}"
+lxc_container_base_name: >-
+  {{ ansible_facts['distribution'] | lower ~ '-' ~
+     ansible_facts['distribution_major_version'] ~ '-' ~
+     lxc_architecture_mapping.get(ansible_facts['architecture']) }}
 
 # Set the default zfs root name
 lxc_container_zfs_root_name: "pool/lxc"
@@ -219,9 +212,9 @@ lxc_image_cache_refresh: false
 lxc_cache_default_variant: default
 lxc_cache_download_template_extra_options: ""
 lxc_cache_download_template_options: >-
-  --dist {{ lxc_cache_map.distro }}
-  --release {{ lxc_cache_map.release }}
-  --arch {{ lxc_cache_map.arch }}
+  --dist {{ ansible_facts['distribution'] | lower }}
+  --release {{ ansible_facts['distribution_major_version'] }}
+  --arch {{ lxc_architecture_mapping.get(ansible_facts['architecture']) }}
   --force-cache
   --server localhost
   --variant {{ lxc_cache_default_variant }}

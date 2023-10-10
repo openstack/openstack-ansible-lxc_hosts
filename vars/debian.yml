@@ -20,19 +20,15 @@ _lxc_hosts_container_build_command: >-
   /var/lib/machines/{{ lxc_container_base_name }}
   {{ lxc_apt_mirror }}
 
-_lxc_cache_map:
-  distro: "{{ ansible_facts['distribution'] | lower }}"
-  arch: "{{ lxc_architecture_mapping.get(ansible_facts['architecture']) }}"
-  release: "{{ ansible_facts['distribution_major_version'] }}"
-  copy_from_host:
-    - /etc/apt/sources.list
-    - /etc/apt/apt.conf.d/
-    - /etc/apt/trusted.gpg.d/
-    - /etc/apt/trusted.gpg
-    - /etc/apt/preferences.d/
-    - /etc/environment
-    - /etc/localtime
-    - /etc/protocols
+_lxc_copy_from_host:
+  - /etc/apt/sources.list
+  - /etc/apt/apt.conf.d/
+  - /etc/apt/trusted.gpg.d/
+  - /etc/apt/trusted.gpg
+  - /etc/apt/preferences.d/
+  - /etc/environment
+  - /etc/localtime
+  - /etc/protocols
 
 _lxc_cache_prep_template: "prep-scripts/debian_prep.sh.j2"
 
