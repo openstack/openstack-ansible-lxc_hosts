@@ -55,25 +55,6 @@
     mode: "0755"
   register: create_new_dir
 
-- name: Tasks for image download
-  when:
-    - lxc_hosts_container_build_command | length == 0
-  block:
-    - name: Wait for base image download
-      async_status:
-        jid: "{{ prestage_image.ansible_job_id }}"
-      register: _lxc_prestage_image_result
-      until: _lxc_prestage_image_result.finished
-      delay: 5
-      retries: "{{ lxc_cache_prep_timeout | int // 5 }}"
-
-    - name: Unpack base image
-      unarchive:
-        src: "/tmp/{{ cache_basename }}"
-        dest: "/var/lib/machines/{{ lxc_container_base_name }}"
-        remote_src: yes
-      when: create_new_dir is changed
-
 - name: Build the base image using a CLI tool
   command: "{{ lxc_hosts_container_build_command }}"
   when: lxc_hosts_container_build_command | length > 0
