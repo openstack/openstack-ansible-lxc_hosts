@@ -46,10 +46,9 @@ _lxc_cache_distro_packages:
   - libxml2
   - locales
   - netbase
-  - openssh-server
+  - procps  # needed for sysctl-container.service
   - python3
   - "{{ _lxc_cache_distro_libpython[ansible_facts['distribution_release'] | lower] }}"
-  - rsync              # os_keystone runs serial=1 and uses rsync before the distro packages have been installed on all keystone targets
   - sudo
   - systemd
   - systemd-sysv

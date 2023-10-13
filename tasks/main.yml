@@ -13,24 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Check for the presence of a public key file on the deployment host
-  stat:
-    path: /root/.ssh/id_rsa.pub
-  register: _ssh_key
-  when: lxc_container_ssh_key is undefined
-  delegate_to: localhost
-  tags:
-    - always
-
-- name: Fail if a ssh public key is not set in a var and is not present on the deployment host
-  fail:
-    msg: "Please set the lxc_container_ssh_key variable or ensure that the deployment host has the file /root/.ssh/id_rsa.pub present."
-  when:
-    - lxc_container_ssh_key is undefined
-    - not _ssh_key.stat.exists
-  tags:
-    - always
-
 - name: Gather variables for each operating system
   include_vars: "{{ lookup('first_found', params) }}"
   vars:

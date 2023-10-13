@@ -123,18 +123,6 @@ lxc_net6_nat: false
 lxc_kernel_options:
   - { key: 'fs.inotify.max_user_instances', value: 1024 }
 
-lxc_cache_sshd_configuration:
-  - regexp: "^PermitRootLogin"
-    line: "PermitRootLogin prohibit-password"
-  - regexp: "^TCPKeepAlive"
-    line: "TCPKeepAlive yes"
-  - regexp: "^UseDNS"
-    line: "UseDNS no"
-  - regexp: "^X11Forwarding"
-    line: "X11Forwarding no"
-  - regexp: "^PasswordAuthentication"
-    line: "PasswordAuthentication no"
-
 # The compression ratio used when creating the container cache rootfs archive
 lxc_image_compression_ratio: 0
 
