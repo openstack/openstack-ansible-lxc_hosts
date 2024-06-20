@@ -34,13 +34,6 @@
       tox_env: dir
 
 - job:
-    name: openstack-ansible-lxc-dir-centos-8-stream
-    parent: openstack-ansible-lxc-container-create
-    nodeset: centos-8-stream
-    vars:
-      tox_env: dir
-
-- job:
     name: openstack-ansible-lxc-btrfs-ubuntu-bionic
     parent: openstack-ansible-lxc-container-create
     nodeset: ubuntu-bionic
