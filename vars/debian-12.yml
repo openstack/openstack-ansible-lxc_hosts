@@ -56,3 +56,4 @@ _lxc_cache_distro_packages:
   - systemd-sysv
   - systemd-resolved
   - tzdata
+  - udev
