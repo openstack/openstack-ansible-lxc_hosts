@@ -22,7 +22,7 @@ _lxc_hosts_container_build_command: >-
 
 _lxc_copy_from_host:
   - /etc/apt/sources.list
-  - /etc/apt/sources.list.d
+  - /etc/apt/sources.list.d/
   - /etc/apt/apt.conf.d/
   - /etc/apt/trusted.gpg.d/
   - /etc/apt/trusted.gpg
