@@ -79,6 +79,7 @@
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     sysctl_set: "{{ item.set | default('yes') }}"
+    sysctl_file: "{{ lxc_sysctl_file }}"
     state: "{{ item.state | default('present') }}"
     reload: "{{ item.reload | default('yes') }}"
   failed_when: false
