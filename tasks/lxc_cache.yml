@@ -37,7 +37,7 @@
   set_fact:
     lxc_image_cache_refresh: true
   when:
-    cache_time | int >= (expiry.content | default('MQo=') | b64decode | int)
+    - cache_time | int >= (expiry.content | default('MQo=') | b64decode | int)
   tags:
     - always
 

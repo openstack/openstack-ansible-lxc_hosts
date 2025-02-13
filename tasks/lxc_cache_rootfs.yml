@@ -31,14 +31,14 @@
     name: systemd_mount
   vars:
     systemd_mounts:
-      - what: '/var/lib/machines.raw'
-        where: '/var/lib/machines'
-        type: 'ext4'
-        options: 'loop'
+      - what: "/var/lib/machines.raw"
+        where: "/var/lib/machines"
+        type: "ext4"
+        options: "loop"
         unit:
           ConditionPathExists:
-            - '/var/lib/machines.raw'
-        state: 'started'
+            - "/var/lib/machines.raw"
+        state: "started"
         enabled: true
 
 - name: Remove the old image cache

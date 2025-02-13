@@ -23,12 +23,11 @@
     name: thm-lxc3.0
     description: "Copr repo for lxc3.0 owned by thm"
     baseurl: "{{ lxc_centos_package_baseurl }}"
-    enabled: yes
-    gpgcheck: yes
+    enabled: true
+    gpgcheck: true
     gpgkey: "{{ lxc_centos_package_key }}"
-    repo_gpgcheck: no
+    repo_gpgcheck: false
     state: present
-
 
 - name: Add GPG key for COPR LXC repo
   rpm_key:
@@ -38,7 +37,6 @@
   until: add_keys is success
   retries: 5
   delay: 2
-
 
 - name: Download EPEL gpg keys
   get_url:
@@ -60,9 +58,9 @@
     name: epel-lxc_hosts
     baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
     description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
-    gpgcheck: yes
+    gpgcheck: true
     gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
-    enabled: yes
+    enabled: true
     state: present
     includepkgs: "systemd-networkd"
   register: install_epel_repo

@@ -40,21 +40,23 @@ _lxc_cache_distro_libpython:
   bookworm: libpython3.11
   noble: libpython3.12
 
-_lxc_cache_need_systemd_resolved: "{{ ansible_facts['distribution'] == 'Debian' or
-                                     (ansible_facts['distribution'] == 'Ubuntu' and
-                                      ansible_facts['distribution_major_version'] is ansible.builtin.version('24', 'ge')) }}"
+_lxc_cache_need_systemd_resolved: >-
+  {{
+    ansible_facts['distribution'] == 'Debian' or
+    (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] is ansible.builtin.version('24', 'ge'))
+  }}
 
 # This list should contain a minimum set of packages. Add extra packages via roles that require them.
 _lxc_cache_distro_packages:
   - ca-certificates
   - dbus
-  - git                # needed everywhere when wheel_build=false
+  - git # needed everywhere when wheel_build=false
   - iputils-ping
   - iproute2
   - libxml2
   - locales
   - netbase
-  - procps  # needed for sysctl-container.service
+  - procps # needed for sysctl-container.service
   - python3
   - "{{ _lxc_cache_distro_libpython[ansible_facts['distribution_release'] | lower] }}"
   - sudo

@@ -1,5 +1,4 @@
 ---
-
 # Copyright 2014, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +28,7 @@
 - name: Ensure network services wait on networking (if using NetworkManager)
   service:
     name: NetworkManager-wait-online.service
-    enabled: yes
+    enabled: true
   when: networkmanager_check.rc == 0
 
 # NOTE(mhayden): There are systemd services that act like ifup/ifdown hooks
@@ -38,7 +37,7 @@
 - name: Disable and stop lxc-net
   systemd:
     name: lxc-net
-    enabled: no
+    enabled: false
     state: stopped
     masked: true
   tags:
@@ -63,7 +62,7 @@
           ForwardDelaySec: 0
           HelloTimeSec: 2
           MaxAgeSec: 12
-          STP: off
+          STP: false
     systemd_networkd_prefix: "lxc-net"
     systemd_run_networkd: true
     systemd_netdevs: "{{ (lxc_net_bridge_type == 'openvswitch') | ternary([], _lxc_net_bridge_devices) }}"
@@ -73,7 +72,7 @@
         netmask: "{{ lxc_net_netmask }}"
         config_overrides:
           Network:
-            ConfigureWithoutCarrier: yes
+            ConfigureWithoutCarrier: true
             Gateway: "{{ lxc_net_gateway is not none | ternary(lxc_net_gateway, {}) }}"
 
 - name: Run the systemd-service role
@@ -85,7 +84,7 @@
     systemd_services:
       - service_name: lxc-dnsmasq
         state: started
-        enabled: yes
+        enabled: true
         execstartpres: |
           {% set pres = ['-/usr/bin/pkill -u {{ lxc_net_dnsmasq_user }} "^dnsmasq"'] %}
           {% if lxc_net_manage_iptables | bool %}

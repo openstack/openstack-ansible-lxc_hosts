@@ -17,7 +17,7 @@
   apt:
     pkg: "{{ lxc_hosts_remove_distro_packages }}"
     state: absent
-    purge: yes
+    purge: true
   tags:
     - lxc-apt-packages
 
@@ -26,7 +26,7 @@
     pkg: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
     default_release: "{{ lxc_default_release | default(omit) }}"
-    update_cache: yes
+    update_cache: true
     policy_rc_d: 101
     cache_valid_time: "{{ cache_timeout }}"
   register: install_packages

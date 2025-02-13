@@ -59,7 +59,6 @@ lxc_host_machine_quota_disabled: false
 lxc_host_machine_qgroup_space_limit: none
 lxc_host_machine_qgroup_compression_limit: none
 
-
 # DefaultTasksMax systemd value. It's not recommended to change this value as it
 # could prevent new processes from starting on busy containers.
 lxc_default_tasks_max: 8192
@@ -98,30 +97,30 @@ lxc_net_bridge_type: linuxbridge
 lxc_net_address: 10.0.3.1
 lxc_net_netmask: 255.255.255.0
 lxc_net_cidr: 24
-lxc_net_gateway: null  ## if null, no gateway will be on the LXC bridge. lxc_net_nat must be "false" to use a gateway.
+lxc_net_gateway: ## if null, no gateway will be on the LXC bridge. lxc_net_nat must be "false" to use a gateway.
 # lxc_net_mtu: 1500 ##setting this variable will add mtu configuration for the lxc config and network bridge
 
 # lxc container nat enabled
-lxc_net_nat: true  ## If "true", nat rules will be created with the lxc network.
+lxc_net_nat: true ## If "true", nat rules will be created with the lxc network.
 
 # Enable iptables for lxc network
-lxc_net_manage_iptables: true  ## If "true" iptables rules will be added when the bridge is up and deleted when bridge is down
+lxc_net_manage_iptables: true ## If "true" iptables rules will be added when the bridge is up and deleted when bridge is down
 
 # lxc container dhcp settings
 lxc_net_dhcp_range: 10.0.3.2,10.0.3.253
 lxc_net_dhcp_max: 253
-lxc_net_dhcp_config: ''
+lxc_net_dhcp_config: ""
 lxc_net_dnsmasq_user: lxc-dnsmasq
-lxc_net_domain: ''
+lxc_net_domain: ""
 
 # lxc network ipv6 settings
-lxc_net6_address: null ## ie. fd05:ffb8:32b4:1212::1
-lxc_net6_netmask: null ## ie. 64
+lxc_net6_address: ## ie. fd05:ffb8:32b4:1212::1
+lxc_net6_netmask: ## ie. 64
 lxc_net6_nat: false
 
 # System control kernel tuning
 lxc_kernel_options:
-  - { key: 'fs.inotify.max_user_instances', value: 1024 }
+  - { key: "fs.inotify.max_user_instances", value: 1024 }
 
 # The compression ratio used when creating the container cache rootfs archive
 lxc_image_compression_ratio: 0
@@ -150,8 +149,8 @@ lxc_cache_prep_dns:
 
 # Custom shell commands to run before/after the LXC cache prep process has taken
 # place.
-lxc_cache_prep_pre_commands: '## pre command skipped ##'
-lxc_cache_prep_post_commands: '## post command skipped ##'
+lxc_cache_prep_pre_commands: "## pre command skipped ##"
+lxc_cache_prep_post_commands: "## post command skipped ##"
 
 # Full path to the base image prep script. By default this will use the
 # named script for a given OS within the "templates/prep-scripts" directory.

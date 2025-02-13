@@ -16,7 +16,7 @@
 - name: Start apparmor
   systemd:
     name: "apparmor"
-    enabled: yes
+    enabled: true
     state: "started"
 
 - name: Reload apparmor
@@ -34,20 +34,20 @@
     name: "irqbalance"
     state: "restarted"
     enabled: "yes"
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Bring bridge up
   command: "ip link set {{ lxc_net_bridge }} up" # noqa: no-changed-when
 
 - name: Reload systemd units
   systemd:
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Restart sshd
   service:
     name: sshd
     state: "restarted"
-    enabled: yes
+    enabled: true
 
 - name: Remove rootfs archive
   file:
@@ -59,7 +59,7 @@
     name: "lxc-dnsmasq"
     state: "restarted"
     enabled: "yes"
-    daemon_reload: yes
+    daemon_reload: true
   register: _lxc_dnsmasq_systemd
   until: _lxc_dnsmasq_systemd is success
   retries: 5
