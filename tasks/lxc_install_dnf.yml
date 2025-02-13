@@ -14,12 +14,12 @@
 # limitations under the License.
 
 - name: Ensure createrepo package is installed
-  yum:
+  ansible.builtin.dnf:
     name: createrepo
     state: present
 
 - name: Deploy upstream COPR yum repo for lxc 3
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: thm-lxc3.0
     description: "Copr repo for lxc3.0 owned by thm"
     baseurl: "{{ lxc_centos_package_baseurl }}"
@@ -30,7 +30,7 @@
     state: present
 
 - name: Add GPG key for COPR LXC repo
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "{{ lxc_centos_package_key }}"
     state: present
   register: add_keys
@@ -39,7 +39,7 @@
   delay: 2
 
 - name: Download EPEL gpg keys
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ lxc_centos_epel_key }}"
     dest: /etc/pki/rpm-gpg
     mode: "0640"
@@ -49,12 +49,12 @@
   delay: 2
 
 - name: Install EPEL gpg keys
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     state: present
 
 - name: Install the EPEL repository - Centos-8
-  yum_repository:
+  ansible.builtin.yum_repository:
     name: epel-lxc_hosts
     baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
     description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
@@ -69,7 +69,7 @@
   delay: 2
 
 - name: Install distro packages
-  package:
+  ansible.builtin.package:
     pkg: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
   register: install_packages
@@ -80,7 +80,7 @@
     - lxc-packages
 
 - name: Remove sub system lock if found
-  file:
+  ansible.builtin.file:
     path: "/var/lock/subsys/lxc"
     state: "absent"
     owner: "root"
@@ -89,7 +89,7 @@
     - lxc-directories
 
 - name: Enable lxc service
-  service:
+  ansible.builtin.service:
     name: lxc
     enabled: "yes"
   tags:

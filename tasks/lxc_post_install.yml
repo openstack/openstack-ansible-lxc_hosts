@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Ensure the lxc dnsmasq user exists
-  user:
+  ansible.builtin.user:
     name: "{{ lxc_net_dnsmasq_user }}"
     comment: "LXC dnsmasq"
     system: "yes"
@@ -24,7 +24,7 @@
     - lxc-dnsmasq-user
 
 - name: Drop base config file(s)
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: "{{ item.owner | default('root') }}"
@@ -40,7 +40,7 @@
     - lxc-config
 
 - name: Drop lxc veth check script
-  copy:
+  ansible.builtin.copy:
     src: "lxc-veth-check.sh"
     dest: "/usr/local/bin/lxc-veth-check"
     owner: "root"
@@ -51,7 +51,7 @@
     - lxc-config
 
 - name: Set systemd DefaultTasksMax value
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/systemd/system.conf
     state: present
     regexp: "^.*DefaultTasksMax.*$"
@@ -64,7 +64,7 @@
     - lxc-config
 
 - name: Set sshd MaxSessions
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     state: present
     regexp: "^#?MaxSessions.*$"
@@ -75,7 +75,7 @@
     - lxc-config
 
 - name: Tuning kernel for lxc
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     sysctl_set: "{{ item.set | default('yes') }}"

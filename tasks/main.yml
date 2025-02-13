@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Gather variables for each operating system
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -29,7 +29,7 @@
     - always
 
 - name: Gather container variables
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -45,32 +45,32 @@
     - always
 
 - name: Including lxc_pre_install tasks
-  include_tasks: lxc_pre_install.yml
+  ansible.builtin.include_tasks: lxc_pre_install.yml
   tags:
     - lxc_hosts-install
 
 - name: Including lxc_install tasks"
-  include_tasks: "lxc_install_{{ ansible_facts['pkg_mgr'] }}.yml"
+  ansible.builtin.include_tasks: "lxc_install_{{ ansible_facts['pkg_mgr'] }}.yml"
   tags:
     - lxc_hosts-install
 
 - name: Including lxc_post_install tasks
-  include_tasks: lxc_post_install.yml
+  ansible.builtin.include_tasks: lxc_post_install.yml
   tags:
     - lxc_hosts-config
 
 - name: Including lxc_net tasks
-  include_tasks: lxc_net.yml
+  ansible.builtin.include_tasks: lxc_net.yml
   when:
     - lxc_net_managed | bool
   tags:
     - lxc_hosts-config
 
 - name: Including lxc_cache tasks
-  include_tasks: lxc_cache.yml
+  ansible.builtin.include_tasks: lxc_cache.yml
   tags:
     - lxc_hosts-install
     - lxc_hosts-config
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

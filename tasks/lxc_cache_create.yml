@@ -14,20 +14,20 @@
 # limitations under the License.
 
 - name: Create LXC cache dir
-  file:
+  ansible.builtin.file:
     path: "{{ cache_path_fact }}"
     state: "directory"
     recurse: true
 
 - name: Remove existing cache archive
-  file:
+  ansible.builtin.file:
     path: "{{ cache_path_fact }}/rootfs.tar.xz"
     state: "absent"
 
 # This is using a shell command because the ansible archive module does not
 # provide for the options needed to properly create an LXC image archive.
 - name: Create lxc image
-  shell: |
+  ansible.builtin.shell: |
     tar -Opc -C {{ lxc_image_cache_path }} . | {{ lxc_xz_bin }} -T 0 -{{ lxc_image_compression_ratio }} -c - > rootfs.tar.xz
   args:
     chdir: "{{ cache_path_fact }}/"
@@ -35,7 +35,7 @@
     - skip_ansible_lint
 
 - name: Drop container meta-data
-  template:
+  ansible.builtin.template:
     src: "meta-data/{{ item }}"
     dest: "{{ cache_path_fact }}/{{ item }}"
     owner: "root"
@@ -49,19 +49,19 @@
     - templates
 
 - name: Set expiry
-  copy:
+  ansible.builtin.copy:
     content: "{{ cache_time | int + lxc_image_cache_expiration | community.general.to_seconds | int }}"
     dest: "{{ cache_path_fact }}/expiry"
     mode: "0644"
 
 - name: Set build ID
-  copy:
+  ansible.builtin.copy:
     content: "{{ cache_time | int }}"
     dest: "{{ cache_path_fact }}/build_id"
     mode: "0644"
 
 - name: Create base container to use for containers with {{ lxc_container_backing_store }}
-  lxc_container:
+  community.general.lxc_container:
     name: "{{ lxc_container_base_name }}"
     template: "download"
     state: stopped
@@ -78,7 +78,7 @@
     - lxc_container_backing_store == 'btrfs'
   block:
     - name: Set the qgroup size|compression limits on machines
-      command: "btrfs qgroup limit {{ item }} /var/lib/lxc/{{ lxc_container_base_name }}"
+      ansible.builtin.command: "btrfs qgroup limit {{ item }} /var/lib/lxc/{{ lxc_container_base_name }}"
       changed_when: false
       with_items:
         - "-e {{ lxc_host_machine_qgroup_space_limit }}"
@@ -87,7 +87,7 @@
         - not lxc_host_machine_quota_disabled
   rescue:
     - name: Notice regarding quota system
-      debug:
+      ansible.builtin.debug:
         msg: >-
           There was an error processing the setup of qgroups. Check the system
           to ensure they're available otherwise disable the quota system by

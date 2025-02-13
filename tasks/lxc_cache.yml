@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Set LXC cache fact(s)
-  set_fact:
+  ansible.builtin.set_fact:
     cache_path_fact: >-
       {{ lxc_container_cache_path ~ '/' ~
          ansible_facts['distribution'] | lower ~ '/' ~
@@ -24,7 +24,7 @@
     cache_time: "{{ now().timestamp() }}"
 
 - name: Retrieve the expiry object
-  slurp:
+  ansible.builtin.slurp:
     src: "{{ cache_path_fact }}/expiry"
   failed_when: false
   register: expiry
@@ -34,7 +34,7 @@
     - always
 
 - name: Set cache refresh fact
-  set_fact:
+  ansible.builtin.set_fact:
     lxc_image_cache_refresh: true
   when:
     - cache_time | int >= (expiry.content | default('MQo=') | b64decode | int)
@@ -42,21 +42,21 @@
     - always
 
 - name: Including lxc_cache_rootfs tasks
-  include_tasks: lxc_cache_rootfs.yml
+  ansible.builtin.include_tasks: lxc_cache_rootfs.yml
   when:
     - lxc_image_cache_refresh | bool
   tags:
     - lxc_hosts-config
 
 - name: Including lxc_cache_preparation tasks
-  include_tasks: lxc_cache_preparation.yml
+  ansible.builtin.include_tasks: lxc_cache_preparation.yml
   when:
     - lxc_image_cache_refresh | bool
   tags:
     - lxc_hosts-config
 
 - name: Including lxc_cache_create tasks
-  include_tasks: lxc_cache_create.yml
+  ansible.builtin.include_tasks: lxc_cache_create.yml
   when:
     - lxc_image_cache_refresh | bool
   tags:

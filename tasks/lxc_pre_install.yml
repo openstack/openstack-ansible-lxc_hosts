@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Create base directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: "directory"
     owner: "root"

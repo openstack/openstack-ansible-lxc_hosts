@@ -14,7 +14,7 @@
 # limitations under the License.
 
 - name: Remove conflicting packages
-  apt:
+  ansible.builtin.apt:
     pkg: "{{ lxc_hosts_remove_distro_packages }}"
     state: absent
     purge: true
@@ -22,7 +22,7 @@
     - lxc-apt-packages
 
 - name: Install apt packages
-  apt:
+  ansible.builtin.apt:
     pkg: "{{ lxc_hosts_distro_packages }}"
     state: "{{ lxc_hosts_package_state }}"
     default_release: "{{ lxc_default_release | default(omit) }}"
@@ -37,7 +37,7 @@
     - lxc-apt-packages
 
 - name: Drop irqbalance config
-  template:
+  ansible.builtin.template:
     src: "irqbalance.j2"
     dest: "{{ system_config_dir }}/irqbalance"
     owner: "root"
@@ -51,7 +51,7 @@
     - lxc_hosts-config
 
 - name: Drop lxc-openstack apparmor profile
-  template:
+  ansible.builtin.template:
     src: "lxc-openstack.apparmor.j2"
     dest: "/etc/apparmor.d/lxc/lxc-openstack"
     owner: "root"
@@ -66,4 +66,4 @@
     - lxc_hosts-config
 
 - name: Flush handler to reload apparmor profiles
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

@@ -26,7 +26,7 @@
     - skip_ansible_lint
 
 - name: Ensure network services wait on networking (if using NetworkManager)
-  service:
+  ansible.builtin.service:
     name: NetworkManager-wait-online.service
     enabled: true
   when: networkmanager_check.rc == 0
@@ -35,7 +35,7 @@
 # and handle the customized LXC container networking. Starting lxc-net will
 # trample over these hooks and cause networking issues for containers.
 - name: Disable and stop lxc-net
-  systemd:
+  ansible.builtin.systemd:
     name: lxc-net
     enabled: false
     state: stopped
@@ -44,14 +44,14 @@
     - lxc-net
 
 - name: Setup LXC OVS Bridge
-  openvswitch_bridge:
+  openvswitch.openvswitch.openvswitch_bridge:
     bridge: "{{ lxc_net_bridge }}"
     fail_mode: standalone
     state: present
   when: lxc_net_bridge_type == 'openvswitch'
 
 - name: Run the systemd-networkd role
-  include_role:
+  ansible.builtin.include_role:
     name: systemd_networkd
   vars:
     _lxc_net_bridge_devices:
@@ -76,7 +76,7 @@
             Gateway: "{{ lxc_net_gateway is not none | ternary(lxc_net_gateway, {}) }}"
 
 - name: Run the systemd-service role
-  include_role:
+  ansible.builtin.include_role:
     name: systemd_service
   vars:
     systemd_service_enabled: true
@@ -110,7 +110,7 @@
 
 # Check that the container bridge exists, if not bring it up
 - name: Check Container Bridge exists
-  stat:
+  ansible.builtin.stat:
     path: "/sys/class/net/{{ lxc_net_bridge }}/bridge/bridge_id"
   register: bridge_check
   failed_when: false
@@ -122,4 +122,4 @@
 
 # Ensure lxc networks are running as they're supposed to
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers

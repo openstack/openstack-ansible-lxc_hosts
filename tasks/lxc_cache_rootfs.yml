@@ -14,20 +14,20 @@
 # limitations under the License.
 
 - name: Create sparse machines file
-  command: "truncate -s 11G /var/lib/machines.raw"
+  ansible.builtin.command: "truncate -s 11G /var/lib/machines.raw"
   args:
     creates: /var/lib/machines.raw
   register: machines_create
 
 - name: Format the machines file
-  filesystem:
+  community.general.filesystem:
     fstype: ext4
     dev: /var/lib/machines.raw
   when:
     - machines_create is changed
 
 - name: Create systemd mount
-  import_role:
+  ansible.builtin.import_role:
     name: systemd_mount
   vars:
     systemd_mounts:
@@ -42,21 +42,21 @@
         enabled: true
 
 - name: Remove the old image cache
-  file:
+  ansible.builtin.file:
     path: "/var/lib/machines/{{ lxc_container_base_name }}"
     state: absent
   when:
     - lxc_image_cache_refresh | bool
 
 - name: Create new image cache directory
-  file:
+  ansible.builtin.file:
     path: "/var/lib/machines/{{ lxc_container_base_name }}"
     state: directory
     mode: "0755"
   register: create_new_dir
 
 - name: Build the base image using a CLI tool
-  command: "{{ lxc_hosts_container_build_command }}"
+  ansible.builtin.command: "{{ lxc_hosts_container_build_command }}"
   when: lxc_hosts_container_build_command | length > 0
   changed_when: false
   register: _build_container_base_image

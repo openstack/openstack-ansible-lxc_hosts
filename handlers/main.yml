@@ -14,48 +14,48 @@
 # limitations under the License.
 
 - name: Start apparmor
-  systemd:
+  ansible.builtin.systemd:
     name: "apparmor"
     enabled: true
     state: "started"
 
 - name: Reload apparmor
-  systemd:
+  ansible.builtin.systemd:
     name: "apparmor"
     state: "restarted"
 
 - name: Restart importd
-  systemd:
+  ansible.builtin.systemd:
     name: "systemd-importd.service"
     state: "restarted"
 
 - name: Restart irqbalance
-  systemd:
+  ansible.builtin.systemd:
     name: "irqbalance"
     state: "restarted"
     enabled: "yes"
     daemon_reload: true
 
 - name: Bring bridge up
-  command: "ip link set {{ lxc_net_bridge }} up" # noqa: no-changed-when
+  ansible.builtin.command: "ip link set {{ lxc_net_bridge }} up" # noqa: no-changed-when
 
 - name: Reload systemd units
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
 
 - name: Restart sshd
-  service:
+  ansible.builtin.service:
     name: sshd
     state: "restarted"
     enabled: true
 
 - name: Remove rootfs archive
-  file:
+  ansible.builtin.file:
     path: "/tmp/{{ cache_basename }}"
     state: "absent"
 
 - name: Restart dnsmasq
-  systemd:
+  ansible.builtin.systemd:
     name: "lxc-dnsmasq"
     state: "restarted"
     enabled: "yes"

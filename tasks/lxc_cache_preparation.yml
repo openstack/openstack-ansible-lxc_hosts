@@ -17,7 +17,7 @@
 #                  to loop over a block. Re-evaluate this task when/if this is
 #                  merged https://github.com/ansible/ansible/issues/13262
 - name: Rsyncing files from the LXC host to the container cache
-  shell: |
+  ansible.builtin.shell: |
     if [[ -e "{{ item }}" ]]; then
       rsync -av "{{ item }}" "{{ lxc_image_cache_path }}{{ item }}"
     else
@@ -31,14 +31,14 @@
   with_items: "{{ (_lxc_copy_from_host | union(lxc_container_cache_files_from_host)) | list }}"
 
 - name: Ensure directories exist for lxc_container_cache_files
-  file:
+  ansible.builtin.file:
     dest: "{{ lxc_image_cache_path }}{{ item.dest | default(item.src) | dirname }}"
     state: directory
     mode: "0755"
   with_items: "{{ lxc_container_cache_files }}"
 
 - name: Copy files from deployment host to the container cache
-  copy:
+  ansible.builtin.copy:
     src: "{{ item.src }}"
     dest: "{{ lxc_image_cache_path }}{{ item.dest | default(item.src) }}"
     owner: "{{ item.owner | default('root') }}"
@@ -47,13 +47,13 @@
   with_items: "{{ lxc_container_cache_files }}"
 
 - name: Ensure opt directory exists in container
-  file:
+  ansible.builtin.file:
     dest: "{{ lxc_image_cache_path }}/opt"
     state: directory
     mode: "0755"
 
 - name: Cached image preparation script
-  template:
+  ansible.builtin.template:
     src: "{{ lxc_cache_prep_template }}"
     dest: "{{ lxc_image_cache_path }}/opt/cache-prep-commands.sh"
     mode: "0755"
@@ -61,7 +61,7 @@
 # This task runs several commands against the cached image to speed up the
 # lxc_container_create playbook.
 - name: Prepare cached image setup commands
-  shell: "chroot {{ lxc_image_cache_path }} /opt/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
+  ansible.builtin.shell: "chroot {{ lxc_image_cache_path }} /opt/cache-prep-commands.sh > /var/log/lxc-cache-prep-commands.log 2>&1"
   changed_when: false
   async: "{{ lxc_cache_prep_timeout | int }}"
   poll: 0
@@ -70,7 +70,7 @@
 # NOTE(cloudnull): Wait for the cache preparation script has completed before
 #                  building the new RootFS
 - name: Ensure that the LXC cache has been prepared
-  async_status:
+  ansible.builtin.async_status:
     jid: "{{ _lxc_cache_prepare_commands.ansible_job_id }}"
   register: _lxc_cache_prepare_commands_result
   until: _lxc_cache_prepare_commands_result.finished
@@ -78,7 +78,7 @@
   retries: "{{ lxc_cache_prep_timeout | int // 10 }}"
 
 - name: Remove requiretty for sudo on centos
-  template:
+  ansible.builtin.template:
     dest: "{{ lxc_image_cache_path }}/etc/sudoers.d/openstack-ansible"
     owner: root
     group: root
