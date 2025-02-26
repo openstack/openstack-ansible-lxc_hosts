@@ -38,4 +38,6 @@ _lxc_hosts_distro_packages:
   - unzip
   - xz
 
+lxc_ssh_service_name: sshd
+
 lxc_xz_bin: xz
