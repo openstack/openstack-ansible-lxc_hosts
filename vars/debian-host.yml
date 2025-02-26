@@ -45,6 +45,7 @@ _lxc_hosts_distro_packages:
 lxc_hosts_remove_distro_packages:
   - dnsmasq
 
+lxc_ssh_service_name: ssh
 lxc_xz_bin: xz
 
 system_config_dir: "/etc/default"
