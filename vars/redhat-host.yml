@@ -23,6 +23,7 @@ _lxc_centos_package_key: "https://download.copr.fedorainfracloud.org/results/nei
 _lxc_hosts_distro_packages:
   - dbus
   - dnsmasq
+  - e2fsprogs
   - git
   - iptables
   - libseccomp
