@@ -65,5 +65,21 @@
     - lxc-apparmor
     - lxc_hosts-config
 
+# NOTE: Addresses packaging bug https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/2110635
+- name: Fix liblxc-common apparmor profiles
+  ansible.builtin.lineinfile:
+    path: /etc/apparmor.d/usr.bin.lxc-copy
+    regexp: "^/usr/bin/lxc-start flags="
+    line: "/usr/bin/lxc-copy flags=(attach_disconnected) {"
+    state: present
+  when:
+    - ansible_facts['distribution'] | lower == 'ubuntu'
+    - ansible_facts['distribution_release'] == 'noble'
+  notify:
+    - Reload apparmor
+  tags:
+    - lxc-files
+    - lxc-apparmor
+
 - name: Flush handler to reload apparmor profiles
   ansible.builtin.meta: flush_handlers
