@@ -34,6 +34,7 @@
     - { src: lxc-openstack.conf.j2, dest: "/etc/lxc/lxc-openstack.conf" }
     - { src: lxc-net.default.j2, dest: "{{ system_config_dir }}/lxc-net", mode: "0644" }
     - { src: lxc.default.j2, dest: "{{ system_config_dir }}/lxc", mode: "0644" }
+    - { src: lxc-openstack-common.conf.j2, dest: "/usr/share/lxc/config/common.conf.d/80-openstack-common.conf" }
     - { src: lxc-system-manage.j2, dest: "/usr/local/bin/lxc-system-manage", mode: "0755" }
   tags:
     - lxc-files
