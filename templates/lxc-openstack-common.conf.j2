@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+
+{% for key, values in lxc_container_common_config.items() %}
+{%   for value in values %}
+{{ key }} = {{ value }}
+{%   endfor %}
+{% endfor %}
