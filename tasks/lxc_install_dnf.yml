@@ -30,37 +30,54 @@
   when:
     - repo_removed is changed
 
-- name: Download EPEL gpg keys
+- name: If a keyfile is provided, copy gpg keyfiles to the key location
+  ansible.builtin.copy:
+    src: "{{ item.keyfile }}"
+    dest: "{{ item.key }}"
+    mode: "0644"
+  loop: "{{ lxc_centos_repo_keys | selectattr('keyfile', 'defined') }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: If key url is provideds, download gpg keyfiles to the key location
   ansible.builtin.get_url:
-    url: "{{ lxc_centos_epel_key }}"
-    dest: /etc/pki/rpm-gpg
+    url: "{{ item.url }}"
+    dest: "{{ item.key }}"
     mode: "0640"
+  loop: "{{ lxc_centos_repo_keys | selectattr('url', 'defined') }}"
+  loop_control:
+    label: "{{ item.key }}"
   register: _get_yum_keys
   until: _get_yum_keys is success
   retries: 5
   delay: 2
 
-- name: Install EPEL gpg keys
+- name: Install gpg keys
   ansible.builtin.rpm_key:
-    key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
-    state: present
+    key: "{{ item.key }}"
+    validate_certs: "{{ item.validate_certs | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ lxc_centos_repo_keys }}"
+  loop_control:
+    label: "{{ item.key }}"
 
 - name: Install the EPEL repository
   ansible.builtin.yum_repository:
-    name: epel-lxc_hosts
-    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
-    description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
-    gpgcheck: true
-    gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
-    enabled: true
-    state: present
-    includepkgs: "{{ lxc_hosts_epel_packages | join(' ') }}"
-  register: install_epel_repo
-  until: install_epel_repo is success
+    name: "{{ item.name }}"
+    baseurl: "{{ item.baseurl }}"
+    description: "{{ item.description | default(omit) }}"
+    gpgcheck: "{{ item.gpgcheck | default(omit) }}"
+    gpgkey: "{{ item.gpgkey }}"
+    enabled: "{{ item.enabled | default(true) }}"
+    state: "{{ item.state | default('present') }}"
+    includepkgs: "{{ item.includepkgs | default(omit) }}"
+  register: install_repo
+  until: install_repo is success
   retries: 5
   delay: 2
-  when:
-    - lxc_hosts_epel_packages | length > 0
+  loop: "{{ lxc_centos_repos }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 - name: Install distro packages
   ansible.builtin.package:
