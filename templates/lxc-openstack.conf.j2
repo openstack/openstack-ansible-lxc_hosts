@@ -1,7 +1,9 @@
 # {{ ansible_managed }}
 
+{% if ansible_facts['os_family'] | lower == 'debian' %}
 lxc.apparmor.profile = generated
 lxc.apparmor.allow_nesting = 1
+{% endif %}
 lxc.start.auto = 1
 lxc.start.delay = 15
 lxc.group = onboot
