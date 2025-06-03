@@ -36,6 +36,9 @@
     - { src: lxc.default.j2, dest: "{{ system_config_dir }}/lxc", mode: "0644" }
     - { src: lxc-openstack-common.conf.j2, dest: "/usr/share/lxc/config/common.conf.d/80-openstack-common.conf" }
     - { src: lxc-system-manage.j2, dest: "/usr/local/bin/lxc-system-manage", mode: "0755" }
+    - { src: systemd-overrides.conf.j2, dest: "/etc/systemd/system.conf.d/osa-lxc-hosts.conf" }
+  notify:
+    - Reload systemd units
   tags:
     - lxc-files
     - lxc-config
@@ -51,10 +54,11 @@
     - lxc-files
     - lxc-config
 
-- name: Set systemd DefaultTasksMax value
+# NOTE: Remove this task after 2025.1
+- name: Remove DefaultTasksMax value from default config
   ansible.builtin.lineinfile:
     dest: /etc/systemd/system.conf
-    state: present
+    state: absent
     regexp: "^.*DefaultTasksMax.*$"
     line: "DefaultTasksMax={{ lxc_default_tasks_max }}"
   when:
