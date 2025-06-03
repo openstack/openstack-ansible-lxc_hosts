@@ -21,19 +21,19 @@ _lxc_hosts_epel_packages:
   - python3-lxc
 
 lxc_centos_repo_keys:
-  - key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key | basename }}"
-    url: "{{ lxc_centos_epel_key }}"
+  - key: "/etc/pki/rpm-gpg/neil-lxc4.0.gpg"
+    url: "https://download.copr.fedorainfracloud.org/results/neil/lxc4.0/pubkey.gpg"
     state: present
 
 lxc_centos_repos:
   - name: epel-lxc_hosts
-    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
-    description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
+    description: Copr repo for lxc4.0 owned by neil
+    baseurl: https://download.copr.fedorainfracloud.org/results/neil/lxc4.0/epel-10-$basearch/
     gpgcheck: true
-    gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key | basename }}"
+    gpgkey: "file:///etc/pki/rpm-gpg/neil-lxc4.0.gpg"
     enabled: true
     state: present
-    includepkgs: "{{ lxc_hosts_epel_packages | join(' ') }}"
+    includepkgs: "{{ _lxc_hosts_epel_packages }}"
 
 # Required rpm packages.
 _lxc_hosts_distro_packages:
@@ -42,6 +42,7 @@ _lxc_hosts_distro_packages:
   - e2fsprogs
   - git-core
   - iptables
+  - "kernel-modules-extra-{{ ansible_facts['kernel'] }}" # required by iptables/ebtables to avoid kernel upgrade
   - libseccomp
   - lxc
   - lxc-devel

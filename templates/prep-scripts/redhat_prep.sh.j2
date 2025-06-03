@@ -11,6 +11,7 @@ fi
 
 # The containers do not need the LXC repository (only hosts need it).
 rm -f /etc/yum.repos.d/thm-lxc3.0*
+rm -f /etc/yum.repos.d/epel-lxc_hosts.repo
 # This repo should be installed from package, so requires extra vars to work properly
 rm -f /etc/yum.repos.d/CentOS-NFV-OpenvSwitch.repo
 
