@@ -48,9 +48,4 @@ _lxc_cache_distro_packages:
   - python3-libs
   - setup
   - sudo
-  - systemd
-  - systemd-resolved
-  - systemd-networkd
-  - systemd-sysv
-  - systemd-udev
   - tzdata

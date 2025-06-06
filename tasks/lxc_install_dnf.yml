@@ -18,25 +18,17 @@
     name: createrepo
     state: present
 
-- name: Deploy upstream COPR yum repo for lxc 3
+- name: Drop COPR yum repo for lxc
   ansible.builtin.yum_repository:
     name: thm-lxc3.0
-    description: "Copr repo for lxc3.0 owned by thm"
-    baseurl: "{{ lxc_centos_package_baseurl }}"
-    enabled: true
-    gpgcheck: true
-    gpgkey: "{{ lxc_centos_package_key }}"
-    repo_gpgcheck: false
-    state: present
+    state: absent
+  register: repo_removed
 
-- name: Add GPG key for COPR LXC repo
-  ansible.builtin.rpm_key:
-    key: "{{ lxc_centos_package_key }}"
-    state: present
-  register: add_keys
-  until: add_keys is success
-  retries: 5
-  delay: 2
+- name: Clean yum metadata  # noqa: no-handler
+  ansible.builtin.command: yum clean metadata
+  changed_when: false
+  when:
+    - repo_removed is changed
 
 - name: Download EPEL gpg keys
   ansible.builtin.get_url:
@@ -53,7 +45,7 @@
     key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     state: present
 
-- name: Install the EPEL repository - Centos-8
+- name: Install the EPEL repository
   ansible.builtin.yum_repository:
     name: epel-lxc_hosts
     baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
@@ -62,11 +54,13 @@
     gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key.split('/')[-1] }}"
     enabled: true
     state: present
-    includepkgs: "systemd-networkd"
+    includepkgs: "{{ lxc_hosts_epel_packages | join(' ') }}"
   register: install_epel_repo
   until: install_epel_repo is success
   retries: 5
   delay: 2
+  when:
+    - lxc_hosts_epel_packages | length > 0
 
 - name: Install distro packages
   ansible.builtin.package:
