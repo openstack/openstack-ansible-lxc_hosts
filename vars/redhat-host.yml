@@ -20,6 +20,21 @@ _lxc_hosts_epel_packages:
   - lxc*
   - python3-lxc
 
+lxc_centos_repo_keys:
+  - key: "/etc/pki/rpm-gpg/{{ lxc_centos_epel_key | basename }}"
+    url: "{{ lxc_centos_epel_key }}"
+    state: present
+
+lxc_centos_repos:
+  - name: epel-lxc_hosts
+    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
+    description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
+    gpgcheck: true
+    gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key | basename }}"
+    enabled: true
+    state: present
+    includepkgs: "{{ lxc_hosts_epel_packages | join(' ') }}"
+
 # Required rpm packages.
 _lxc_hosts_distro_packages:
   - dbus
