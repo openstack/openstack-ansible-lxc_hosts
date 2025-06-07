@@ -61,7 +61,7 @@
   loop_control:
     label: "{{ item.key }}"
 
-- name: Install the EPEL repository
+- name: Install required repositories
   ansible.builtin.yum_repository:
     name: "{{ item.name }}"
     baseurl: "{{ item.baseurl }}"
