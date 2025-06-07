@@ -18,18 +18,6 @@
     name: createrepo
     state: present
 
-- name: Drop COPR yum repo for lxc
-  ansible.builtin.yum_repository:
-    name: thm-lxc3.0
-    state: absent
-  register: repo_removed
-
-- name: Clean yum metadata  # noqa: no-handler
-  ansible.builtin.command: yum clean metadata
-  changed_when: false
-  when:
-    - repo_removed is changed
-
 - name: If a keyfile is provided, copy gpg keyfiles to the key location
   ansible.builtin.copy:
     src: "{{ item.keyfile }}"
