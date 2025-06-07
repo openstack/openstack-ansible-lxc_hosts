@@ -39,6 +39,7 @@ _lxc_cache_prep_template: "prep-scripts/redhat_prep.sh.j2"
 _lxc_cache_distro_packages:
   - ca-certificates
   - git-core # needed everywhere when wheel_build=false
+  - gnupg2
   - iputils
   - iproute
   - libxml2
@@ -46,6 +47,7 @@ _lxc_cache_distro_packages:
   - procps
   - python3
   - python3-libs
+  - python3-setuptools
   - setup
   - sudo
   - systemd
