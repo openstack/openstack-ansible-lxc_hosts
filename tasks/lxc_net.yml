@@ -58,6 +58,7 @@
       - NetDev:
           Name: "{{ lxc_net_bridge }}"
           Kind: bridge
+          MTUBytes: "{{ lxc_net_mtu }}"
         Bridge:
           ForwardDelaySec: 0
           HelloTimeSec: 2
@@ -70,6 +71,7 @@
       - interface: "{{ lxc_net_bridge }}"
         address: "{{ lxc_net_address }}"
         netmask: "{{ lxc_net_netmask }}"
+        mtu: "{{ lxc_net_mtu }}"
         config_overrides:
           Network:
             ConfigureWithoutCarrier: true
