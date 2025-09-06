@@ -232,5 +232,7 @@ lxc_centos_repos: "{{ _lxc_centos_repos }}"
 # DEB repository options
 lxc_ubuntu_mirror: "{{ (ansible_facts['architecture'] == 'x86_64') | ternary('http://archive.ubuntu.com/ubuntu', 'http://ports.ubuntu.com/ubuntu-ports') }}"
 lxc_apt_mirror: "{{ (ansible_facts['distribution'] == 'Ubuntu') | ternary(lxc_ubuntu_mirror, 'http://deb.debian.org/debian') }}"
+lxc_apt_mirror_gpg_check: true
+lxc_apt_mirror_gpg_file: ''
 
 lxc_sysctl_file: "{{ openstack_sysctl_file | default('/etc/sysctl.conf') }}"
