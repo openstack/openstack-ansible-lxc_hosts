@@ -49,7 +49,7 @@
   tags:
     - lxc_hosts-install
 
-- name: Including lxc_install tasks"
+- name: Including lxc_install tasks
   ansible.builtin.include_tasks: "lxc_install_{{ ansible_facts['pkg_mgr'] }}.yml"
   tags:
     - lxc_hosts-install
