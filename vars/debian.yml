@@ -16,6 +16,8 @@
 _lxc_hosts_container_build_command: >-
   debootstrap --variant minbase
   --include ca-certificates
+  {{ (lxc_apt_mirror_gpg_check | bool) | ternary('--force-check-gpg', '--no-check-gpg') }}
+  {{ (lxc_apt_mirror_gpg_file | length > 0) | ternary('--keyring=' ~ lxc_apt_mirror_gpg_file, '') }}
   {{ ansible_facts['distribution_release'] }}
   /var/lib/machines/{{ lxc_container_base_name }}
   {{ lxc_apt_mirror }}
