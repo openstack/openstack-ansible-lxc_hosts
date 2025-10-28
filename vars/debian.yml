@@ -41,6 +41,7 @@ _lxc_cache_distro_libpython:
   jammy: libpython3.10
   bookworm: libpython3.11
   noble: libpython3.12
+  trixie: libpython3.13
 
 _lxc_cache_need_systemd_resolved: >-
   {{
