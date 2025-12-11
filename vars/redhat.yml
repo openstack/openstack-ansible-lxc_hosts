@@ -31,7 +31,6 @@ _lxc_copy_from_host:
   - /etc/locale.conf
   - /etc/protocols
   - /etc/pki/rpm-gpg/
-  - /etc/yum/pluginconf.d/fastestmirror.conf
   - /etc/yum.repos.d/
 
 _lxc_cache_prep_template: "prep-scripts/redhat_prep.sh.j2"
