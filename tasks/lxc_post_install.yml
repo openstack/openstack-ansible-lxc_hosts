@@ -54,20 +54,6 @@
     - lxc-files
     - lxc-config
 
-# NOTE: Remove this task after 2025.1
-- name: Remove DefaultTasksMax value from default config
-  ansible.builtin.lineinfile:
-    dest: /etc/systemd/system.conf
-    state: absent
-    regexp: "^.*DefaultTasksMax.*$"
-    line: "DefaultTasksMax={{ lxc_default_tasks_max }}"
-  when:
-    - ansible_facts['service_mgr'] == 'systemd'
-  notify:
-    - Reload systemd units
-  tags:
-    - lxc-config
-
 - name: Set sshd MaxSessions
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
