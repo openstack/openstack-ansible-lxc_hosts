@@ -6,7 +6,11 @@ set -e -x
 {% include 'templates/prep-scripts/_container_sys_setup.sh.j2' %}
 
 if [[ -d "/etc/pki/rpm-gpg" ]]; then
-  rpm --import /etc/pki/rpm-gpg/* || true
+  for key in /etc/pki/rpm-gpg/*; do
+    if [[ "${key}" != *-PQC ]]; then
+      rpm --import "${key}" || true
+    fi
+  done
 fi
 
 # The containers do not need the LXC repository (only hosts need it).
