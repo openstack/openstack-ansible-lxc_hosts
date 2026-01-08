@@ -53,9 +53,7 @@ lxc_host_machine_volume_size: |-
 #  * https://btrfs.wiki.kernel.org/index.php/Quota_support
 lxc_host_machine_quota_disabled: false
 
-# Set the default qgroup limits used for file system quotas. The default is
-# "none". See the following documentation for more information:
-#  * https://btrfs.wiki.kernel.org/index.php/Manpage/btrfs-qgroup
+# Set default qgroup limits used for file system quotas. Default is "none".
 lxc_host_machine_qgroup_space_limit: none
 lxc_host_machine_qgroup_compression_limit: none
 
