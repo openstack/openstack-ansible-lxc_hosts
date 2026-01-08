@@ -22,3 +22,19 @@
       - openstack-ansible-deploy-infra_lxc-jobs
       - openstack-ansible-upgrade-infra_lxc-jobs
       - openstack-ansible-lxc-backingstore-jobs
+    check:
+      jobs:
+        - openstack-ansible-deploy-infra_lxc-centos-10-stream:
+            voting: false
+        - openstack-ansible-deploy-infra_lxc-rockylinux-10:
+            voting: false
+        - openstack-ansible-deploy-infra_lxc_tls-rockylinux-10:
+            voting: false
+    gate:
+      jobs:
+        - openstack-ansible-deploy-infra_lxc-centos-10-stream:
+            voting: false
+        - openstack-ansible-deploy-infra_lxc-rockylinux-10:
+            voting: false
+        - openstack-ansible-deploy-infra_lxc_tls-rockylinux-10:
+            voting: false
