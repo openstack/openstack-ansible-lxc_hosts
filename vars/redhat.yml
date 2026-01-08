@@ -13,9 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# repo RPMs for LXC container builds
 _lxc_cache_core_repos_list:
   centos: "centos-stream-release centos-stream-repos"
   rocky: "rocky-release rocky-repos"
+  almalinux: "almalinux-release almalinux-repos"
 
 _lxc_cache_core_repos: "{{ _lxc_cache_core_repos_list.get(ansible_facts['distribution'] | lower) }}"
 
