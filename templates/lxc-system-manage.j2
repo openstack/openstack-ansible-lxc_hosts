@@ -17,7 +17,7 @@
 # host. The functions within this script provide for common operations
 # that may be required when working with LXC in production.
 
-# {{ ansible_managed }}
+# {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 export USE_LXC_BRIDGE="true"
 export LXC_BRIDGE="{{ lxc_net_bridge }}"

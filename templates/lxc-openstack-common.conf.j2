@@ -1,4 +1,4 @@
-# {{ ansible_managed }}
+# {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 {% for key, values in lxc_container_common_config.items() %}
 {%   for value in values %}
