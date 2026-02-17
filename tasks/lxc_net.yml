@@ -88,7 +88,7 @@
         state: started
         enabled: true
         execstartpres: |
-          {% set pres = ['-/usr/bin/pkill -u {{ lxc_net_dnsmasq_user }} "^dnsmasq"'] %}
+          {% set pres = ['-/usr/bin/pkill -u ' + lxc_net_dnsmasq_user + ' "^dnsmasq"'] %}
           {% if lxc_net_manage_iptables | bool %}
           {%   set _ = pres.append('/usr/local/bin/lxc-system-manage iptables-create') %}
           {% endif %}
