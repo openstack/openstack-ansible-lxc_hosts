@@ -73,11 +73,11 @@
   ansible.builtin.async_status:
     jid: "{{ _lxc_cache_prepare_commands.ansible_job_id }}"
   register: _lxc_cache_prepare_commands_result
-  until: _lxc_cache_prepare_commands_result.finished
+  until: _lxc_cache_prepare_commands_result.finished | bool
   delay: 10
   retries: "{{ lxc_cache_prep_timeout | int // 10 }}"
 
-- name: Remove requiretty for sudo on centos
+- name: Remove requiretty for sudo on RHEL
   ansible.builtin.template:
     dest: "{{ lxc_image_cache_path }}/etc/sudoers.d/openstack-ansible"
     owner: root
