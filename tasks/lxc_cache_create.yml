@@ -72,6 +72,8 @@
   retries: 3
   delay: 10
   until: cache_download is success
+  when:
+    - lxc_container_backing_store in ['overlayfs', 'zfs', 'btrfs']
 
 - name: Set the qgroup limits for btrfs
   when:
