@@ -37,17 +37,16 @@ _lxc_copy_from_host:
 _lxc_cache_prep_template: "prep-scripts/debian_prep.sh.j2"
 
 _lxc_cache_distro_libpython:
-  bullseye: libpython3.9
-  jammy: libpython3.10
   bookworm: libpython3.11
   noble: libpython3.12
   trixie: libpython3.13
+  resolute: libpython3.14
 
-_lxc_cache_need_systemd_resolved: >-
-  {{
-    ansible_facts['distribution'] == 'Debian' or
-    (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] is ansible.builtin.version('24', 'ge'))
-  }}
+_lxc_cache_distro_libxml:
+  bookworm: libxml2
+  noble: libxml2
+  trixie: libxml2
+  resolute: libxml2-16
 
 # This list should contain a minimum set of packages. Add extra packages via roles that require them.
 _lxc_cache_distro_packages:
@@ -56,7 +55,7 @@ _lxc_cache_distro_packages:
   - git # needed everywhere when wheel_build=false
   - iputils-ping
   - iproute2
-  - libxml2
+  - "{{ _lxc_cache_distro_libxml[ansible_facts['distribution_release'] | lower] }}"
   - locales
   - netbase
   - procps # needed for sysctl-container.service
@@ -65,6 +64,6 @@ _lxc_cache_distro_packages:
   - sudo
   - systemd
   - systemd-sysv
-  - "{{ _lxc_cache_need_systemd_resolved | ternary('systemd-resolved', '') }}"
+  - systemd-resolved
   - udev
   - tzdata
