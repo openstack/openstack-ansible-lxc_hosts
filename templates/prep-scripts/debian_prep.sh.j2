@@ -7,6 +7,8 @@ set -e -x
 
 # remove configs that break containers (listchanges is missing)
 rm -f /etc/apt/apt.conf.d/20listchanges
+# remove ubuntu_virt hook - ubuntu-helper-virt not needed inside containers
+rm -f /etc/apt/apt.conf.d/99-ubuntu-virt.conf
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get remove -y --purge snap* lxc* lxd* resolvconf* || true
