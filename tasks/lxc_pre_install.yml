@@ -24,6 +24,7 @@
     - /etc/lxc
     - /usr/local/bin
     - /etc/network/interfaces.d
+    - /etc/systemd/system.conf.d
     - /etc/apparmor.d/lxc
     - /usr/share/lxc/templates
     - /openstack
