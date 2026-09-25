@@ -1,7 +1,7 @@
 # {{ openstack_ansible_managed | default('OpenStack-Ansible Managed') }}
 
 {% if ansible_facts['os_family'] | lower == 'debian' %}
-lxc.apparmor.profile = generated
+lxc.apparmor.profile = {{ lxc_hosts_apparmor_profile }}
 lxc.apparmor.allow_nesting = 1
 {% endif %}
 lxc.start.auto = 1

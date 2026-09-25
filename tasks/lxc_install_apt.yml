@@ -50,36 +50,40 @@
     - lxc-irqbalance
     - lxc_hosts-config
 
-- name: Drop lxc-openstack apparmor profile
-  ansible.builtin.template:
-    src: "lxc-openstack.apparmor.j2"
-    dest: "/etc/apparmor.d/lxc/lxc-openstack"
-    owner: "root"
-    group: "root"
-    mode: "0644"
-  notify:
-    - Start apparmor
-    - Reload apparmor
-  tags:
-    - lxc-files
-    - lxc-apparmor
-    - lxc_hosts-config
-
-# NOTE: Addresses packaging bug https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/2110635
-- name: Fix liblxc-common apparmor profiles
-  ansible.builtin.lineinfile:
-    path: /etc/apparmor.d/usr.bin.lxc-copy
-    regexp: "^/usr/bin/lxc-start flags="
-    line: "/usr/bin/lxc-copy flags=(attach_disconnected) {"
-    state: present
+- name: Configure apparmor
   when:
-    - ansible_facts['distribution'] | lower == 'ubuntu'
-    - ansible_facts['distribution_release'] == 'noble'
-  notify:
-    - Reload apparmor
-  tags:
-    - lxc-files
-    - lxc-apparmor
+    - lxc_hosts_apparmor_profile != "unconfined"
+  block:
+    - name: Drop lxc-openstack apparmor profile
+      ansible.builtin.template:
+        src: "lxc-openstack.apparmor.j2"
+        dest: "/etc/apparmor.d/lxc/lxc-openstack"
+        owner: "root"
+        group: "root"
+        mode: "0644"
+      notify:
+        - Start apparmor
+        - Reload apparmor
+      tags:
+        - lxc-files
+        - lxc-apparmor
+        - lxc_hosts-config
 
-- name: Flush handler to reload apparmor profiles
-  ansible.builtin.meta: flush_handlers
+    # NOTE: Addresses packaging bug https://bugs.launchpad.net/ubuntu/+source/lxc/+bug/2110635
+    - name: Fix liblxc-common apparmor profiles
+      ansible.builtin.lineinfile:
+        path: /etc/apparmor.d/usr.bin.lxc-copy
+        regexp: "^/usr/bin/lxc-start flags="
+        line: "/usr/bin/lxc-copy flags=(attach_disconnected) {"
+        state: present
+      when:
+        - ansible_facts['distribution'] | lower == 'ubuntu'
+        - ansible_facts['distribution_release'] == 'noble'
+      notify:
+        - Reload apparmor
+      tags:
+        - lxc-files
+        - lxc-apparmor
+
+    - name: Flush handler to reload apparmor profiles
+      ansible.builtin.meta: flush_handlers

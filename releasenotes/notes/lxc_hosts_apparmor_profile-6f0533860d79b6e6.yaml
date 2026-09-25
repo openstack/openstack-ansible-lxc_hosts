@@ -1,0 +1,6 @@
+---
+features:
+  - |
+    Added variable ``lxc_hosts_apparmor_profile`` to control the base apparmor
+    profile used for LXC containers. Apparmor is not configured when it is set
+    to ``unconfined``.
