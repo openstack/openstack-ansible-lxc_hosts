@@ -68,6 +68,7 @@
     backing_store: "{{ (lxc_container_backing_store == 'overlayfs') | ternary('dir', lxc_container_backing_store) }}"
     zfs_root: "{{ (lxc_container_backing_store == 'zfs') | ternary(lxc_container_zfs_root_name, omit) }}"
     template_options: "{{ lxc_cache_download_template_options }}"
+    config: "{{ lxc_container_config }}"
   register: cache_download
   retries: 3
   delay: 10

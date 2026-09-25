@@ -64,7 +64,7 @@ lxc_default_tasks_max: 8192
 # lxc container rootfs directory and cache path
 lxc_container_directory: "/var/lib/lxc"
 lxc_container_cache_path: "/var/cache/lxc/download"
-
+lxc_container_config: /etc/lxc/lxc-openstack.conf
 lxc_container_common_config:
   lxc.mount.entry:
     - /sys/kernel/debug sys/kernel/debug none bind,optional 0 0
