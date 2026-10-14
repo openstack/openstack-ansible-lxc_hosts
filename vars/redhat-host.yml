@@ -27,7 +27,13 @@ lxc_centos_repo_keys:
 
 lxc_centos_repos:
   - name: epel-lxc_hosts
-    baseurl: "{{ lxc_centos_epel_mirror ~ '/' ~ ansible_facts['distribution_major_version'] ~ '/Everything/' ~ ansible_facts['architecture'] }}"
+    baseurl: >-
+      {{
+        lxc_centos_epel_mirror ~
+        '/' ~ ansible_facts['distribution_major_version'] ~
+        (ansible_facts['distribution'] | lower != 'centos') | ternary('z', '') ~
+        '/Everything/' ~ ansible_facts['architecture']
+      }}
     description: "Extra Packages for Enterprise Linux {{ ansible_facts['distribution_major_version'] }} - $basearch"
     gpgcheck: true
     gpgkey: "file:///etc/pki/rpm-gpg/{{ lxc_centos_epel_key | basename }}"
