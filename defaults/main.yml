@@ -223,9 +223,9 @@ lxc_cache_download_template_options: >-
 lxc_cache_locales: "{{ _lxc_cache_locales | default(['en_US.UTF-8']) }}"
 
 # EL EPEL repository options
-lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('http://download.fedoraproject.org/pub/epel') }}"
+lxc_centos_epel_mirror: "{{ centos_epel_mirror | default('https://dl.fedoraproject.org/pub/epel') }}"
 lxc_centos_epel_key: >-
-  {{ centos_epel_key | default('http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}
+  {{ centos_epel_key | default('https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-' ~ ansible_facts['distribution_major_version']) }}
 lxc_hosts_epel_packages: "{{ _lxc_hosts_epel_packages | default([]) }}"
 
 lxc_centos_repo_keys: "{{ _lxc_centos_repo_keys }}"
